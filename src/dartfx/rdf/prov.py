@@ -1,0 +1,4 @@
+
+
+class EntityInfluence():
+    pass
