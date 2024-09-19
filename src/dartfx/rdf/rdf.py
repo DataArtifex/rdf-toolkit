@@ -1,7 +1,8 @@
-from dataclasses import dataclass, field, fields
+from dataclasses import asdict, dataclass, field, fields
 from datetime import date, datetime
 from enum import Enum, auto
 from functools import cache
+import json
 import logging
 import re
 from typing import Any, Collection, Optional, Union, get_args, get_origin, get_type_hints
@@ -104,6 +105,83 @@ class RdfResource:
         # Done
         return attribute_info
 
+
+    def add_resource(self, resource, attribute_name:str = None, exact_match:bool = True):
+        """A singular version of add_resources(...)
+        """
+        self.add_resources([resource], attribute_name, exact_match)
+        
+    def add_resources(self, resources, attribute_name:str = None, exact_match:bool = True):
+        """Generic helper to add resources to attributes of this resource.
+        
+        This is a magic helper to add any resources to an attribute of this resource.
+        
+        It is recommended to provide the attribute name for faster processing.
+        When the attribute name is not specified, each attribute of the class will be examined for a match based on the resource type.
+        - By default, wee look for an exact resource type match.
+        - This can be adjusted using the exact_match argument, in which case subtypes will also be considered (e.g. a Category for a Concept).
+        - If more than one match is found, an exception will be raised.
+        
+        If the target attribute is a list, it will be instantiated and the resources will be appended.
+        We do not at this time prevent duplicate list entries (@TODO implement after we have a resource comparison/equality implemented)
+        
+        If the target attribute is not a list, it will simply be set (replacing any existing value).
+        
+        """
+        # make sure resources is a list (vs a single resource)
+        if not isinstance(resources, list):
+            resources = [resources]
+        # Detect if the list has mixed resource types. 
+        # This usually won't be the case so we only need to find the target once.
+        resource_types = set()
+        for resource in resources:
+            resource_types.add(type(resource))
+        is_mixed_resources = len(resource_types) > 1
+        # iterate resources to add
+        for resource in resources:
+            target_attribute_info = None
+            # find the target attribute
+            if not target_attribute_info or is_mixed_resources: # only need to do this once if not mixed types
+                if attribute_name:
+                    # target explicitely provided
+                    target_attribute_info = self._get_attribute_info(attribute_name)
+                    # check type
+                    if exact_match:
+                        if type(resource) is not target_attribute_info.cls:
+                            raise Exception(f"{resource.__class__} is not of type {target_attribute_info.cls}")
+                        elif not issubclass(resource.__class__, target_attribute_info.cls):
+                            raise Exception(f"{resource.__class__} is not a subclass of {target_attribute_info.cls}")                            
+                else:
+                    # find a match based on the resource type
+                    target_matches = [] # to collect matching attributes
+                    for f in fields(self.__class__): # loop over all the attributes of this class
+                        attribute_info = self._get_attribute_info(f.name)
+                        # test match
+                        if exact_match: 
+                            if type(resource) is attribute_info.cls:
+                                target_matches.append(attribute_info)
+                        elif issubclass(resource.__class__, attribute_info.cls):
+                            target_matches.append(attribute_info)
+                    # process matches
+                    if len(target_matches) == 1:
+                        target_attribute_info = target_matches[0]
+                    elif len(target_matches) > 1:
+                        mactches_names = [f.name for f in target_matches]
+                        raise Exception(f"Multiple target matches for {resource.__class__} on {self.__class__}: {mactches_names}")
+                    else:
+                        raise Exception(f"No target matches for {resource.__class__} on {self.__class__}")
+            # set or add the resource to the target attribute
+            if target_attribute_info.is_list:
+                # initialize the list if needed
+                if not getattr(self, target_attribute_info.name):
+                    setattr(self, target_attribute_info.name, [])
+                # append this resource to list
+                getattr(self, target_attribute_info.name).append(resource)
+            else:
+                # set the target attribute value
+                setattr(self, target_attribute_info.name, resource)                    
+        return
+
     #
     # private attributes getters/setters
     #
@@ -146,7 +224,7 @@ class RdfResource:
         # create the resource subject
         subject = self.get_uriref()
         triple = (subject, RDF.type, namespace[self.__class__.__name__])
-        # if resource already in the graph, just return the reference
+        # if resource is already in the graph, just return the reference
         if triple in g:
             return subject
         #logging.debug(f"Adding {triple[0]} {triple[2]} to RDF graph") 
@@ -212,6 +290,18 @@ class RdfResource:
                     g.add((subject, predicate, objects[0]))
         # return the URIRef                
         return subject
+
+    def as_dict(self):
+        """Returns the object as a dictionary"""
+        return asdict(self, dict_factory=lambda x: {k: v for (k, v) in x if v is not None})
+
+    def as_json(self, indent=None):
+        return json.dumps(self.as_dict(),indent=indent)
+
+    def save_json(self, filepath, indent=4):
+        with open(filepath, 'w') as f:
+            json.dump(self.as_dict(), f, indent=indent)
+            
 
 @dataclass(kw_only=True)
 class RdfClass(RdfResource):
