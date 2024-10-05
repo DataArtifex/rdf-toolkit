@@ -48,6 +48,7 @@ def get_rdf_graph_statistics(g: Graph):
         stats["properties"][property] = {}
         stats["properties"][property]["count"] = int(str(row.n))
 
+    return stats
 
 #
 # URI Generators
