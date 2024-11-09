@@ -147,10 +147,8 @@ class RdfResource:
                     target_attribute_info = self._get_attribute_info(attribute_name)
                     # check type
                     if exact_match:
-                        if type(resource) is not target_attribute_info.cls:
-                            raise Exception(f"{resource.__class__} is not of type {target_attribute_info.cls}")
-                        elif not issubclass(resource.__class__, target_attribute_info.cls):
-                            raise Exception(f"{resource.__class__} is not a subclass of {target_attribute_info.cls}")                            
+                        if not issubclass(resource.__class__, target_attribute_info.cls):
+                            raise Exception(f"{resource.__class__} is not of type or a subclass of {target_attribute_info.cls}")
                 else:
                     # find a match based on the resource type
                     target_matches = [] # to collect matching attributes
@@ -448,4 +446,4 @@ class UriOrString(Uri):
         if self.is_valid_uri(self.value):
             return URIRef(value=self.value)
         else:
-            return Literal(self.value, lang=self.lang) #RDf Literal
+            return Literal(self.value, lang=self.lang) #RDF Literal

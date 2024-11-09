@@ -68,6 +68,7 @@ class AccessRights(DctermsProperty, rdf.UriOrString):
 @dataclass(kw_only=True)
 class ConformsTo(DctermsProperty, rdf.UriOrString):
     pass    
+
 @dataclass(kw_only=True)
 class Creator(DctermsProperty, rdf.UriOrString):
     pass
