@@ -5,6 +5,8 @@
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+import os
+import sys
 
 project = 'Data Artifex Foo'
 copyright = '2024, Pascal Heus'
@@ -14,16 +16,19 @@ release = '0.1.0'
 #
 # Add search path for autogen
 #
-import os
-import sys
 sys.path.insert(0, os.path.abspath("../.."))
 
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'myst_parser']
-
+extensions = [
+    'sphinx.ext.autodoc', 
+    'sphinx.ext.napoleon', 
+    'sphinx.ext.viewcode',
+    'sphinx_copybutton',
+    'myst_parser'
+]
 templates_path = ['_templates']
 exclude_patterns = []
 

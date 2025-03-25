@@ -1,9 +1,11 @@
-Welcome to Data Artifex Foo's documentation!
-============================================
+Data Artifex RDF Toolkit
+========================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Modules:
+
+   modules
 
 
 Indices and tables

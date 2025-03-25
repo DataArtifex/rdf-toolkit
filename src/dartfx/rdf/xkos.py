@@ -20,6 +20,6 @@ class XkosProperty(XkosResource):
     pass
 
 @dataclass(kw_only=True)
-class SkosConceptScheme(SkosClass):
+class SkosConceptScheme(XkosClass):
     pass
    
