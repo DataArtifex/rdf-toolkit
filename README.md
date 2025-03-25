@@ -1,4 +1,4 @@
-# hatch-foo
+# RDF Toolkit
 
 [![PyPI - Version](https://img.shields.io/pypi/v/hatch-foo.svg)](https://pypi.org/project/hatch-foo)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hatch-foo.svg)](https://pypi.org/project/hatch-foo)
@@ -8,8 +8,7 @@
 
 ## Overview
 
-This project is about Foo and Bar...
-
+This core project facilitates the implementation of Python classes for various metadata standards and serialization to RDF formats.
 
 ## Installation
 
