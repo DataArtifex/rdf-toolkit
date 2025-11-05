@@ -1,3 +1,5 @@
-# SPDX-FileCopyrightText: 2024-present kulnor <pascal.heus@gmail.com>
-#
-# SPDX-License-Identifier: MIT
+"""Public package exports for :mod:`dartfx.rdf`."""
+
+from .pydantic_rdf import RdfBaseModel, RdfProperty
+
+__all__ = ["RdfBaseModel", "RdfProperty"]
