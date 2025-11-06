@@ -22,7 +22,10 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = []
+dependencies = [
+  "pydantic>=2.5",
+  "rdflib>=6.2",
+]
 
 [project.urls]
 Documentation = "https://github.com/DataArtifex/rdf-toolkit#readme"

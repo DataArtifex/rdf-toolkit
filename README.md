@@ -39,7 +39,63 @@ In the meantime, you can install the package locally by following these steps:
 
 ## Usage
 
-...
+### Serialising Pydantic models to RDF
+
+The toolkit ships with a lightweight integration that lets you decorate
+Pydantic models with RDF metadata and convert them directly to and from
+`rdflib` graphs. The integration is provided by the
+``dartfx.rdf.pydantic_rdf`` module.
+
+```python
+from typing import Annotated
+
+from rdflib import Namespace
+
+from dartfx.rdf.pydantic_rdf import RdfBaseModel, RdfProperty
+
+EX = Namespace("https://example.com/ns/")
+
+
+class Project(RdfBaseModel):
+    rdf_type = EX.Project
+    rdf_namespace = EX
+    rdf_prefixes = {"ex": EX}
+
+    id: str
+    name: Annotated[str, RdfProperty(EX.name)]
+    homepage: Annotated[str, RdfProperty(EX.homepage)]
+
+
+project = Project(id="rdftoolkit", name="RDF Toolkit", homepage="https://example.com/toolkit")
+
+turtle = project.to_rdf(format="turtle")
+print(turtle)
+```
+
+The ``RdfProperty`` metadata describes which predicate should be used for each
+field. When ``rdf_namespace`` is supplied the toolkit automatically builds URIs
+for identifiers that are not already absolute. The resulting RDF graph is a
+standard ``rdflib.Graph`` instance, so you can serialise it to any format that
+``rdflib`` supports by switching the ``format`` argument.
+
+### Deserialising RDF into models
+
+The same annotations are used to parse RDF back into Pydantic models. When a
+model specifies ``rdf_type`` the deserialiser will look for a matching subject
+and populate the fields from the graph.
+
+```python
+loaded = Project.from_rdf(turtle, format="turtle")
+assert loaded == project
+```
+
+Nested models and multi-valued properties are also supported. Declare lists of
+annotated fields, or embed other ``RdfBaseModel`` subclasses, and the toolkit
+will recursively serialise and deserialise them.
+
+See the [Pydantic RDF integration guide](docs/source/pydantic_rdf.rst) for a
+deeper walk-through including language-tagged strings, custom datatypes and
+subject selection.
 
 ## Roadmap
 - Migrate model from Python @dataclass to Pydantic
