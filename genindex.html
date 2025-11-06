@@ -47,9 +47,9 @@
 <li class="toctree-l1"><a class="reference internal" href="pydantic_rdf.html">Pydantic ↔ RDF Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">RDF</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.utils">Utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html#dcterms-dublin-core">DCTERMS: Dublin Core</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html#foaf-friend-of-a-friend">FOAF: Friend of a Friend</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html#odrl-open-digital-rights-language">ODRL:  Open Digital Rights Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.dcterms">DCTERMS: Dublin Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.foaf">FOAF: Friend of a Friend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.odrl">ODRL:  Open Digital Rights Language</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.prov">PROV:  Prov Ontology</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.skos">SKOS:  Simple Knowledge Organization System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.spdx">SPDX:  Software Package Data Exchange</a></li>
@@ -96,18 +96,25 @@
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
+ | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  | <a href="#X"><strong>X</strong></a>
  
 </div>
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.dcterms.AccessRights">AccessRights (class in dartfx.rdf.dcterms)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.AccrualPeriodicity">AccrualPeriodicity (class in dartfx.rdf.dcterms)</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.skos.SkosClass.add_alt_label">add_alt_label() (dartfx.rdf.skos.SkosClass method)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.skos.Concept.add_broader">add_broader() (dartfx.rdf.skos.Concept method)</a>
@@ -172,11 +179,15 @@
       </ul></li>
       <li><a href="modules.html#dartfx.rdf.skos.Concept.add_top_concept_of">add_top_concept_of() (dartfx.rdf.skos.Concept method)</a>
 </li>
+      <li><a href="modules.html#dartfx.rdf.foaf.Agent">Agent (class in dartfx.rdf.foaf)</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.spdx.Checksum.algorithm">algorithm (dartfx.rdf.spdx.Checksum attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.skos.AltLabel">AltLabel (class in dartfx.rdf.skos)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.skos.SkosClass.altLabel">altLabel (dartfx.rdf.skos.SkosClass attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DcmiFrequency.ANNUAL">ANNUAL (dartfx.rdf.dcterms.DcmiFrequency attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.rdf.RdfResource.as_dict">as_dict() (dartfx.rdf.rdf.RdfResource method)</a>
 </li>
@@ -196,12 +207,18 @@
 </li>
       <li><a href="modules.html#dartfx.rdf.utils.UrnUriGenerator.base_urn">base_urn (dartfx.rdf.utils.UrnUriGenerator attribute)</a>
 </li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DcmiFrequency.BIENNIAL">BIENNIAL (dartfx.rdf.dcterms.DcmiFrequency attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DcmiFrequency.BIMONTHLY">BIMONTHLY (dartfx.rdf.dcterms.DcmiFrequency attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DcmiFrequency.BIWEEKLY">BIWEEKLY (dartfx.rdf.dcterms.DcmiFrequency attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#dartfx.rdf.skos.Broader">Broader (class in dartfx.rdf.skos)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.skos.Concept.broader">broader (dartfx.rdf.skos.Concept attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#dartfx.rdf.skos.BroaderMatch">BroaderMatch (class in dartfx.rdf.skos)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.skos.Concept.broaderMatch">broaderMatch (dartfx.rdf.skos.Concept attribute)</a>
@@ -224,17 +241,23 @@
 </li>
       <li><a href="modules.html#dartfx.rdf.spdx.Checksum.checksum">checksum (dartfx.rdf.spdx.Checksum attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#dartfx.rdf.skos.CloseMatch">CloseMatch (class in dartfx.rdf.skos)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.skos.Concept.closeMatch">closeMatch (dartfx.rdf.skos.Concept attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#dartfx.rdf.rdf.AttributeInfo.cls">cls (dartfx.rdf.rdf.AttributeInfo attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.skos.Concept">Concept (class in dartfx.rdf.skos)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.skos.ConceptScheme">ConceptScheme (class in dartfx.rdf.skos)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.ConformsTo">ConformsTo (class in dartfx.rdf.dcterms)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DcmiFrequency.CONTINUOUS">CONTINUOUS (dartfx.rdf.dcterms.DcmiFrequency attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.Creator">Creator (class in dartfx.rdf.dcterms)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -242,6 +265,29 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DcmiFrequency.DAILY">DAILY (dartfx.rdf.dcterms.DcmiFrequency attribute)</a>
+</li>
+      <li>
+    dartfx.rdf.dcterms
+
+      <ul>
+        <li><a href="modules.html#module-dartfx.rdf.dcterms">module</a>
+</li>
+      </ul></li>
+      <li>
+    dartfx.rdf.foaf
+
+      <ul>
+        <li><a href="modules.html#module-dartfx.rdf.foaf">module</a>
+</li>
+      </ul></li>
+      <li>
+    dartfx.rdf.odrl
+
+      <ul>
+        <li><a href="modules.html#module-dartfx.rdf.odrl">module</a>
+</li>
+      </ul></li>
       <li>
     dartfx.rdf.prov
 
@@ -270,6 +316,8 @@
         <li><a href="modules.html#module-dartfx.rdf.spdx">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     dartfx.rdf.utils
 
@@ -277,8 +325,6 @@
         <li><a href="modules.html#module-dartfx.rdf.utils">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     dartfx.rdf.vcard
 
@@ -295,9 +341,19 @@
       </ul></li>
       <li><a href="modules.html#dartfx.rdf.rdf.RdfLiteralDeprecated.datatype">datatype (dartfx.rdf.rdf.RdfLiteralDeprecated attribute)</a>
 </li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DcmiFrequency">DcmiFrequency (class in dartfx.rdf.dcterms)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DctermsClass">DctermsClass (class in dartfx.rdf.dcterms)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DctermsProperty">DctermsProperty (class in dartfx.rdf.dcterms)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DctermsResource">DctermsResource (class in dartfx.rdf.dcterms)</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.skos.Definition">Definition (class in dartfx.rdf.skos)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.skos.SkosClass.definition">definition (dartfx.rdf.skos.SkosClass attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.Description">Description (class in dartfx.rdf.dcterms)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.rdf.RdfLiteralDeprecated.direction">direction (dartfx.rdf.rdf.RdfLiteralDeprecated attribute)</a>
 
@@ -333,6 +389,14 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.foaf.FoafClass">FoafClass (class in dartfx.rdf.foaf)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.foaf.FoafProperty">FoafProperty (class in dartfx.rdf.foaf)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.foaf.FoafResource">FoafResource (class in dartfx.rdf.foaf)</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.rdf.RdfStringDirection.from_string">from_string() (dartfx.rdf.rdf.RdfStringDirection class method)</a>
 
       <ul>
@@ -379,13 +443,15 @@
 </li>
       <li><a href="modules.html#dartfx.rdf.skos.HiddenLabel">HiddenLabel (class in dartfx.rdf.skos)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#dartfx.rdf.skos.SkosClass.hiddenLabel">hiddenLabel (dartfx.rdf.skos.SkosClass attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#dartfx.rdf.skos.HistoryNote">HistoryNote (class in dartfx.rdf.skos)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.skos.SkosClass.historyNote">historyNote (dartfx.rdf.skos.SkosClass attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.foaf.Homepage">Homepage (class in dartfx.rdf.foaf)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -393,12 +459,16 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.dcterms.Identifier">Identifier (class in dartfx.rdf.dcterms)</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.skos.ConceptScheme.inScheme">inScheme (dartfx.rdf.skos.ConceptScheme attribute)</a>
 </li>
-      <li><a href="modules.html#dartfx.rdf.rdf.AttributeInfo.is_list">is_list (dartfx.rdf.rdf.AttributeInfo attribute)</a>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DcmiFrequency.IRREGULAR">IRREGULAR (dartfx.rdf.dcterms.DcmiFrequency attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.rdf.AttributeInfo.is_list">is_list (dartfx.rdf.rdf.AttributeInfo attribute)</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.rdf.AttributeInfo.is_optional">is_optional (dartfx.rdf.rdf.AttributeInfo attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.rdf.Uri.is_valid_uri">is_valid_uri() (dartfx.rdf.rdf.Uri method)</a>
@@ -419,6 +489,12 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.dcterms.Language">Language (class in dartfx.rdf.dcterms)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.License">License (class in dartfx.rdf.dcterms)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.Location">Location (class in dartfx.rdf.dcterms)</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.rdf.RdfStringDirection.LTR">LTR (dartfx.rdf.rdf.RdfStringDirection attribute)</a>
 </li>
   </ul></td>
@@ -435,6 +511,12 @@
     module
 
       <ul>
+        <li><a href="modules.html#module-dartfx.rdf.dcterms">dartfx.rdf.dcterms</a>
+</li>
+        <li><a href="modules.html#module-dartfx.rdf.foaf">dartfx.rdf.foaf</a>
+</li>
+        <li><a href="modules.html#module-dartfx.rdf.odrl">dartfx.rdf.odrl</a>
+</li>
         <li><a href="modules.html#module-dartfx.rdf.prov">dartfx.rdf.prov</a>
 </li>
         <li><a href="modules.html#module-dartfx.rdf.rdf">dartfx.rdf.rdf</a>
@@ -450,6 +532,10 @@
         <li><a href="modules.html#module-dartfx.rdf.xkos">dartfx.rdf.xkos</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DcmiFrequency.MONTHLY">MONTHLY (dartfx.rdf.dcterms.DcmiFrequency attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -481,14 +567,44 @@
   </ul></td>
 </tr></table>
 
-<h2 id="P">P</h2>
+<h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules.html#dartfx.rdf.skos.PrefLabel">PrefLabel (class in dartfx.rdf.skos)</a>
+      <li><a href="modules.html#dartfx.rdf.odrl.OdrlClass">OdrlClass (class in dartfx.rdf.odrl)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.odrl.OdrlProperty">OdrlProperty (class in dartfx.rdf.odrl)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.odrl.OdrlResource">OdrlResource (class in dartfx.rdf.odrl)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.foaf.Organization">Organization (class in dartfx.rdf.foaf)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.dcterms.PeriodOfTime">PeriodOfTime (class in dartfx.rdf.dcterms)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.foaf.Person">Person (class in dartfx.rdf.foaf)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.skos.PrefLabel">PrefLabel (class in dartfx.rdf.skos)</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.skos.SkosClass.prefLabel">prefLabel (dartfx.rdf.skos.SkosClass attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.Publisher">Publisher (class in dartfx.rdf.dcterms)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Q">Q</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DcmiFrequency.QUARTERLY">QUARTERLY (dartfx.rdf.dcterms.DcmiFrequency attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -506,10 +622,10 @@
 </li>
       <li><a href="modules.html#dartfx.rdf.rdf.RdfString">RdfString (class in dartfx.rdf.rdf)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#dartfx.rdf.rdf.RdfStringDirection">RdfStringDirection (class in dartfx.rdf.rdf)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#dartfx.rdf.skos.Related">Related (class in dartfx.rdf.skos)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.skos.Concept.related">related (dartfx.rdf.skos.Concept attribute)</a>
@@ -517,6 +633,10 @@
       <li><a href="modules.html#dartfx.rdf.skos.RelatedMatch">RelatedMatch (class in dartfx.rdf.skos)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.skos.Concept.relatedMatch">relatedMatch (dartfx.rdf.skos.Concept attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.Relation">Relation (class in dartfx.rdf.dcterms)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.Rights">Rights (class in dartfx.rdf.dcterms)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.rdf.RdfStringDirection.RTL">RTL (dartfx.rdf.rdf.RdfStringDirection attribute)</a>
 </li>
@@ -534,12 +654,18 @@
 </li>
       <li><a href="modules.html#dartfx.rdf.skos.SemanticRelation">SemanticRelation (class in dartfx.rdf.skos)</a>
 </li>
-      <li><a href="modules.html#dartfx.rdf.rdf.RdfResource.set_namespace">set_namespace() (dartfx.rdf.rdf.RdfResource method)</a>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DcmiFrequency.SEMIANNUAL">SEMIANNUAL (dartfx.rdf.dcterms.DcmiFrequency attribute)</a>
 </li>
-      <li><a href="modules.html#dartfx.rdf.rdf.RdfResource.set_uri">set_uri() (dartfx.rdf.rdf.RdfResource method)</a>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DcmiFrequency.SEMIMONTHLY">SEMIMONTHLY (dartfx.rdf.dcterms.DcmiFrequency attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DcmiFrequency.SEMIWEEKLY">SEMIWEEKLY (dartfx.rdf.dcterms.DcmiFrequency attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.rdf.RdfResource.set_namespace">set_namespace() (dartfx.rdf.rdf.RdfResource method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.rdf.RdfResource.set_uri">set_uri() (dartfx.rdf.rdf.RdfResource method)</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.skos.SkosClass">SkosClass (class in dartfx.rdf.skos)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.xkos.SkosConceptScheme">SkosConceptScheme (class in dartfx.rdf.xkos)</a>
@@ -547,6 +673,8 @@
       <li><a href="modules.html#dartfx.rdf.skos.SkosProperty">SkosProperty (class in dartfx.rdf.skos)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.skos.SkosResource">SkosResource (class in dartfx.rdf.skos)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.Spatial">Spatial (class in dartfx.rdf.dcterms)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.spdx.SpdxClass">SpdxClass (class in dartfx.rdf.spdx)</a>
 </li>
@@ -560,11 +688,21 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules.html#dartfx.rdf.rdf.Uri.to_string">to_string() (dartfx.rdf.rdf.Uri method)</a>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DcmiFrequency.THREE_TIMES_A_MONTH">THREE_TIMES_A_MONTH (dartfx.rdf.dcterms.DcmiFrequency attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DcmiFrequency.THREE_TIMES_A_WEEK">THREE_TIMES_A_WEEK (dartfx.rdf.dcterms.DcmiFrequency attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.Title">Title (class in dartfx.rdf.dcterms)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.rdf.Uri.to_string">to_string() (dartfx.rdf.rdf.Uri method)</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.skos.Concept.topConceptOf">topConceptOf (dartfx.rdf.skos.Concept attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DcmiFrequency.TRIENNIAL">TRIENNIAL (dartfx.rdf.dcterms.DcmiFrequency attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.dcterms.Type">Type (class in dartfx.rdf.dcterms)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -615,6 +753,14 @@
       <li><a href="modules.html#dartfx.rdf.vcard.VcardProperty">VcardProperty (class in dartfx.rdf.vcard)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.vcard.VcardResource">VcardResource (class in dartfx.rdf.vcard)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.dcterms.DcmiFrequency.WEEKLY">WEEKLY (dartfx.rdf.dcterms.DcmiFrequency attribute)</a>
 </li>
   </ul></td>
 </tr></table>
