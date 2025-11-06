@@ -1,0 +1,656 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dartfx.rdf.rdf &mdash; Data Artifex Foo 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Data Artifex Foo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydantic_rdf.html">Pydantic ↔ RDF Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">RDF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html#module-dartfx.rdf.utils">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html#dcterms-dublin-core">DCTERMS: Dublin Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html#foaf-friend-of-a-friend">FOAF: Friend of a Friend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html#odrl-open-digital-rights-language">ODRL:  Open Digital Rights Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html#module-dartfx.rdf.prov">PROV:  Prov Ontology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html#module-dartfx.rdf.skos">SKOS:  Simple Knowledge Organization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html#module-dartfx.rdf.spdx">SPDX:  Software Package Data Exchange</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html#module-dartfx.rdf.vcard">VCARD: vCard / Virtual Contact File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html#module-dartfx.rdf.xkos">XKOS: SKOS extension for representing statistical classifications</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Data Artifex Foo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">dartfx.rdf.rdf</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for dartfx.rdf.rdf</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">asdict</span><span class="p">,</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">fields</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cache</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">get_args</span><span class="p">,</span> <span class="n">get_origin</span><span class="p">,</span> <span class="n">get_type_hints</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">RDF</span><span class="p">,</span> <span class="n">XSD</span><span class="p">,</span> <span class="n">Graph</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">URIRef</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<div class="viewcode-block" id="AttributeInfo">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.AttributeInfo">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AttributeInfo</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper class to capture the information on an attribute.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">is_list</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">is_optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">cls</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># the attribute or list class</span>
+    <span class="n">metadata</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># metadata from the field(...,metadata=&quot;&quot;)</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">associated_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;association&quot;</span><span class="p">)</span>    </div>
+
+
+<div class="viewcode-block" id="RdfResource">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfResource">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RdfResource</span><span class="p">:</span>
+    <span class="c1"># work in progress (ignore for now)</span>
+    <span class="c1">#_extended_attributes: Optional[Graph] = field(default=None)</span>
+    <span class="n">_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">_namespace</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@cache</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_attribute_info</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attribute_name</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AttributeInfo</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal helper that infers information on an attribute type for instantiaion and processing.</span>
+
+<span class="sd">        Relies on dataclasses attribute annotations and Python typing package introspection.</span>
+<span class="sd">        </span>
+<span class="sd">        Note that we use the attribute field(...) &#39;metadata&#39; to capture information specific to the DDI-CDI model</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#</span>
+        <span class="c1"># A typical attribute is defined as </span>
+        <span class="c1">#   name: Optional[list[&quot;ObjectName&quot;]] = field(... )</span>
+        <span class="c1"># which translates into</span>
+        <span class="c1">#   name_type_hints is typing.Optional[list[&#39;ObjectName&#39;]]</span>
+        <span class="c1">#   --&gt; origin is typing.Union</span>
+        <span class="c1">#   --&gt; args is the tuple (typinglist[&#39;ObjectName&#39;], &lt;class &#39;NoneType&#39;&gt;)</span>
+        <span class="c1">#</span>
+        <span class="n">attribute_info</span><span class="o">=</span> <span class="n">AttributeInfo</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">attribute_name</span><span class="p">)</span>
+        <span class="c1"># Field information</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">field_info</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">attribute_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attribute_name</span><span class="si">}</span><span class="s2"> attribute not found on </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">attribute_info</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">field_info</span><span class="o">.</span><span class="n">metadata</span>
+        <span class="c1"># Type hints</span>
+        <span class="n">attribute_type_hints</span> <span class="o">=</span> <span class="n">get_type_hints</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attribute_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">attribute_type_hints</span><span class="p">:</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">attribute_type_hints</span><span class="p">)</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">get_args</span><span class="p">(</span><span class="n">attribute_type_hints</span><span class="p">))</span> <span class="c1"># we make the args tuple a list so we can remove the None class</span>
+            <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="n">Union</span><span class="p">:</span> 
+                <span class="k">if</span> <span class="kc">None</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+                    <span class="n">attribute_info</span><span class="o">.</span><span class="n">is_optional</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="kc">None</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span> <span class="c1"># remove the None class</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">attribute_info</span><span class="o">.</span><span class="n">is_optional</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="c1"># At this point, only one type should be left</span>
+                <span class="c1"># It could be a list</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">attribute_type_hints</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">origin</span> <span class="o">=</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">attribute_type_hints</span><span class="p">)</span>
+                    <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">get_args</span><span class="p">(</span><span class="n">attribute_type_hints</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># More than one type is possible</span>
+                    <span class="c1"># ... but we do not currently support this</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;More than one type found for </span><span class="si">{</span><span class="n">attribute_type_hints</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># This attributes does not exists on the class</span>
+            <span class="c1"># Just ignore and return None</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No &#39;</span><span class="si">{</span><span class="n">attribute_name</span><span class="si">}</span><span class="s2">&#39; attribute found on </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="c1"># detect if this is a list or a single value</span>
+        <span class="n">attribute_info</span><span class="o">.</span><span class="n">is_list</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="nb">list</span> <span class="k">else</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">attribute_info</span><span class="o">.</span><span class="n">is_list</span><span class="p">:</span>
+            <span class="n">attribute_info</span><span class="o">.</span><span class="n">cls</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attribute_info</span><span class="o">.</span><span class="n">cls</span> <span class="o">=</span> <span class="n">attribute_type_hints</span>
+        <span class="c1"># If the type was defined using a ForwardRef, </span>
+        <span class="c1"># convert the string value to a class </span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute_info</span><span class="o">.</span><span class="n">cls</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">local_class</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()[</span><span class="s1">&#39;cls&#39;</span><span class="p">]</span> <span class="c1"># this return the class holding the attribute</span>
+            <span class="n">module_name</span> <span class="o">=</span> <span class="n">local_class</span><span class="o">.</span><span class="vm">__module__</span> <span class="c1"># this is the name of the wrapping class module (e.g. dartfx.dcat.dcat)</span>
+            <span class="c1"># Get the class from sys.modules</span>
+            <span class="c1"># https://stackoverflow.com/questions/1176136/convert-string-to-python-class-object</span>
+            <span class="n">attribute_info</span><span class="o">.</span><span class="n">cls</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">module_name</span><span class="p">],</span> <span class="n">attribute_info</span><span class="o">.</span><span class="n">cls</span><span class="p">)</span>
+        <span class="c1"># Done</span>
+        <span class="k">return</span> <span class="n">attribute_info</span>
+
+
+<div class="viewcode-block" id="RdfResource.add_resource">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfResource.add_resource">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">,</span> <span class="n">attribute_name</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">exact_match</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A singular version of add_resources(...)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_resources</span><span class="p">([</span><span class="n">resource</span><span class="p">],</span> <span class="n">attribute_name</span><span class="p">,</span> <span class="n">exact_match</span><span class="p">)</span></div>
+
+        
+<div class="viewcode-block" id="RdfResource.add_resources">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfResource.add_resources">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resources</span><span class="p">,</span> <span class="n">attribute_name</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">exact_match</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generic helper to add resources to attributes of this resource.</span>
+<span class="sd">        </span>
+<span class="sd">        This is a magic helper to add any resources to an attribute of this resource.</span>
+<span class="sd">        </span>
+<span class="sd">        It is recommended to provide the attribute name for faster processing.</span>
+<span class="sd">        When the attribute name is not specified, each attribute of the class will be examined for a match based on the resource type.</span>
+<span class="sd">        - By default, wee look for an exact resource type match.</span>
+<span class="sd">        - This can be adjusted using the exact_match argument, in which case subtypes will also be considered (e.g. a Category for a Concept).</span>
+<span class="sd">        - If more than one match is found, an exception will be raised.</span>
+<span class="sd">        </span>
+<span class="sd">        If the target attribute is a list, it will be instantiated and the resources will be appended.</span>
+<span class="sd">        We do not at this time prevent duplicate list entries (@TODO implement after we have a resource comparison/equality implemented)</span>
+<span class="sd">        </span>
+<span class="sd">        If the target attribute is not a list, it will simply be set (replacing any existing value).</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># make sure resources is a list (vs a single resource)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resources</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">resources</span> <span class="o">=</span> <span class="p">[</span><span class="n">resources</span><span class="p">]</span>
+        <span class="c1"># Detect if the list has mixed resource types. </span>
+        <span class="c1"># This usually won&#39;t be the case so we only need to find the target once.</span>
+        <span class="n">resource_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">resource</span> <span class="ow">in</span> <span class="n">resources</span><span class="p">:</span>
+            <span class="n">resource_types</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">resource</span><span class="p">))</span>
+        <span class="n">is_mixed_resources</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resource_types</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+        <span class="c1"># iterate resources to add</span>
+        <span class="k">for</span> <span class="n">resource</span> <span class="ow">in</span> <span class="n">resources</span><span class="p">:</span>
+            <span class="n">target_attribute_info</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># find the target attribute</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">target_attribute_info</span> <span class="ow">or</span> <span class="n">is_mixed_resources</span><span class="p">:</span> <span class="c1"># only need to do this once if not mixed types</span>
+                <span class="k">if</span> <span class="n">attribute_name</span><span class="p">:</span>
+                    <span class="c1"># target explicitely provided</span>
+                    <span class="n">target_attribute_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_attribute_info</span><span class="p">(</span><span class="n">attribute_name</span><span class="p">)</span>
+                    <span class="c1"># check type</span>
+                    <span class="k">if</span> <span class="n">exact_match</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">target_attribute_info</span><span class="o">.</span><span class="n">cls</span><span class="p">):</span>
+                            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> is not of type or a subclass of </span><span class="si">{</span><span class="n">target_attribute_info</span><span class="o">.</span><span class="n">cls</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># find a match based on the resource type</span>
+                    <span class="n">target_matches</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># to collect matching attributes</span>
+                    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span> <span class="c1"># loop over all the attributes of this class</span>
+                        <span class="n">attribute_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_attribute_info</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                        <span class="c1"># test match</span>
+                        <span class="k">if</span> <span class="n">exact_match</span><span class="p">:</span> 
+                            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span> <span class="ow">is</span> <span class="n">attribute_info</span><span class="o">.</span><span class="n">cls</span><span class="p">:</span>
+                                <span class="n">target_matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attribute_info</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">attribute_info</span><span class="o">.</span><span class="n">cls</span><span class="p">):</span>
+                            <span class="n">target_matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attribute_info</span><span class="p">)</span>
+                    <span class="c1"># process matches</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_matches</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">target_attribute_info</span> <span class="o">=</span> <span class="n">target_matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_matches</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">mactches_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">target_matches</span><span class="p">]</span>
+                        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Multiple target matches for </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">mactches_names</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No target matches for </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># set or add the resource to the target attribute</span>
+            <span class="k">if</span> <span class="n">target_attribute_info</span><span class="o">.</span><span class="n">is_list</span><span class="p">:</span>
+                <span class="c1"># initialize the list if needed</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_attribute_info</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_attribute_info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="c1"># append this resource to list</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_attribute_info</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># set the target attribute value</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_attribute_info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">resource</span><span class="p">)</span>                    
+        <span class="k">return</span></div>
+
+
+    <span class="c1">#</span>
+    <span class="c1"># private attributes getters/setters</span>
+    <span class="c1">#</span>
+<div class="viewcode-block" id="RdfResource.get_namespace">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfResource.get_namespace">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_namespace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_namespace</span></div>
+
+
+<div class="viewcode-block" id="RdfResource.get_uri">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfResource.get_uri">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="c1"># if URI is not set, generate a random uuid based URI</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uri</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_uri</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">urn</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uri</span></div>
+
+
+<div class="viewcode-block" id="RdfResource.get_uriref">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfResource.get_uriref">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_uriref</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_uri</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="RdfResource.set_uri">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfResource.set_uri">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_uri</span> <span class="o">=</span> <span class="n">uri</span></div>
+
+        
+<div class="viewcode-block" id="RdfResource.set_namespace">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfResource.set_namespace">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_namespace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">namespace</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">namespace</span> <span class="o">=</span> <span class="n">namespace</span></div>
+
+
+<div class="viewcode-block" id="RdfResource.add_to_rdf_graph">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfResource.add_to_rdf_graph">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_to_rdf_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">:</span><span class="n">Graph</span><span class="p">,</span> <span class="n">use_list</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Add this resource to an RDF graph.</span>
+<span class="sd">        </span>
+<span class="sd">        A nifty method that turn this resource into a stack of RDF triples and adds them to the specified RDF graph.</span>
+<span class="sd">        </span>
+<span class="sd">        It makes the following assumptions:</span>
+<span class="sd">        - The resource is a dataclass</span>
+<span class="sd">        - The dataclass properties are the class attribute name</span>
+<span class="sd">        - Attributes starting with an underscore are ignored</span>
+<span class="sd">        - The attribute namespace is the same as the resource, unless overridden in the attribute metadata</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check namespace</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_namespace</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resource </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> has no namespace&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">namespace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_namespace</span>
+        <span class="c1"># create the resource subject</span>
+        <span class="n">subject</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_uriref</span><span class="p">()</span>
+        <span class="n">triple</span> <span class="o">=</span> <span class="p">(</span><span class="n">subject</span><span class="p">,</span> <span class="n">RDF</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">namespace</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">])</span>
+        <span class="c1"># if resource is already in the graph, just return the reference</span>
+        <span class="k">if</span> <span class="n">triple</span> <span class="ow">in</span> <span class="n">g</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">subject</span>
+        <span class="c1">#logging.debug(f&quot;Adding {triple[0]} {triple[2]} to RDF graph&quot;) </span>
+        <span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">triple</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># iterate over all fields (attributes)</span>
+            <span class="c1"># skip private attributes</span>
+            <span class="k">if</span> <span class="n">attribute</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="c1"># process attribute</span>
+            <span class="n">attribute_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> 
+            <span class="k">if</span> <span class="n">attribute_value</span><span class="p">:</span> <span class="c1"># if the attribute is not None or en empty list</span>
+                <span class="c1"># determine the attribute namesspace</span>
+                <span class="c1"># by default, this is the same as the resource, but can be overridden by the attribute metadata</span>
+                <span class="k">if</span> <span class="s1">&#39;namespace&#39;</span> <span class="ow">in</span> <span class="n">attribute</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
+                    <span class="n">attribute_namespace</span> <span class="o">=</span> <span class="n">attribute</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;namespace&quot;</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">attribute_namespace</span> <span class="o">=</span> <span class="n">namespace</span>
+                <span class="c1"># the RDF predicate is based on the attribute name and namespace</span>
+                <span class="n">predicate</span> <span class="o">=</span> <span class="n">attribute_namespace</span><span class="p">[</span><span class="n">attribute</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="c1"># the RDF predicate is based on the attribute name</span>
+                <span class="c1"># collecte information on this attribute</span>
+                <span class="n">attribute_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_attribute_info</span><span class="p">(</span><span class="n">attribute</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="c1"># if not a list, convert to a single entry list so we can iterate</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">attribute_info</span><span class="o">.</span><span class="n">is_list</span><span class="p">:</span>
+                    <span class="n">attribute_value_items</span> <span class="o">=</span> <span class="p">[</span><span class="n">attribute_value</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">attribute_value_items</span> <span class="o">=</span> <span class="n">attribute_value</span>
+                <span class="c1"># this array will collect all the objects that need to be added</span>
+                <span class="n">objects</span> <span class="o">=</span> <span class="p">[]</span> 
+                <span class="c1"># iterate over all values and add</span>
+                <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">attribute_value_items</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">attribute_info</span><span class="o">.</span><span class="n">cls</span><span class="p">,</span> <span class="n">RdfResource</span><span class="p">):</span>
+                        <span class="nb">object</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">add_to_rdf_graph</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+                        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">attribute_info</span><span class="o">.</span><span class="n">cls</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">string</span><span class="p">))</span>
+                    <span class="k">elif</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">attribute_info</span><span class="o">.</span><span class="n">cls</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">integer</span><span class="p">))</span>
+                    <span class="k">elif</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">attribute_info</span><span class="o">.</span><span class="n">cls</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">float</span><span class="p">))</span>
+                    <span class="k">elif</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">attribute_info</span><span class="o">.</span><span class="n">cls</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">boolean</span><span class="p">))</span>
+                    <span class="k">elif</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">attribute_info</span><span class="o">.</span><span class="n">cls</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+                        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">dateTime</span><span class="p">))</span>
+                    <span class="k">elif</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">attribute_info</span><span class="o">.</span><span class="n">cls</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
+                        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">date</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+                <span class="c1"># add to this resource</span>
+                <span class="k">if</span> <span class="n">attribute_info</span><span class="o">.</span><span class="n">is_list</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">use_list</span><span class="p">:</span>
+                        <span class="c1"># Create a list node with a URIRef based on the subject and attribute</span>
+                        <span class="c1"># Do not use blank node.</span>
+                        <span class="n">list_node</span> <span class="o">=</span> <span class="n">URIRef</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">attribute</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">List&quot;</span><span class="p">)</span>
+                        <span class="n">rdf_list</span> <span class="o">=</span> <span class="n">Collection</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">list_node</span><span class="p">,</span> <span class="n">objects</span><span class="p">)</span>  <span class="c1"># noqa: F841</span>
+                        <span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">subject</span><span class="p">,</span> <span class="n">predicate</span><span class="p">,</span> <span class="n">list_node</span><span class="p">))</span> <span class="c1"># add the list_node, not rdf_list</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># add each entry as a triple</span>
+                        <span class="k">for</span> <span class="nb">object</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
+                            <span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">subject</span><span class="p">,</span> <span class="n">predicate</span><span class="p">,</span> <span class="nb">object</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># add single entry (there can only be one entry in this case)</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">subject</span><span class="p">,</span> <span class="n">predicate</span><span class="p">,</span> <span class="n">objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="c1"># return the URIRef                </span>
+        <span class="k">return</span> <span class="n">subject</span></div>
+
+
+<div class="viewcode-block" id="RdfResource.as_dict">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfResource.as_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the object as a dictionary&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_factory</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">x</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="RdfResource.as_json">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfResource.as_json">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(),</span><span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RdfResource.save_json">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfResource.save_json">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(),</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span></div>
+</div>
+
+            
+
+<div class="viewcode-block" id="RdfClass">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfClass">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RdfClass</span><span class="p">(</span><span class="n">RdfResource</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="RdfProperty">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfProperty">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RdfProperty</span><span class="p">(</span><span class="n">RdfResource</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="RdfStringDirection">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfStringDirection">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RdfStringDirection</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">LTR</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>  <span class="c1"># Left-to-Right</span>
+    <span class="n">RTL</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>  <span class="c1"># Right-to-Left</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+<div class="viewcode-block" id="RdfStringDirection.from_string">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfStringDirection.from_string">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">direction_str</span><span class="p">):</span>
+        <span class="n">direction_str</span> <span class="o">=</span> <span class="n">direction_str</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">direction_str</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__members__</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">[</span><span class="n">direction_str</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid direction: </span><span class="si">{</span><span class="n">direction_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
+
+   
+<div class="viewcode-block" id="RdfLiteralDeprecated">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfLiteralDeprecated">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RdfLiteralDeprecated</span><span class="p">(</span><span class="n">RdfResource</span><span class="p">):</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">any</span>
+    <span class="n">datatype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;Uri&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">lang</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">direction</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RdfStringDirection</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="RdfLiteralDeprecated.add_to_rdf_graph">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfLiteralDeprecated.add_to_rdf_graph">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_to_rdf_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">:</span><span class="n">Graph</span><span class="p">,</span> <span class="n">use_list</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">string</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">boolean</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">dateTime</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">date</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected literal type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
+
+        
+        
+<div class="viewcode-block" id="RdfString">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfString">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RdfString</span><span class="p">(</span><span class="n">RdfResource</span><span class="p">):</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">lang</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="c1"># The language code</span>
+    <span class="n">direction</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RdfStringDirection</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RdfString.validate_lang">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfString.validate_lang">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_lang</span><span class="p">(</span><span class="n">lang</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">lang</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$&#39;</span><span class="p">,</span> <span class="n">lang</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="RdfString.add_to_rdf_graph">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.RdfString.add_to_rdf_graph">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_to_rdf_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">:</span><span class="n">Graph</span><span class="p">,</span> <span class="n">use_list</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_lang</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lang</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid language code </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lang</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># NOTE: direction is currently not supported by Literal</span>
+        <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lang</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">string</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Uri">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.Uri">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Uri</span><span class="p">(</span><span class="n">RdfProperty</span><span class="p">):</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># The URI value</span>
+    <span class="n">_valid_schemes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;http&#39;</span><span class="p">,</span> <span class="s1">&#39;https&#39;</span><span class="p">,</span> <span class="s1">&#39;ftp&#39;</span><span class="p">,</span> <span class="s1">&#39;urn&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate the URI after initialization.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_uri</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Uri.validate_uri">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.Uri.validate_uri">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate if the provided string is a well-formed URI.&quot;&quot;&quot;</span>
+        <span class="n">parsed</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+        <span class="c1"># Check if the scheme is valid</span>
+        <span class="k">if</span> <span class="n">parsed</span><span class="o">.</span><span class="n">scheme</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_schemes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid URI: </span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2"> -- invalid scheme </span><span class="si">{</span><span class="n">parsed</span><span class="o">.</span><span class="n">scheme</span><span class="si">}</span><span class="s2">. Must be in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_schemes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> 
+        <span class="c1"># Additional checks based on the scheme</span>
+        <span class="k">if</span> <span class="n">parsed</span><span class="o">.</span><span class="n">scheme</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;http&#39;</span><span class="p">,</span> <span class="s1">&#39;https&#39;</span><span class="p">,</span> <span class="s1">&#39;ftp&#39;</span><span class="p">]:</span>
+            <span class="c1"># For HTTP, HTTPS, and FTP, check if the netloc (domain) is present</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">parsed</span><span class="o">.</span><span class="n">netloc</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid URI: </span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2"> -- invalid network location </span><span class="si">{</span><span class="n">parsed</span><span class="o">.</span><span class="n">netloc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">parsed</span><span class="o">.</span><span class="n">scheme</span> <span class="o">==</span> <span class="s1">&#39;urn&#39;</span><span class="p">:</span>
+            <span class="c1"># For URNs, validate the format</span>
+            <span class="n">urn_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^urn:[a-zA-Z0-9][a-zA-Z0-9-]{0,31}:[a-zA-Z0-9()+,\-.:=@;$_!*</span><span class="se">\&#39;</span><span class="s1">%/?#]+$&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">urn_pattern</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">uri</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid URI: </span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2"> -- invalid pattern&quot;</span><span class="p">)</span>
+        <span class="c1"># If all checks pass, the URI is valid</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">valid_schemes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_schemes</span>
+
+    <span class="nd">@valid_schemes</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">valid_schemes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">valid_schemes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_valid_schemes</span> <span class="o">=</span> <span class="n">valid_schemes</span>
+    
+<div class="viewcode-block" id="Uri.is_valid_uri">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.Uri.is_valid_uri">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_valid_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">as_url</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">as_urn</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate if the provided string is a well-formed URI.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validate_uri</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Uri.to_string">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.Uri.to_string">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the URI as a string.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="Uri.from_string">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.Uri.from_string">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">uri_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Uri&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an XsdAnyUri instance from a string.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">uri_string</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="Uri.add_to_rdf_graph">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.Uri.add_to_rdf_graph">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_to_rdf_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">:</span> <span class="n">Graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the add_to_rdf_graph method to simply return the URI as a URIRef.&quot;&quot;&quot;</span> 
+        <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+</div>
+
+
+<div class="viewcode-block" id="Url">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.Url">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Url</span><span class="p">(</span><span class="n">Uri</span><span class="p">):</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valid_schemes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;http&#39;</span><span class="p">,</span> <span class="s1">&#39;https&#39;</span><span class="p">]</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="UriOrString">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.UriOrString">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">UriOrString</span><span class="p">(</span><span class="n">Uri</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A hybrid property type that can be either a URI or a string.&quot;&quot;&quot;</span>
+    <span class="n">lang</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span> <span class="c1"># do not validate as URI</span>
+    
+<div class="viewcode-block" id="UriOrString.add_to_rdf_graph">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.rdf.UriOrString.add_to_rdf_graph">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_to_rdf_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">:</span> <span class="n">Graph</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_valid_uri</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lang</span><span class="p">)</span> <span class="c1">#RDF Literal</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Pascal Heus.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

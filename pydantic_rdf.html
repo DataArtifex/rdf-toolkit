@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pydantic ↔ RDF Integration &mdash; Data Artifex Foo 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="RDF" href="modules.html" />
+    <link rel="prev" title="Data Artifex RDF Toolkit" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Data Artifex Foo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pydantic ↔ RDF Integration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mapping-rules">Mapping rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reading-data-back">Reading data back</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#language-tags-and-datatypes">Language tags and datatypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-serialisation-hooks">Custom serialisation hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-scenarios">Advanced scenarios</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">RDF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.utils">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#dcterms-dublin-core">DCTERMS: Dublin Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#foaf-friend-of-a-friend">FOAF: Friend of a Friend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#odrl-open-digital-rights-language">ODRL:  Open Digital Rights Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.prov">PROV:  Prov Ontology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.skos">SKOS:  Simple Knowledge Organization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.spdx">SPDX:  Software Package Data Exchange</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.vcard">VCARD: vCard / Virtual Contact File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.xkos">XKOS: SKOS extension for representing statistical classifications</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Data Artifex Foo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Pydantic ↔ RDF Integration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pydantic_rdf.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pydantic-rdf-integration">
+<h1>Pydantic ↔ RDF Integration<a class="headerlink" href="#pydantic-rdf-integration" title="Link to this heading"></a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">dartfx.rdf.pydantic_rdf</span></code> module adds a thin mixin that lets you
+annotate Pydantic models with RDF metadata, build <cite>rdflib.Graph</cite> instances, and
+reconstruct the models from existing graphs. This page walks through the most
+important building blocks and patterns.</p>
+<section id="quick-start">
+<h2>Quick start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Import <code class="xref py py-class docutils literal notranslate"><span class="pre">RdfBaseModel</span></code> and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">RdfProperty</span></code>.</p></li>
+<li><p>Define a namespace for your resources and declare any prefixes you want to be
+emitted in the resulting graph.</p></li>
+<li><p>Annotate each serialisable field with an RDF predicate.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">URIRef</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dartfx.rdf.pydantic_rdf</span><span class="w"> </span><span class="kn">import</span> <span class="n">RdfBaseModel</span><span class="p">,</span> <span class="n">RdfProperty</span>
+
+<span class="n">EX</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">(</span><span class="s2">&quot;https://example.org/ns/&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Organisation</span><span class="p">(</span><span class="n">RdfBaseModel</span><span class="p">):</span>
+    <span class="n">rdf_type</span> <span class="o">=</span> <span class="n">EX</span><span class="o">.</span><span class="n">Organisation</span>
+    <span class="n">rdf_namespace</span> <span class="o">=</span> <span class="n">EX</span>
+    <span class="n">rdf_prefixes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ex&quot;</span><span class="p">:</span> <span class="n">EX</span><span class="p">}</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">EX</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span>
+    <span class="n">homepage</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">URIRef</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">EX</span><span class="o">.</span><span class="n">homepage</span><span class="p">)]</span>
+    <span class="n">keywords</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">EX</span><span class="o">.</span><span class="n">keyword</span><span class="p">)]</span>
+
+
+<span class="n">org</span> <span class="o">=</span> <span class="n">Organisation</span><span class="p">(</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;toolkit&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;RDF Toolkit&quot;</span><span class="p">,</span>
+    <span class="n">homepage</span><span class="o">=</span><span class="n">URIRef</span><span class="p">(</span><span class="s2">&quot;https://example.org/toolkit&quot;</span><span class="p">),</span>
+    <span class="n">keywords</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;python&quot;</span><span class="p">,</span> <span class="s2">&quot;metadata&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="n">turtle</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="n">to_rdf</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;turtle&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">RdfBaseModel</span></code> takes care of creating a subject identifier, emitting RDF
+triples for every annotated field, and binding the default prefixes. The graph
+returned by <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_rdf_graph()</span></code> can be
+serialised in any format supported by <cite>rdflib</cite>.</p>
+</section>
+<section id="mapping-rules">
+<h2>Mapping rules<a class="headerlink" href="#mapping-rules" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">predicate</span></code> argument on <code class="xref py py-class docutils literal notranslate"><span class="pre">RdfProperty</span></code>
+can be either a full <code class="docutils literal notranslate"><span class="pre">rdflib.term.URIRef</span></code> or a string. Strings will be
+coerced into <code class="docutils literal notranslate"><span class="pre">URIRef</span></code> instances at runtime.</p></li>
+<li><p>A model-level <code class="docutils literal notranslate"><span class="pre">rdf_type</span></code> constant adds <code class="docutils literal notranslate"><span class="pre">rdf:type</span></code> triples for every
+instance.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">rdf_namespace</span></code> is defined and the model exposes an <code class="docutils literal notranslate"><span class="pre">id</span></code> value (or the
+field configured via <code class="docutils literal notranslate"><span class="pre">rdf_id_field</span></code>), the identifier is appended to the
+namespace. Absolute identifiers, such as UUID URNs or HTTP URLs, are used as
+provided.</p></li>
+<li><p>Lists of annotated fields are emitted as repeated predicate/object pairs. The
+same applies to nested <code class="docutils literal notranslate"><span class="pre">RdfBaseModel</span></code> subclasses, which are recursively
+serialised.</p></li>
+</ul>
+</section>
+<section id="reading-data-back">
+<h2>Reading data back<a class="headerlink" href="#reading-data-back" title="Link to this heading"></a></h2>
+<p>Instances can be rehydrated from either a graph object or a textual
+serialisation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">clone</span> <span class="o">=</span> <span class="n">Organisation</span><span class="o">.</span><span class="n">from_rdf</span><span class="p">(</span><span class="n">turtle</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;turtle&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">clone</span> <span class="o">==</span> <span class="n">org</span>
+</pre></div>
+</div>
+<p>When a model sets <code class="docutils literal notranslate"><span class="pre">rdf_type</span></code> the parser uses it to locate the correct subject
+in the graph. Otherwise it expects the graph to contain exactly one subject and
+raises an error if there are multiple candidates. You can always bypass the
+heuristics by passing the <code class="docutils literal notranslate"><span class="pre">subject</span></code> keyword argument to
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">from_rdf_graph()</span></code> or
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">from_rdf()</span></code>.</p>
+</section>
+<section id="language-tags-and-datatypes">
+<h2>Language tags and datatypes<a class="headerlink" href="#language-tags-and-datatypes" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">RdfProperty</span></code> accepts optional <code class="docutils literal notranslate"><span class="pre">datatype</span></code> and <code class="docutils literal notranslate"><span class="pre">language</span></code> parameters to
+fine-tune literal serialisation. Datatypes may be defined as strings, namespace
+terms, or full <code class="docutils literal notranslate"><span class="pre">URIRef</span></code> instances.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">XSD</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Dataset</span><span class="p">(</span><span class="n">RdfBaseModel</span><span class="p">):</span>
+    <span class="n">rdf_type</span> <span class="o">=</span> <span class="n">EX</span><span class="o">.</span><span class="n">Dataset</span>
+    <span class="n">rdf_namespace</span> <span class="o">=</span> <span class="n">EX</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">title</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">EX</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">)]</span>
+    <span class="n">created</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">EX</span><span class="o">.</span><span class="n">created</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">date</span><span class="p">)]</span>
+
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;demo&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Example&quot;</span><span class="p">,</span> <span class="n">created</span><span class="o">=</span><span class="s2">&quot;2024-03-01&quot;</span><span class="p">)</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">to_rdf_graph</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-serialisation-hooks">
+<h2>Custom serialisation hooks<a class="headerlink" href="#custom-serialisation-hooks" title="Link to this heading"></a></h2>
+<p>When you need more control, <code class="docutils literal notranslate"><span class="pre">RdfProperty</span></code> allows you to pass <code class="docutils literal notranslate"><span class="pre">serializer</span></code>
+and <code class="docutils literal notranslate"><span class="pre">parser</span></code> callables. <code class="docutils literal notranslate"><span class="pre">serializer</span></code> receives the field value and must
+return an <code class="docutils literal notranslate"><span class="pre">rdflib</span></code> node; <code class="docutils literal notranslate"><span class="pre">parser</span></code> runs during deserialisation and receives
+whatever node was found in the graph.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">to_uppercase</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_lower</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TaggedConcept</span><span class="p">(</span><span class="n">RdfBaseModel</span><span class="p">):</span>
+    <span class="n">rdf_type</span> <span class="o">=</span> <span class="n">EX</span><span class="o">.</span><span class="n">Concept</span>
+    <span class="n">rdf_namespace</span> <span class="o">=</span> <span class="n">EX</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="nb">str</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">EX</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">serializer</span><span class="o">=</span><span class="n">to_uppercase</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="n">parse_lower</span><span class="p">),</span>
+    <span class="p">]</span>
+
+
+<span class="n">concept</span> <span class="o">=</span> <span class="n">TaggedConcept</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;term&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Toolkit&quot;</span><span class="p">)</span>
+<span class="n">round_trip</span> <span class="o">=</span> <span class="n">TaggedConcept</span><span class="o">.</span><span class="n">from_rdf</span><span class="p">(</span><span class="n">concept</span><span class="o">.</span><span class="n">to_rdf</span><span class="p">())</span>
+<span class="k">assert</span> <span class="n">round_trip</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="s2">&quot;toolkit&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-scenarios">
+<h2>Advanced scenarios<a class="headerlink" href="#advanced-scenarios" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Override <code class="docutils literal notranslate"><span class="pre">rdf_id_field</span></code> if your identifier lives on a different field name.</p></li>
+<li><p>Supply <code class="docutils literal notranslate"><span class="pre">rdf_prefixes</span></code> to bind additional prefixes on the emitted graph.</p></li>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">base_uri</span></code> when serialising or parsing if you want generated identifiers
+to be relative to an external namespace instead of <code class="docutils literal notranslate"><span class="pre">rdf_namespace</span></code>.</p></li>
+</ul>
+<p>The tests in <code class="xref py py-mod docutils literal notranslate"><span class="pre">tests.test_pydantic_rdf</span></code> provide additional examples that
+cover nested resources, optional values, and custom datatypes.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Data Artifex RDF Toolkit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="RDF" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Pascal Heus.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

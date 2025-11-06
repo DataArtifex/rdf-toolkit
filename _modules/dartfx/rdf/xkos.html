@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>dartfx.rdf.prov &mdash; Data Artifex Foo 0.1.0 documentation</title>
+  <title>dartfx.rdf.xkos &mdash; Data Artifex Foo 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -72,7 +72,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">dartfx.rdf.prov</li>
+      <li class="breadcrumb-item active">dartfx.rdf.xkos</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -81,14 +81,44 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for dartfx.rdf.prov</h1><div class="highlight"><pre>
-<span></span>
+  <h1>Source code for dartfx.rdf.xkos</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dartfx.rdf</span><span class="w"> </span><span class="kn">import</span> <span class="n">rdf</span>
 
-<div class="viewcode-block" id="EntityInfluence">
-<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.prov.EntityInfluence">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">EntityInfluence</span><span class="p">():</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">SKOS</span>
+
+<span class="n">XKOS</span> <span class="o">=</span> <span class="s2">&quot;src/dartfx/rdf/skos.py&quot;</span>
+<div class="viewcode-block" id="XkosResource">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.xkos.XkosResource">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">XkosResource</span><span class="p">(</span><span class="n">rdf</span><span class="o">.</span><span class="n">RdfResource</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="nb">super</span><span class="p">(),</span> <span class="s1">&#39;__post_init__&#39;</span><span class="p">):</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_namespace</span> <span class="o">=</span> <span class="n">XKOS</span></div>
+
+
+<div class="viewcode-block" id="XkosClass">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.xkos.XkosClass">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">XkosClass</span><span class="p">(</span><span class="n">XkosResource</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
+    
+<div class="viewcode-block" id="XkosProperty">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.xkos.XkosProperty">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">XkosProperty</span><span class="p">(</span><span class="n">XkosResource</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="SkosConceptScheme">
+<a class="viewcode-back" href="../../../modules.html#dartfx.rdf.xkos.SkosConceptScheme">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SkosConceptScheme</span><span class="p">(</span><span class="n">XkosClass</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+   
 </pre></div>
 
            </div>

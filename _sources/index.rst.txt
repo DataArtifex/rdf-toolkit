@@ -5,6 +5,7 @@ Data Artifex RDF Toolkit
    :maxdepth: 2
    :caption: Modules:
 
+   pydantic_rdf
    modules
 
 
