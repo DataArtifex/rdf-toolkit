@@ -1002,6 +1002,18 @@ class RdfBaseModel(BaseModel):
 
 
 def _get_rdf_property(field: Any) -> Optional[RdfProperty]:
+    """Extract RdfProperty metadata from a field's metadata or annotation.
+    
+    Parameters
+    ----------
+    field : Any
+        A Pydantic field information object.
+    
+    Returns
+    -------
+    RdfProperty | None
+        The RdfProperty if found in metadata, otherwise None.
+    """
     metadata = getattr(field, "metadata", ()) or ()
     for item in metadata:
         if isinstance(item, RdfProperty):
@@ -1015,6 +1027,21 @@ def _get_rdf_property(field: Any) -> Optional[RdfProperty]:
 
 
 def _field_type_info(field: Any) -> Tuple[bool, Any]:
+    """Determine if a field is a list type and extract its inner type.
+    
+    Also handles Optional types by unwrapping Union[T, None].
+    
+    Parameters
+    ----------
+    field : Any
+        A Pydantic field information object.
+    
+    Returns
+    -------
+    tuple[bool, Any]
+        A tuple of (is_list, inner_type). is_list is True if the field accepts
+        multiple values, inner_type is the type of individual elements.
+    """
     annotation = getattr(field, "annotation", Any)
     annotation = _unwrap_annotation(annotation)
 
@@ -1033,6 +1060,20 @@ def _field_type_info(field: Any) -> Tuple[bool, Any]:
 
 
 def _unwrap_annotation(annotation: Any) -> Any:
+    """Unwrap Annotated type to get the actual type.
+    
+    Recursively unwraps until reaching a non-Annotated type.
+    
+    Parameters
+    ----------
+    annotation : Any
+        A potentially Annotated type hint.
+    
+    Returns
+    -------
+    Any
+        The unwrapped type, or the original if not Annotated.
+    """
     while True:
         origin = get_origin(annotation)
         if origin is None:
@@ -1044,6 +1085,18 @@ def _unwrap_annotation(annotation: Any) -> Any:
 
 
 def _annotation_metadata(annotation: Any) -> Tuple[Any, ...]:
+    """Extract metadata from an Annotated type.
+    
+    Parameters
+    ----------
+    annotation : Any
+        A type annotation, possibly Annotated.
+    
+    Returns
+    -------
+    tuple[Any, ...]
+        The metadata items if Annotated, otherwise empty tuple.
+    """
     if get_origin(annotation) is Annotated:
         args = get_args(annotation)
         return tuple(args[1:])
@@ -1051,6 +1104,30 @@ def _annotation_metadata(annotation: Any) -> Tuple[Any, ...]:
 
 
 def _node_to_python(node: Any, expected_type: Any, prop: RdfProperty) -> Any:
+    """Convert an RDF node to a Python value.
+    
+    Handles deserialization of URIRef and Literal nodes to appropriate Python
+    types based on field type hints and RdfProperty configuration.
+    
+    Parameters
+    ----------
+    node : Any
+        The RDF node to convert (URIRef or Literal).
+    expected_type : Any
+        The expected Python type from field annotations.
+    prop : RdfProperty
+        The RDF property metadata.
+    
+    Returns
+    -------
+    Any
+        The converted Python value.
+    
+    Raises
+    ------
+    TypeError
+        If a nested RDF model is encountered (should be handled separately).
+    """
     if prop.parser is not None:
         return prop.parser(node)
 
@@ -1108,6 +1185,18 @@ def _node_to_python(node: Any, expected_type: Any, prop: RdfProperty) -> Any:
 
 
 def _python_datatype(value: Any) -> Optional[URIRef]:
+    """Infer XSD datatype URI from a Python value.
+    
+    Parameters
+    ----------
+    value : Any
+        A Python value to determine the datatype for.
+    
+    Returns
+    -------
+    URIRef | None
+        The XSD datatype URI, or None if no mapping exists.
+    """
     if isinstance(value, bool):
         return XSD.boolean
     if isinstance(value, int):
@@ -1126,6 +1215,18 @@ def _python_datatype(value: Any) -> Optional[URIRef]:
 
 
 def _ensure_uri(value: Union[str, URIRef, Namespace, None]) -> Optional[URIRef]:
+    """Convert various types to a URIRef.
+    
+    Parameters
+    ----------
+    value : str | URIRef | Namespace | None
+        A value that might represent a URI.
+    
+    Returns
+    -------
+    URIRef | None
+        The URIRef representation, or None if the value is None.
+    """
     if value is None:
         return None
     if isinstance(value, URIRef):
@@ -1139,16 +1240,52 @@ URI_PATTERN = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*:")
 
 
 def _looks_like_uri(value: str) -> bool:
+    """Check if a string looks like a URI using a URI scheme pattern.
+    
+    Parameters
+    ----------
+    value : str
+        A string to check.
+    
+    Returns
+    -------
+    bool
+        True if the string starts with a URI scheme (e.g., 'http:', 'urn:').
+    """
     return bool(URI_PATTERN.match(value))
 
 
 def _normalise_base(base_uri: str) -> str:
+    """Normalize a base URI to ensure it ends with '/' or '#'.
+    
+    Parameters
+    ----------
+    base_uri : str
+        A base URI string.
+    
+    Returns
+    -------
+    str
+        The normalized base URI.
+    """
     if base_uri.endswith(('/', '#')):
         return base_uri
     return base_uri + '/'
 
 
 def _unique(values: Iterable[Any]) -> list[Any]:
+    """Return unique items from an iterable, preserving order.
+    
+    Parameters
+    ----------
+    values : Iterable[Any]
+        An iterable of items.
+    
+    Returns
+    -------
+    list[Any]
+        A list with duplicates removed, in original order.
+    """
     seen = []
     for value in values:
         if value not in seen:
@@ -1157,11 +1294,32 @@ def _unique(values: Iterable[Any]) -> list[Any]:
 
 
 def _default_prefixes() -> Dict[str, str]:
+    """Get the default namespace prefixes for RDF serialization.
+    
+    Returns
+    -------
+    dict[str, str]
+        A dictionary mapping prefix strings to namespace URI strings.
+        Includes rdf and xsd by default.
+    """
     return {"rdf": str(RDF), "xsd": str(XSD)}
 
 
 def _is_rdf_model(value: Any) -> bool:
+    """Check if a value is an RdfBaseModel subclass.
+    
+    Parameters
+    ----------
+    value : Any
+        A value to check (typically a type).
+    
+    Returns
+    -------
+    bool
+        True if value is a class and a subclass of RdfBaseModel.
+    """
     return isinstance(value, type) and issubclass(value, RdfBaseModel)
+
 
 
 __all__ = ["RdfBaseModel", "RdfProperty"]
