@@ -1,7 +1,7 @@
 Pydantic ↔ RDF Integration
 ==========================
 
-The :mod:`dartfx.rdf.pydantic_rdf` module adds a thin mixin that lets you
+The :mod:`dartfx.rdf.pydantic.rdf` module adds a thin mixin that lets you
 annotate Pydantic models with RDF metadata, build `rdflib.Graph` instances, and
 reconstruct the models from existing graphs. This page walks through the most
 important building blocks and patterns.
@@ -9,8 +9,8 @@ important building blocks and patterns.
 Quick start
 -----------
 
-1. Import :class:`~dartfx.rdf.pydantic_rdf.RdfBaseModel` and
-   :class:`~dartfx.rdf.pydantic_rdf.RdfProperty`.
+1. Import :class:`~dartfx.rdf.pydantic.rdf.RdfBaseModel` and
+   :class:`~dartfx.rdf.pydantic.rdf.RdfProperty`.
 2. Define a namespace for your resources and declare any prefixes you want to be
    emitted in the resulting graph.
 3. Annotate each serialisable field with an RDF predicate.
@@ -21,7 +21,7 @@ Quick start
 
    from rdflib import Namespace, URIRef
 
-   from dartfx.rdf.pydantic_rdf import RdfBaseModel, RdfProperty
+   from dartfx.rdf.pydantic.rdf import RdfBaseModel, RdfProperty
 
    EX = Namespace("https://example.org/ns/")
 
@@ -48,13 +48,13 @@ Quick start
 
 ``RdfBaseModel`` takes care of creating a subject identifier, emitting RDF
 triples for every annotated field, and binding the default prefixes. The graph
-returned by :meth:`~dartfx.rdf.pydantic_rdf.RdfBaseModel.to_rdf_graph` can be
+returned by :meth:`~dartfx.rdf.pydantic.rdf.RdfBaseModel.to_rdf_graph` can be
 serialised in any format supported by `rdflib`.
 
 Mapping rules
 -------------
 
-* The ``predicate`` argument on :class:`~dartfx.rdf.pydantic_rdf.RdfProperty`
+* The ``predicate`` argument on :class:`~dartfx.rdf.pydantic.rdf.RdfProperty`
   can be either a full ``rdflib.term.URIRef`` or a string. Strings will be
   coerced into ``URIRef`` instances at runtime.
 * A model-level ``rdf_type`` constant adds ``rdf:type`` triples for every
@@ -82,8 +82,8 @@ When a model sets ``rdf_type`` the parser uses it to locate the correct subject
 in the graph. Otherwise it expects the graph to contain exactly one subject and
 raises an error if there are multiple candidates. You can always bypass the
 heuristics by passing the ``subject`` keyword argument to
-:meth:`~dartfx.rdf.pydantic_rdf.RdfBaseModel.from_rdf_graph` or
-:meth:`~dartfx.rdf.pydantic_rdf.RdfBaseModel.from_rdf`.
+:meth:`~dartfx.rdf.pydantic.rdf.RdfBaseModel.from_rdf_graph` or
+:meth:`~dartfx.rdf.pydantic.rdf.RdfBaseModel.from_rdf`.
 
 Language tags and datatypes
 ---------------------------
@@ -153,3 +153,4 @@ Advanced scenarios
 
 The tests in :mod:`tests.test_pydantic_rdf` provide additional examples that
 cover nested resources, optional values, and custom datatypes.
+

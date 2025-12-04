@@ -1,0 +1,532 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dartfx.rdf.pydantic.spdx &mdash; Data Artifex Foo 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Data Artifex Foo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydantic_rdf.html">Pydantic ↔ RDF Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">RDF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.utils">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.dcterms">DCTERMS: Dublin Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.foaf">FOAF: Friend of a Friend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.odrl">ODRL:  Open Digital Rights Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.prov">PROV:  Prov Ontology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.skos">SKOS:  Simple Knowledge Organization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.spdx">SPDX:  Software Package Data Exchange</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.vcard">VCARD: vCard / Virtual Contact File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.xkos">XKOS: SKOS extension for representing statistical classifications</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Data Artifex Foo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">dartfx.rdf.pydantic.spdx</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for dartfx.rdf.pydantic.spdx</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;SPDX (Software Package Data Exchange) vocabulary using Pydantic RDF models.</span>
+
+<span class="sd">This module provides Pydantic-based models for the SPDX vocabulary,</span>
+<span class="sd">allowing easy serialization to and from RDF formats.</span>
+
+<span class="sd">References:</span>
+<span class="sd">- https://spdx.github.io/spdx-spec/</span>
+<span class="sd">- https://spdx.org/rdf/terms/</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">URIRef</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.rdf</span><span class="w"> </span><span class="kn">import</span> <span class="n">RdfBaseModel</span><span class="p">,</span> <span class="n">RdfProperty</span>
+
+
+<span class="c1"># SPDX namespace (not built-in to rdflib)</span>
+<span class="n">SPDX</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">(</span><span class="s2">&quot;http://spdx.org/rdf/terms#&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SpdxResource">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.SpdxResource">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SpdxResource</span><span class="p">(</span><span class="n">RdfBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for SPDX resources.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_namespace</span> <span class="o">=</span> <span class="n">SPDX</span>
+    <span class="n">rdf_prefixes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;spdx&quot;</span><span class="p">:</span> <span class="n">SPDX</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="SpdxDocument">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.SpdxDocument">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SpdxDocument</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Document.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">SpdxDocument</span><span class="p">)</span>
+    
+    <span class="c1"># Document properties</span>
+    <span class="n">spdx_version</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">spdxVersion</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">data_license</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">dataLicense</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">document_namespace</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">documentNamespace</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Creation info</span>
+    <span class="n">creation_info</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">CreationInfo</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">creationInfo</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># External references</span>
+    <span class="n">external_document_ref</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">ExternalDocumentRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">externalDocumentRef</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Describes</span>
+    <span class="n">describes_package</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Package</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">describesPackage</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Relationships</span>
+    <span class="n">relationship</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Relationship</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">relationship</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Annotations</span>
+    <span class="n">annotation</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Annotation</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">annotation</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Comment</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">comment</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="CreationInfo">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.CreationInfo">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CreationInfo</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;SPDX Creation Info.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">CreationInfo</span><span class="p">)</span>
+    
+    <span class="n">created</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">datetime</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">created</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">creator</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">creator</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">license_list_version</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseListVersion</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">comment</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Package">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.Package">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Package</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Package.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Package</span><span class="p">)</span>
+    
+    <span class="c1"># Basic info</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">version_info</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">versionInfo</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">package_file_name</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">packageFileName</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">supplier</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">supplier</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">originator</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">originator</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">download_location</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">downloadLocation</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Verification</span>
+    <span class="n">package_verification_code</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">PackageVerificationCode</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">packageVerificationCode</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">checksum</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Checksum</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">checksum</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Homepage</span>
+    <span class="n">homepage</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">homepage</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Source info</span>
+    <span class="n">source_info</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">sourceInfo</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># License info</span>
+    <span class="n">license_concluded</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseConcluded</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">license_info_from_files</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseInfoFromFiles</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">license_declared</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseDeclared</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">license_comments</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseComments</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">copyright_text</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">copyrightText</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Summary and description</span>
+    <span class="n">summary</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">summary</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">description</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">description</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">comment</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># External references</span>
+    <span class="n">external_ref</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">ExternalRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">externalRef</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Files</span>
+    <span class="n">has_file</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">File</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">hasFile</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Attribution</span>
+    <span class="n">attribution_text</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">attributionText</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Other</span>
+    <span class="n">primary_package_purpose</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">primaryPackagePurpose</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="File">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.File">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">File</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX File.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">File</span><span class="p">)</span>
+    
+    <span class="c1"># Basic info</span>
+    <span class="n">file_name</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">fileName</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">file_type</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">fileType</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Checksums</span>
+    <span class="n">checksum</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Checksum</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">checksum</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># License info</span>
+    <span class="n">license_concluded</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseConcluded</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">license_info_in_file</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseInfoInFile</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">license_comments</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseComments</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">copyright_text</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">copyrightText</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Notices</span>
+    <span class="n">notice_text</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">noticeText</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">comment</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Attribution</span>
+    <span class="n">attribution_text</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">attributionText</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Contributors</span>
+    <span class="n">file_contributor</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">fileContributor</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Deprecated properties</span>
+    <span class="n">file_dependency</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">File</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">fileDependency</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">artifact_of</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">artifactOf</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Checksum">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.Checksum">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Checksum</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Checksum.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Checksum</span><span class="p">)</span>
+    
+    <span class="n">algorithm</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">algorithm</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">checksum_value</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">checksumValue</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="PackageVerificationCode">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.PackageVerificationCode">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PackageVerificationCode</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Package Verification Code.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">PackageVerificationCode</span><span class="p">)</span>
+    
+    <span class="n">package_verification_code_value</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">packageVerificationCodeValue</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">package_verification_code_excluded_file</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">packageVerificationCodeExcludedFile</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Relationship">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.Relationship">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Relationship</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Relationship.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Relationship</span><span class="p">)</span>
+    
+    <span class="n">relationship_type</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">relationshipType</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">related_spdx_element</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">relatedSpdxElement</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">comment</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Annotation">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.Annotation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Annotation</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Annotation.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Annotation</span><span class="p">)</span>
+    
+    <span class="n">annotator</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">annotator</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">annotation_date</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">datetime</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">annotationDate</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">annotation_type</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">annotationType</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">comment</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="ExternalRef">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.ExternalRef">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExternalRef</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX External Reference.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">ExternalRef</span><span class="p">)</span>
+    
+    <span class="n">reference_category</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">referenceCategory</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">reference_type</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">referenceType</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">reference_locator</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">referenceLocator</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">comment</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="ExternalDocumentRef">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.ExternalDocumentRef">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExternalDocumentRef</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX External Document Reference.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">ExternalDocumentRef</span><span class="p">)</span>
+    
+    <span class="n">external_document_id</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">externalDocumentId</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">spdx_document</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">spdxDocument</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">checksum</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Checksum</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">checksum</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="License">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.License">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">License</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for SPDX Licenses.&quot;&quot;&quot;</span>
+    
+    <span class="n">license_id</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseId</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">license_text</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseText</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">see_also</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">seeAlso</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">comment</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="ExtractedLicensingInfo">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.ExtractedLicensingInfo">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExtractedLicensingInfo</span><span class="p">(</span><span class="n">License</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Extracted Licensing Info.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">ExtractedLicensingInfo</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Snippet">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.Snippet">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Snippet</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Snippet.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Snippet</span><span class="p">)</span>
+    
+    <span class="n">snippet_from_file</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">File</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">snippetFromFile</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">snippet_byte_range</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">snippetByteRange</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">snippet_line_range</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">snippetLineRange</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">license_info_in_snippet</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseInfoInSnippet</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">license_concluded</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseConcluded</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">copyright_text</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">copyrightText</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">comment</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Review">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.Review">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Review</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Review.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Review</span><span class="p">)</span>
+    
+    <span class="n">reviewer</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">reviewer</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">review_date</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">datetime</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">reviewDate</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">comment</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="LicenseException">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.LicenseException">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LicenseException</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX License Exception.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">LicenseException</span><span class="p">)</span>
+    
+    <span class="n">license_exception_id</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseExceptionId</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">license_exception_text</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseExceptionText</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">license_exception_template</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseExceptionTemplate</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">see_also</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">seeAlso</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">comment</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="SimpleLicensingInfo">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.SimpleLicensingInfo">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SimpleLicensingInfo</span><span class="p">(</span><span class="n">License</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Simple Licensing Info.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">SimpleLicensingInfo</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="OrLaterOperator">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.OrLaterOperator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OrLaterOperator</span><span class="p">(</span><span class="n">License</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Or Later Operator.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">OrLaterOperator</span><span class="p">)</span>
+    
+    <span class="n">member</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">License</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">member</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="WithExceptionOperator">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.WithExceptionOperator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">WithExceptionOperator</span><span class="p">(</span><span class="n">License</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX With Exception Operator.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">WithExceptionOperator</span><span class="p">)</span>
+    
+    <span class="n">member</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">License</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">member</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">license_exception</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">LicenseException</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseException</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="ConjunctiveLicenseSet">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.ConjunctiveLicenseSet">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConjunctiveLicenseSet</span><span class="p">(</span><span class="n">License</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Conjunctive License Set.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">ConjunctiveLicenseSet</span><span class="p">)</span>
+    
+    <span class="n">member</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">License</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">member</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="DisjunctiveLicenseSet">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.DisjunctiveLicenseSet">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DisjunctiveLicenseSet</span><span class="p">(</span><span class="n">License</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Disjunctive License Set.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">DisjunctiveLicenseSet</span><span class="p">)</span>
+    
+    <span class="n">member</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">License</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">member</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="ReferenceType">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.ReferenceType">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ReferenceType</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Reference Type.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">ReferenceType</span><span class="p">)</span>
+    
+    <span class="n">contextual_example</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">contextualExample</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">external_reference_site</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">externalReferenceSite</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">documentation</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">documentation</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="FileType">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.spdx.FileType">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FileType</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX File Type.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">FileType</span><span class="p">)</span></div>
+
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;SpdxResource&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SpdxDocument&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CreationInfo&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Package&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;File&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Checksum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PackageVerificationCode&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Relationship&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Annotation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ExternalRef&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ExternalDocumentRef&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;License&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ExtractedLicensingInfo&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Snippet&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Review&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LicenseException&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SimpleLicensingInfo&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;OrLaterOperator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;WithExceptionOperator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ConjunctiveLicenseSet&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DisjunctiveLicenseSet&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ReferenceType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;FileType&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Pascal Heus.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

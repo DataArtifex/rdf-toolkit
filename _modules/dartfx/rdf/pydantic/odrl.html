@@ -1,0 +1,439 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dartfx.rdf.pydantic.odrl &mdash; Data Artifex Foo 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Data Artifex Foo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydantic_rdf.html">Pydantic ↔ RDF Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">RDF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.utils">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.dcterms">DCTERMS: Dublin Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.foaf">FOAF: Friend of a Friend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.odrl">ODRL:  Open Digital Rights Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.prov">PROV:  Prov Ontology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.skos">SKOS:  Simple Knowledge Organization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.spdx">SPDX:  Software Package Data Exchange</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.vcard">VCARD: vCard / Virtual Contact File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.xkos">XKOS: SKOS extension for representing statistical classifications</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Data Artifex Foo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">dartfx.rdf.pydantic.odrl</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for dartfx.rdf.pydantic.odrl</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;ODRL (Open Digital Rights Language) vocabulary using Pydantic RDF models.</span>
+
+<span class="sd">This module provides Pydantic-based models for the ODRL vocabulary,</span>
+<span class="sd">allowing easy serialization to and from RDF formats.</span>
+
+<span class="sd">References:</span>
+<span class="sd">- https://www.w3.org/TR/odrl-model/</span>
+<span class="sd">- https://www.w3.org/TR/odrl-vocab/</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">URIRef</span><span class="p">,</span> <span class="n">ODRL2</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.rdf</span><span class="w"> </span><span class="kn">import</span> <span class="n">RdfBaseModel</span><span class="p">,</span> <span class="n">RdfProperty</span>
+
+
+<div class="viewcode-block" id="OdrlResource">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.OdrlResource">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OdrlResource</span><span class="p">(</span><span class="n">RdfBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for ODRL resources.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_namespace</span> <span class="o">=</span> <span class="n">ODRL2</span>
+    <span class="n">rdf_prefixes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;odrl&quot;</span><span class="p">:</span> <span class="n">ODRL2</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="Policy">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.Policy">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Policy</span><span class="p">(</span><span class="n">OdrlResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ODRL Policy.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">Policy</span><span class="p">)</span>
+    
+    <span class="c1"># Core policy properties</span>
+    <span class="n">uid</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">uid</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">profile</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">profile</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Rules</span>
+    <span class="n">permission</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Permission</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">permission</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">prohibition</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Prohibition</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">prohibition</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">obligation</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Duty</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">obligation</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Inheritance</span>
+    <span class="n">inherits_from</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Policy</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">inheritFrom</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">conflict</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">ConflictTerm</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">conflict</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Set">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.Set">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Set</span><span class="p">(</span><span class="n">Policy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ODRL Set Policy - no specific target.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">Set</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Offer">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.Offer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Offer</span><span class="p">(</span><span class="n">Policy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ODRL Offer - a policy offered by an assigner.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">Offer</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Agreement">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.Agreement">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Agreement</span><span class="p">(</span><span class="n">Policy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ODRL Agreement - a policy that has been agreed to.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">Agreement</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Rule">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.Rule">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Rule</span><span class="p">(</span><span class="n">OdrlResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for ODRL Rules.&quot;&quot;&quot;</span>
+    
+    <span class="c1"># Target</span>
+    <span class="n">target</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">target</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Action</span>
+    <span class="n">action</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Action</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">action</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Parties</span>
+    <span class="n">assigner</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Party</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">assigner</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">assignee</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Party</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">assignee</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Constraints</span>
+    <span class="n">constraint</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Constraint</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">constraint</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Relations</span>
+    <span class="n">relation</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">relation</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">function</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="p">[</span><span class="s2">&quot;function&quot;</span><span class="p">])]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">failure</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Rule</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">failure</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Permission">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.Permission">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Permission</span><span class="p">(</span><span class="n">Rule</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ODRL Permission - the ability to perform an action.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">Permission</span><span class="p">)</span>
+    
+    <span class="c1"># Duties</span>
+    <span class="n">duty</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Duty</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">duty</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Prohibition">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.Prohibition">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Prohibition</span><span class="p">(</span><span class="n">Rule</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ODRL Prohibition - the inability to perform an action.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">Prohibition</span><span class="p">)</span>
+    
+    <span class="c1"># Remedies</span>
+    <span class="n">remedy</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Duty</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">remedy</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Duty">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.Duty">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Duty</span><span class="p">(</span><span class="n">Rule</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ODRL Duty - an obligation to perform an action.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">Duty</span><span class="p">)</span>
+    
+    <span class="c1"># Consequences</span>
+    <span class="n">consequence</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Duty</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">consequence</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Action">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.Action">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Action</span><span class="p">(</span><span class="n">OdrlResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ODRL Action - an operation on an asset.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">Action</span><span class="p">)</span>
+    
+    <span class="c1"># Action refinement</span>
+    <span class="n">refinement</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Constraint</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">refinement</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">implies</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Action</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">implies</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Constraint">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.Constraint">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Constraint</span><span class="p">(</span><span class="n">OdrlResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ODRL Constraint - a boolean expression.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">Constraint</span><span class="p">)</span>
+    
+    <span class="c1"># Constraint properties</span>
+    <span class="n">left_operand</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">leftOperand</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">operator</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">operator</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">right_operand</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">rightOperand</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Logical constraints</span>
+    <span class="n">and_sequence</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Constraint</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="p">[</span><span class="s2">&quot;and&quot;</span><span class="p">])]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">or_sequence</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Constraint</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="p">[</span><span class="s2">&quot;or&quot;</span><span class="p">])]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">xone</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Constraint</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">xone</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Data type</span>
+    <span class="n">data_type</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">dataType</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">unit</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">unit</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">status</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">status</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Party">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.Party">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Party</span><span class="p">(</span><span class="n">OdrlResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ODRL Party - an entity with a functional role.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">Party</span><span class="p">)</span>
+    
+    <span class="c1"># Party refinement</span>
+    <span class="n">refinement</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Constraint</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">refinement</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Party scope</span>
+    <span class="n">part_of</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">PartyCollection</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">partOf</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">source</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">source</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">scope</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">scope</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="PartyCollection">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.PartyCollection">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PartyCollection</span><span class="p">(</span><span class="n">OdrlResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ODRL Party Collection - a group of parties.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">PartyCollection</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Asset">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.Asset">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Asset</span><span class="p">(</span><span class="n">OdrlResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ODRL Asset - a resource that is the subject of a policy.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">Asset</span><span class="p">)</span>
+    
+    <span class="c1"># Asset refinement</span>
+    <span class="n">refinement</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Constraint</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">refinement</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Asset scope</span>
+    <span class="n">part_of</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">AssetCollection</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">partOf</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">source</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">source</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">has_policy</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Policy</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">hasPolicy</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="AssetCollection">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.AssetCollection">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AssetCollection</span><span class="p">(</span><span class="n">OdrlResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ODRL Asset Collection - a group of assets.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">AssetCollection</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Privacy">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.Privacy">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Privacy</span><span class="p">(</span><span class="n">Policy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ODRL Privacy Policy.&quot;&quot;&quot;</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">Privacy</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Ticket">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.Ticket">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Ticket</span><span class="p">(</span><span class="n">Policy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ODRL Ticket.&quot;&quot;&quot;</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">Ticket</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Assertion">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.Assertion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Assertion</span><span class="p">(</span><span class="n">Policy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ODRL Assertion.&quot;&quot;&quot;</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">Assertion</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Request">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.Request">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Request</span><span class="p">(</span><span class="n">Policy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ODRL Request.&quot;&quot;&quot;</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ConflictTerm">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.ConflictTerm">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConflictTerm</span><span class="p">(</span><span class="n">OdrlResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Conflict strategy preference.&quot;&quot;&quot;</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">ConflictTerm</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="LogicalConstraint">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.LogicalConstraint">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LogicalConstraint</span><span class="p">(</span><span class="n">OdrlResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A logical constraint.&quot;&quot;&quot;</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">LogicalConstraint</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="LeftOperand">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.LeftOperand">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LeftOperand</span><span class="p">(</span><span class="n">OdrlResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Left operand for a constraint.&quot;&quot;&quot;</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">LeftOperand</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="RightOperand">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.RightOperand">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RightOperand</span><span class="p">(</span><span class="n">OdrlResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Right operand for a constraint.&quot;&quot;&quot;</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">RightOperand</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Operator">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.odrl.Operator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Operator</span><span class="p">(</span><span class="n">OdrlResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Operator for a constraint.&quot;&quot;&quot;</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">Operator</span><span class="p">)</span></div>
+
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;OdrlResource&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Policy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Set&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Offer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Agreement&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Privacy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Ticket&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Assertion&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Request&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Rule&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Permission&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Prohibition&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Duty&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Action&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Constraint&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LogicalConstraint&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Party&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PartyCollection&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Asset&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AssetCollection&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ConflictTerm&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LeftOperand&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RightOperand&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Operator&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Pascal Heus.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

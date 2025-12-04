@@ -1,6 +1,6 @@
 RDF
 ---
-.. automodule:: dartfx.rdf.rdf
+.. automodule:: dartfx.rdf.pydantic.rdf
    :members:
    :undoc-members:
    :show-inheritance:
@@ -16,7 +16,7 @@ Utilities
 DCTERMS: Dublin Core
 --------------------
 
-.. automodule:: dartfx.rdf.dcterms
+.. automodule:: dartfx.rdf.pydantic.dcterms
    :members:
    :undoc-members:
    :show-inheritance:
@@ -24,7 +24,7 @@ DCTERMS: Dublin Core
 FOAF: Friend of a Friend
 ------------------------
 
-.. automodule:: dartfx.rdf.foaf
+.. automodule:: dartfx.rdf.pydantic.foaf
    :members:
    :undoc-members:
    :show-inheritance:
@@ -32,7 +32,7 @@ FOAF: Friend of a Friend
 ODRL:  Open Digital Rights Language
 -----------------------------------
 
-.. automodule:: dartfx.rdf.odrl
+.. automodule:: dartfx.rdf.pydantic.odrl
    :members:
    :undoc-members:
    :show-inheritance:
@@ -40,7 +40,7 @@ ODRL:  Open Digital Rights Language
 PROV:  Prov Ontology
 --------------------
 
-.. automodule:: dartfx.rdf.prov
+.. automodule:: dartfx.rdf.pydantic.prov
    :members:
    :undoc-members:
    :show-inheritance:
@@ -48,7 +48,7 @@ PROV:  Prov Ontology
 SKOS:  Simple Knowledge Organization System
 -------------------------------------------
 
-.. automodule:: dartfx.rdf.skos
+.. automodule:: dartfx.rdf.pydantic.skos
    :members:
    :undoc-members:
    :show-inheritance:
@@ -56,7 +56,7 @@ SKOS:  Simple Knowledge Organization System
 SPDX:  Software Package Data Exchange
 -------------------------------------
 
-.. automodule:: dartfx.rdf.spdx
+.. automodule:: dartfx.rdf.pydantic.spdx
    :members:
    :undoc-members:
    :show-inheritance:
@@ -64,7 +64,7 @@ SPDX:  Software Package Data Exchange
 VCARD: vCard / Virtual Contact File
 -----------------------------------
 
-.. automodule:: dartfx.rdf.vcard
+.. automodule:: dartfx.rdf.pydantic.vcard
    :members:
    :undoc-members:
    :show-inheritance:
@@ -72,7 +72,7 @@ VCARD: vCard / Virtual Contact File
 XKOS: SKOS extension for representing statistical classifications
 -----------------------------------------------------------------
 
-.. automodule:: dartfx.rdf.xkos
+.. automodule:: dartfx.rdf.pydantic.xkos
    :members:
    :undoc-members:
    :show-inheritance:

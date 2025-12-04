@@ -1,0 +1,332 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dartfx.rdf.pydantic.xkos &mdash; Data Artifex Foo 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Data Artifex Foo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydantic_rdf.html">Pydantic ↔ RDF Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">RDF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.utils">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.dcterms">DCTERMS: Dublin Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.foaf">FOAF: Friend of a Friend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.odrl">ODRL:  Open Digital Rights Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.prov">PROV:  Prov Ontology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.skos">SKOS:  Simple Knowledge Organization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.spdx">SPDX:  Software Package Data Exchange</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.vcard">VCARD: vCard / Virtual Contact File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.xkos">XKOS: SKOS extension for representing statistical classifications</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Data Artifex Foo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">dartfx.rdf.pydantic.xkos</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for dartfx.rdf.pydantic.xkos</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;XKOS (Extended Knowledge Organization System) vocabulary using Pydantic RDF models.</span>
+
+<span class="sd">This module provides Pydantic-based models for the XKOS vocabulary,</span>
+<span class="sd">which extends SKOS for statistical classifications.</span>
+
+<span class="sd">References:</span>
+<span class="sd">- http://rdf-vocabulary.ddialliance.org/xkos.html</span>
+<span class="sd">- https://rdf-vocabulary.ddialliance.org/xkos</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">,</span> <span class="n">SKOS</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.rdf</span><span class="w"> </span><span class="kn">import</span> <span class="n">RdfBaseModel</span><span class="p">,</span> <span class="n">RdfProperty</span>
+
+
+<span class="c1"># XKOS namespace</span>
+<span class="n">XKOS</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">(</span><span class="s2">&quot;http://rdf-vocabulary.ddialliance.org/xkos#&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="XkosResource">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.xkos.XkosResource">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">XkosResource</span><span class="p">(</span><span class="n">RdfBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for XKOS resources.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_namespace</span> <span class="o">=</span> <span class="n">XKOS</span>
+    <span class="n">rdf_prefixes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;xkos&quot;</span><span class="p">:</span> <span class="n">XKOS</span><span class="p">,</span> <span class="s2">&quot;skos&quot;</span><span class="p">:</span> <span class="n">SKOS</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="ClassificationLevel">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.xkos.ClassificationLevel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ClassificationLevel</span><span class="p">(</span><span class="n">XkosResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An XKOS Classification Level - a level in a statistical classification.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">ClassificationLevel</span><span class="p">)</span>
+    
+    <span class="c1"># Level properties</span>
+    <span class="n">depth</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">depth</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">notations_equal</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">notationsEqual</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">organizes</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">organizes</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">covers</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">covers</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">covers_exhaustively</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">coversExhaustively</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">covers_mutually_exclusively</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">coversMutuallyExclusively</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Textual properties</span>
+    <span class="n">organized_by</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">organizedBy</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">notation_pattern</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">notationPattern</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">max_length</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">maxLength</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Labels (from SKOS)</span>
+    <span class="n">pref_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">prefLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">alt_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">altLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Notes</span>
+    <span class="n">note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">note</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="ConceptAssociation">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.xkos.ConceptAssociation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConceptAssociation</span><span class="p">(</span><span class="n">XkosResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An XKOS Concept Association - a relationship between concepts in different classifications.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">ConceptAssociation</span><span class="p">)</span>
+    
+    <span class="c1"># Source and target</span>
+    <span class="n">source_concept</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">sourceConcept</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">target_concept</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">targetConcept</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Correspondence">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.xkos.Correspondence">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Correspondence</span><span class="p">(</span><span class="n">XkosResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An XKOS Correspondence - a mapping between two classifications.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">Correspondence</span><span class="p">)</span>
+    
+    <span class="c1"># Source and target classifications</span>
+    <span class="n">compares</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">compares</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Labels</span>
+    <span class="n">pref_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">prefLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">alt_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">altLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Definition</span>
+    <span class="n">definition</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">definition</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Associations</span>
+    <span class="n">made_of</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">ConceptAssociation</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">madeOf</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="ExplanatoryNote">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.xkos.ExplanatoryNote">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExplanatoryNote</span><span class="p">(</span><span class="n">XkosResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An XKOS Explanatory Note - additional documentation for a concept.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">ExplanatoryNote</span><span class="p">)</span>
+    
+    <span class="c1"># Descriptive text</span>
+    <span class="n">plain_text</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">plainText</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<span class="c1"># Extended SKOS Concept for statistical classifications</span>
+<div class="viewcode-block" id="StatisticalConcept">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.xkos.StatisticalConcept">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StatisticalConcept</span><span class="p">(</span><span class="n">XkosResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A SKOS Concept with XKOS extensions for statistical classifications.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">Concept</span><span class="p">)</span>
+    
+    <span class="c1"># SKOS properties</span>
+    <span class="n">pref_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">prefLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">alt_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">altLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">hidden_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">hiddenLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">notation</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">notation</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">definition</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">definition</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># SKOS semantic relations</span>
+    <span class="n">broader</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">broader</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">narrower</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">narrower</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">related</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">related</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Concept scheme</span>
+    <span class="n">in_scheme</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">inScheme</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">top_concept_of</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">topConceptOf</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># XKOS extensions</span>
+    <span class="n">core_content_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">coreContentNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">additional_content_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">additionalContentNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">exclusion_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">exclusionNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">inclusion_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">inclusionNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Causal relationships</span>
+    <span class="n">causal</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">causal</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">causes</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">causes</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">caused_by</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">causedBy</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Sequential relationships</span>
+    <span class="n">sequential</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">sequential</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">precedes</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">precedes</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">follows</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">follows</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Temporal relationships</span>
+    <span class="n">temporal</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">temporal</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">before</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">before</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">after</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">after</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Part-whole relationships</span>
+    <span class="n">is_part_of</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">isPartOf</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">has_part</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">hasPart</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Specialization</span>
+    <span class="n">specializes</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">specializes</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generalizes</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">generalizes</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Level</span>
+    <span class="n">class_at</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">ClassificationLevel</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">classifiedUnder</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Concept relations</span>
+    <span class="n">disjoint</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">disjoint</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">broader_generic</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">broaderGeneric</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">narrower_generic</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">narrowerGeneric</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">broader_partitive</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">broaderPartitive</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">narrower_partitive</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">narrowerPartitive</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Notes</span>
+    <span class="n">introduction</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">introduction</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">editorial_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">editorialNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">change_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">changeNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="StatisticalClassification">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.xkos.StatisticalClassification">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StatisticalClassification</span><span class="p">(</span><span class="n">XkosResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A SKOS Concept Scheme representing a statistical classification.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">ConceptScheme</span><span class="p">)</span>
+    
+    <span class="c1"># Labels</span>
+    <span class="n">pref_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">prefLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">alt_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">altLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Definition and scope</span>
+    <span class="n">definition</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">definition</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">scope_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">scopeNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Top concepts</span>
+    <span class="n">has_top_concept</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalConcept</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">hasTopConcept</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># XKOS properties</span>
+    <span class="n">number_of_levels</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">numberOfLevels</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">has_level</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">ClassificationLevel</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">levels</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Variants</span>
+    <span class="n">variant</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalClassification</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">variant</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">belongs_to</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">belongsTo</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Versioning</span>
+    <span class="n">follows</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalClassification</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">follows</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">supersedes</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalClassification</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">supersedes</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">succeeds</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalClassification</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">succeeds</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Relations</span>
+    <span class="n">disjoint</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">StatisticalClassification</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">disjoint</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Notes</span>
+    <span class="n">introduction</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">introduction</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">editorial_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">editorialNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">change_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">changeNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Pascal Heus.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

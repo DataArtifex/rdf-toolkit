@@ -1,0 +1,461 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dartfx.rdf.pydantic.prov &mdash; Data Artifex Foo 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Data Artifex Foo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydantic_rdf.html">Pydantic ↔ RDF Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">RDF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.utils">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.dcterms">DCTERMS: Dublin Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.foaf">FOAF: Friend of a Friend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.odrl">ODRL:  Open Digital Rights Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.prov">PROV:  Prov Ontology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.skos">SKOS:  Simple Knowledge Organization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.spdx">SPDX:  Software Package Data Exchange</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.vcard">VCARD: vCard / Virtual Contact File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.xkos">XKOS: SKOS extension for representing statistical classifications</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Data Artifex Foo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">dartfx.rdf.pydantic.prov</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for dartfx.rdf.pydantic.prov</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;PROV (Provenance Ontology) vocabulary using Pydantic RDF models.</span>
+
+<span class="sd">This module provides Pydantic-based models for the PROV-O vocabulary,</span>
+<span class="sd">allowing easy serialization to and from RDF formats.</span>
+
+<span class="sd">References:</span>
+<span class="sd">- https://www.w3.org/TR/prov-o/</span>
+<span class="sd">- https://www.w3.org/TR/prov-dm/</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">URIRef</span><span class="p">,</span> <span class="n">PROV</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.rdf</span><span class="w"> </span><span class="kn">import</span> <span class="n">RdfBaseModel</span><span class="p">,</span> <span class="n">RdfProperty</span>
+
+
+<div class="viewcode-block" id="ProvResource">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.ProvResource">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProvResource</span><span class="p">(</span><span class="n">RdfBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for PROV resources.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_namespace</span> <span class="o">=</span> <span class="n">PROV</span>
+    <span class="n">rdf_prefixes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;prov&quot;</span><span class="p">:</span> <span class="n">PROV</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="Entity">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.Entity">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Entity</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Entity - a physical, digital, conceptual, or other kind of thing.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Entity</span><span class="p">)</span>
+    
+    <span class="c1"># Generation and invalidation</span>
+    <span class="n">was_generated_by</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Activity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">wasGeneratedBy</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">was_invalidated_by</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Activity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">wasInvalidatedBy</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generated_at_time</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">datetime</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">generatedAtTime</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">invalidated_at_time</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">datetime</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">invalidatedAtTime</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Derivation</span>
+    <span class="n">was_derived_from</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">wasDerivedFrom</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">was_revision_of</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">wasRevisionOf</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">was_quoted_from</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">wasQuotedFrom</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">had_primary_source</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadPrimarySource</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Attribution</span>
+    <span class="n">was_attributed_to</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Agent</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">wasAttributedTo</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Alternates and specialization</span>
+    <span class="n">alternate_of</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">alternateOf</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">specialization_of</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">specializationOf</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Location</span>
+    <span class="n">at_location</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Location</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">atLocation</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Value</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">value</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Influence</span>
+    <span class="n">was_influenced_by</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Agent</span> <span class="o">|</span> <span class="n">Entity</span> <span class="o">|</span> <span class="n">Activity</span> <span class="o">|</span> <span class="n">Influence</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">wasInfluencedBy</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Activity">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.Activity">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Activity</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Activity - something that occurs over a period of time.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Activity</span><span class="p">)</span>
+    
+    <span class="c1"># Timing</span>
+    <span class="n">started_at_time</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">datetime</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">startedAtTime</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">ended_at_time</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">datetime</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">endedAtTime</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Usage and generation</span>
+    <span class="n">used</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">used</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generated</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">generated</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">invalidated</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">invalidated</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Association</span>
+    <span class="n">was_associated_with</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Agent</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">wasAssociatedWith</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">qualified_association</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Association</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">qualifiedAssociation</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Communication</span>
+    <span class="n">was_informed_by</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Activity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">wasInformedBy</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Start and end</span>
+    <span class="n">was_started_by</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">wasStartedBy</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">was_ended_by</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">wasEndedBy</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Location</span>
+    <span class="n">at_location</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Location</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">atLocation</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Influence</span>
+    <span class="n">was_influenced_by</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Agent</span> <span class="o">|</span> <span class="n">Entity</span> <span class="o">|</span> <span class="n">Activity</span> <span class="o">|</span> <span class="n">Influence</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">wasInfluencedBy</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Agent">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.Agent">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Agent</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Agent - something that bears some form of responsibility.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Agent</span><span class="p">)</span>
+    
+    <span class="c1"># Agency relationships</span>
+    <span class="n">acted_on_behalf_of</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Agent</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">actedOnBehalfOf</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">qualified_delegation</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Delegation</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">qualifiedDelegation</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Location</span>
+    <span class="n">at_location</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Location</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">atLocation</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Influence</span>
+    <span class="n">was_influenced_by</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Agent</span> <span class="o">|</span> <span class="n">Entity</span> <span class="o">|</span> <span class="n">Activity</span> <span class="o">|</span> <span class="n">Influence</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">wasInfluencedBy</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Person">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.Person">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Person</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Person.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Person</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Organization">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.Organization">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Organization</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Organization.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Organization</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SoftwareAgent">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.SoftwareAgent">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SoftwareAgent</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Software Agent.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">SoftwareAgent</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Bundle">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.Bundle">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Bundle</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Bundle - a named set of provenance descriptions.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Bundle</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Collection">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.Collection">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Collection</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Collection - an entity that provides a structure for its members.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Collection</span><span class="p">)</span>
+    
+    <span class="n">had_member</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadMember</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Plan">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.Plan">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Plan</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Plan - a set of actions or steps intended by an agent.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Plan</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Association">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.Association">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Association</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Association - an assignment of responsibility to an agent.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Association</span><span class="p">)</span>
+    
+    <span class="n">agent</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Agent</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">agent</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">had_plan</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Plan</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadPlan</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">had_role</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Role</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadRole</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Delegation">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.Delegation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Delegation</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Delegation - responsibility transfer from one agent to another.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Delegation</span><span class="p">)</span>
+    
+    <span class="n">agent</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Agent</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">agent</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">had_activity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Activity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadActivity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">had_role</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Role</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadRole</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Usage">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.Usage">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Usage</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Usage - consumption of an entity by an activity.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Usage</span><span class="p">)</span>
+    
+    <span class="n">entity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">entity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">had_role</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Role</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadRole</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">at_time</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">datetime</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">atTime</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Generation">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.Generation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Generation</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Generation - completion of production of a new entity.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Generation</span><span class="p">)</span>
+    
+    <span class="n">entity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">entity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">activity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Activity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">activity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">had_role</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Role</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadRole</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">at_time</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">datetime</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">atTime</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Derivation">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.Derivation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Derivation</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Derivation - transformation of an entity into another.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Derivation</span><span class="p">)</span>
+    
+    <span class="n">entity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">entity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">had_generation</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Generation</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadGeneration</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">had_usage</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Usage</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadUsage</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">had_activity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Activity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadActivity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Role">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.Role">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Role</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Role - function of an entity or agent in an activity.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Role</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Influence">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.Influence">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Influence</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Influence - capacity of an entity, activity, or agent to have an effect on another.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Influence</span><span class="p">)</span>
+    
+    <span class="n">influencer</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Agent</span> <span class="o">|</span> <span class="n">Entity</span> <span class="o">|</span> <span class="n">Activity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">influencer</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">had_role</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Role</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadRole</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">had_activity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Activity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadActivity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">had_plan</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Plan</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadPlan</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">had_usage</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Usage</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadUsage</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">had_generation</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Generation</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadGeneration</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="InstantaneousEvent">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.InstantaneousEvent">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InstantaneousEvent</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Instantaneous Event - happens at a specific instant in time.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">InstantaneousEvent</span><span class="p">)</span>
+    
+    <span class="n">at_time</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">datetime</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">atTime</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">had_role</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Role</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadRole</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">at_location</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Location</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">atLocation</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Location">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.Location">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Location</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Location - an identifiable geographic place.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Location</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="End">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.End">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">End</span><span class="p">(</span><span class="n">InstantaneousEvent</span><span class="p">,</span> <span class="n">Influence</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV End - when an activity is deemed to have ended.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">End</span><span class="p">)</span>
+    
+    <span class="n">had_activity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Activity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadActivity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">entity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">entity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Start">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.Start">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Start</span><span class="p">(</span><span class="n">InstantaneousEvent</span><span class="p">,</span> <span class="n">Influence</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Start - when an activity is deemed to have started.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Start</span><span class="p">)</span>
+    
+    <span class="n">had_activity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Activity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadActivity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">entity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">entity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="EmptyCollection">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.prov.EmptyCollection">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EmptyCollection</span><span class="p">(</span><span class="n">Collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Empty Collection - a collection with no members.&quot;&quot;&quot;</span>
+    
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">EmptyCollection</span><span class="p">)</span></div>
+
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;ProvResource&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Entity&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Activity&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Agent&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Person&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Organization&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SoftwareAgent&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Bundle&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Collection&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Plan&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Association&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Delegation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Usage&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Generation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Derivation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Role&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Influence&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;InstantaneousEvent&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Location&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;End&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Start&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EmptyCollection&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Pascal Heus.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
