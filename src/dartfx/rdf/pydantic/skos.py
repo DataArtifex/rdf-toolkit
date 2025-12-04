@@ -14,7 +14,7 @@ from typing import Annotated, List, Optional, Union, cast
 
 from rdflib import URIRef, SKOS, Namespace
 
-from dartfx.rdf.pydantic_rdf import RdfBaseModel, RdfProperty
+from .rdf import RdfBaseModel, RdfProperty
 
 
 class SkosResource(RdfBaseModel):
@@ -22,6 +22,19 @@ class SkosResource(RdfBaseModel):
     
     rdf_namespace = cast(Namespace, SKOS)
     rdf_prefixes = {"skos": cast(Namespace, SKOS)}
+
+
+SKOSXL = Namespace("http://www.w3.org/2008/05/skos-xl#")
+
+
+class Label(SkosResource):
+    """A SKOS-XL Label."""
+    
+    rdf_type = SKOSXL.Label
+    rdf_namespace = cast(Namespace, SKOSXL)
+    rdf_prefixes = {"skosxl": cast(Namespace, SKOSXL)}
+    
+    literal_form: Annotated[str, RdfProperty(SKOSXL.literalForm)]
 
 
 class ConceptScheme(SkosResource):
@@ -35,6 +48,11 @@ class ConceptScheme(SkosResource):
     pref_label: Annotated[Optional[List[str]], RdfProperty(SKOS.prefLabel)] = None
     alt_label: Annotated[Optional[List[str]], RdfProperty(SKOS.altLabel)] = None
     hidden_label: Annotated[Optional[List[str]], RdfProperty(SKOS.hiddenLabel)] = None
+    
+    # SKOS-XL labels
+    pref_label_xl: Annotated[Optional[List[Union[str, URIRef, Label]]], RdfProperty(SKOSXL.prefLabel)] = None
+    alt_label_xl: Annotated[Optional[List[Union[str, URIRef, Label]]], RdfProperty(SKOSXL.altLabel)] = None
+    hidden_label_xl: Annotated[Optional[List[Union[str, URIRef, Label]]], RdfProperty(SKOSXL.hiddenLabel)] = None
     
     # Documentation properties
     notation: Annotated[Optional[List[str]], RdfProperty(SKOS.notation)] = None
@@ -61,6 +79,11 @@ class Concept(SkosResource):
     pref_label: Annotated[Optional[List[str]], RdfProperty(SKOS.prefLabel)] = None
     alt_label: Annotated[Optional[List[str]], RdfProperty(SKOS.altLabel)] = None
     hidden_label: Annotated[Optional[List[str]], RdfProperty(SKOS.hiddenLabel)] = None
+    
+    # SKOS-XL labels
+    pref_label_xl: Annotated[Optional[List[Union[str, URIRef, Label]]], RdfProperty(SKOSXL.prefLabel)] = None
+    alt_label_xl: Annotated[Optional[List[Union[str, URIRef, Label]]], RdfProperty(SKOSXL.altLabel)] = None
+    hidden_label_xl: Annotated[Optional[List[Union[str, URIRef, Label]]], RdfProperty(SKOSXL.hiddenLabel)] = None
     
     # Documentation properties
     notation: Annotated[Optional[List[str]], RdfProperty(SKOS.notation)] = None
@@ -91,6 +114,10 @@ class Concept(SkosResource):
     broad_match: Annotated[Optional[List[Union[str, URIRef, Concept]]], RdfProperty(SKOS.broadMatch)] = None
     narrow_match: Annotated[Optional[List[Union[str, URIRef, Concept]]], RdfProperty(SKOS.narrowMatch)] = None
     related_match: Annotated[Optional[List[Union[str, URIRef, Concept]]], RdfProperty(SKOS.relatedMatch)] = None
+    
+    # Super-properties
+    semantic_relation: Annotated[Optional[List[Union[str, URIRef, Concept]]], RdfProperty(SKOS.semanticRelation)] = None
+    mapping_relation: Annotated[Optional[List[Union[str, URIRef, Concept]]], RdfProperty(SKOS.mappingRelation)] = None
 
 
 class Collection(SkosResource):
@@ -139,4 +166,5 @@ __all__ = [
     "Concept",
     "Collection",
     "OrderedCollection",
+    "Label",
 ]

@@ -14,7 +14,7 @@ from typing import Annotated, List, Optional
 
 from rdflib import Namespace, URIRef
 
-from dartfx.rdf.pydantic_rdf import RdfBaseModel, RdfProperty
+from .rdf import RdfBaseModel, RdfProperty
 
 
 # VCARD namespace (not built-in to rdflib)
@@ -78,6 +78,21 @@ class VCard(VcardResource):
     
     # Language
     language: Annotated[Optional[List[str]], RdfProperty(VCARD.language)] = None
+    
+    # New properties
+    has_gender: Annotated[Optional[List[str | URIRef | Gender]], RdfProperty(VCARD.hasGender)] = None
+    has_related: Annotated[Optional[List[str | URIRef | Related]], RdfProperty(VCARD.hasRelated)] = None
+    has_geo: Annotated[Optional[List[str | URIRef | Location]], RdfProperty(VCARD.hasGeo)] = None
+    has_sound: Annotated[Optional[List[str | URIRef]], RdfProperty(VCARD.hasSound)] = None
+    has_key: Annotated[Optional[List[str | URIRef]], RdfProperty(VCARD.hasKey)] = None
+    has_logo: Annotated[Optional[List[str | URIRef]], RdfProperty(VCARD.hasLogo)] = None
+    has_photo: Annotated[Optional[List[str | URIRef]], RdfProperty(VCARD.hasPhoto)] = None
+    has_url: Annotated[Optional[List[str | URIRef]], RdfProperty(VCARD.hasUrl)] = None
+    has_email: Annotated[Optional[List[str | URIRef | Email]], RdfProperty(VCARD.hasEmail)] = None
+    has_telephone: Annotated[Optional[List[str | URIRef | Telephone]], RdfProperty(VCARD.hasTelephone)] = None
+    has_note: Annotated[Optional[List[str]], RdfProperty(VCARD.hasNote)] = None
+    has_uid: Annotated[Optional[List[str | URIRef]], RdfProperty(VCARD.hasUID)] = None
+    has_language: Annotated[Optional[List[str]], RdfProperty(VCARD.hasLanguage)] = None
 
 
 class Individual(VCard):
@@ -147,6 +162,39 @@ class Email(VcardResource):
     
     has_value: Annotated[Optional[List[str | URIRef]], RdfProperty(VCARD.hasValue)] = None
 
+__all__ = [
+    "VcardResource",
+    "VCard",
+    "Individual",
+    "Group",
+    "Organization",
+    "Location",
+    "Name",
+    "Address",
+    "Telephone",
+    "Email",
+    "TelephoneType",
+    "EmailType",
+    "AddressType",
+    "Gender",
+    "Related",
+    "Acquaintance",
+    "Friend",
+    "Parent",
+    "Child",
+    "Spouse",
+    "Sibling",
+    "Kin",
+    "Colleague",
+    "Emergency",
+    "Agent",
+    "CoResident",
+    "Neighbor",
+    "Coworker",
+    "Kind",
+    "Type",
+]
+
 
 class TelephoneType(VcardResource):
     """Telephone type classifications."""
@@ -161,3 +209,96 @@ class EmailType(VcardResource):
 class AddressType(VcardResource):
     """Address type classifications."""
     pass
+
+
+class Gender(VcardResource):
+    """A gender."""
+    
+    rdf_type: str = str(VCARD.Gender)
+    
+    sex: Annotated[Optional[List[str]], RdfProperty(VCARD.sex)] = None
+    identity: Annotated[Optional[List[str]], RdfProperty(VCARD.identity)] = None
+
+
+class Related(VcardResource):
+    """A related entity."""
+    
+    rdf_type: str = str(VCARD.Related)
+    
+    has_value: Annotated[Optional[List[str | URIRef | VCard]], RdfProperty(VCARD.hasValue)] = None
+
+
+class Acquaintance(Related):
+    """An acquaintance."""
+    rdf_type: str = str(VCARD.Acquaintance)
+
+
+class Friend(Related):
+    """A friend."""
+    rdf_type: str = str(VCARD.Friend)
+
+
+class Parent(Related):
+    """A parent."""
+    rdf_type: str = str(VCARD.Parent)
+
+
+class Child(Related):
+    """A child."""
+    rdf_type: str = str(VCARD.Child)
+
+
+class Spouse(Related):
+    """A spouse."""
+    rdf_type: str = str(VCARD.Spouse)
+
+
+class Sibling(Related):
+    """A sibling."""
+    rdf_type: str = str(VCARD.Sibling)
+
+
+class Kin(Related):
+    """A kin."""
+    rdf_type: str = str(VCARD.Kin)
+
+
+class Colleague(Related):
+    """A colleague."""
+    rdf_type: str = str(VCARD.Colleague)
+
+
+class Emergency(Related):
+    """An emergency contact."""
+    rdf_type: str = str(VCARD.Emergency)
+
+
+class Agent(Related):
+    """An agent."""
+    rdf_type: str = str(VCARD.Agent)
+
+
+class CoResident(Related):
+    """A co-resident."""
+    rdf_type: str = str(VCARD.CoResident)
+
+
+class Neighbor(Related):
+    """A neighbor."""
+    rdf_type: str = str(VCARD.Neighbor)
+
+
+class Coworker(Related):
+    """A coworker."""
+    rdf_type: str = str(VCARD.Coworker)
+
+
+class Kind(VcardResource):
+    """A kind of vCard."""
+    rdf_type: str = str(VCARD.Kind)
+
+
+class Type(VcardResource):
+    """A property type."""
+    rdf_type: str = str(VCARD.Type)
+

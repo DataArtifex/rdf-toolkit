@@ -13,7 +13,7 @@ from typing import Annotated, List, Optional
 
 from rdflib import URIRef, FOAF
 
-from dartfx.rdf.pydantic_rdf import RdfBaseModel, RdfProperty
+from .rdf import RdfBaseModel, RdfProperty
 
 
 class FoafResource(RdfBaseModel):
@@ -46,6 +46,17 @@ class Agent(FoafResource):
     img: Annotated[Optional[List[str | URIRef]], RdfProperty(FOAF.img)] = None
     depiction: Annotated[Optional[List[str | URIRef]], RdfProperty(FOAF.depiction)] = None
 
+    # Chat IDs
+    aim_chat_id: Annotated[Optional[List[str]], RdfProperty(FOAF.aimChatID)] = None
+    icq_chat_id: Annotated[Optional[List[str]], RdfProperty(FOAF.icqChatID)] = None
+    yahoo_chat_id: Annotated[Optional[List[str]], RdfProperty(FOAF.yahooChatID)] = None
+    msn_chat_id: Annotated[Optional[List[str]], RdfProperty(FOAF.msnChatID)] = None
+    jabber_id: Annotated[Optional[List[str]], RdfProperty(FOAF.jabberID)] = None
+    
+    # Other
+    tipjar: Annotated[Optional[List[str | URIRef]], RdfProperty(FOAF.tipjar)] = None
+    status: Annotated[Optional[List[str]], RdfProperty(FOAF.status)] = None
+
 
 class Person(Agent):
     """A person."""
@@ -74,6 +85,18 @@ class Person(Agent):
     
     # Online presence
     openid: Annotated[Optional[List[str | URIRef]], RdfProperty(FOAF.openid)] = None
+    
+    # Extended properties
+    geekcode: Annotated[Optional[List[str]], RdfProperty(FOAF.geekcode)] = None
+    myers_briggs: Annotated[Optional[List[str]], RdfProperty(FOAF.myersBriggs)] = None
+    plan: Annotated[Optional[List[str]], RdfProperty(FOAF.plan)] = None
+    dna_checksum: Annotated[Optional[List[str]], RdfProperty(FOAF.dnaChecksum)] = None
+    workplace_homepage: Annotated[Optional[List[str | URIRef]], RdfProperty(FOAF.workplaceHomepage)] = None
+    work_info_homepage: Annotated[Optional[List[str | URIRef]], RdfProperty(FOAF.workInfoHomepage)] = None
+    school_homepage: Annotated[Optional[List[str | URIRef]], RdfProperty(FOAF.schoolHomepage)] = None
+    interest: Annotated[Optional[List[str | URIRef | Document]], RdfProperty(FOAF.interest)] = None
+    topic_interest: Annotated[Optional[List[str | URIRef]], RdfProperty(FOAF.topic_interest)] = None
+    last_name: Annotated[Optional[List[str]], RdfProperty(FOAF.lastName)] = None
 
 
 class Organization(Agent):
@@ -119,3 +142,65 @@ class OnlineAccount(FoafResource):
     
     account_name: Annotated[Optional[List[str]], RdfProperty(FOAF.accountName)] = None
     account_service_homepage: Annotated[Optional[List[str | URIRef]], RdfProperty(FOAF.accountServiceHomepage)] = None
+
+
+class OnlineChatAccount(OnlineAccount):
+    """An online chat account."""
+    
+    rdf_type: str = str(FOAF.OnlineChatAccount)
+
+
+class OnlineEcommerceAccount(OnlineAccount):
+    """An online e-commerce account."""
+    
+    rdf_type: str = str(FOAF.OnlineEcommerceAccount)
+
+
+class OnlineGamingAccount(OnlineAccount):
+    """An online gaming account."""
+    
+    rdf_type: str = str(FOAF.OnlineGamingAccount)
+
+
+class PersonalProfileDocument(Document):
+    """A personal profile document."""
+    
+    rdf_type: str = str(FOAF.PersonalProfileDocument)
+
+
+class Project(FoafResource):
+    """A project (a collective endeavour of some kind)."""
+    
+    rdf_type: str = str(FOAF.Project)
+    
+    name: Annotated[Optional[List[str]], RdfProperty(FOAF.name)] = None
+    homepage: Annotated[Optional[List[str | URIRef]], RdfProperty(FOAF.homepage)] = None
+    logo: Annotated[Optional[List[str | URIRef]], RdfProperty(FOAF.logo)] = None
+    funded_by: Annotated[Optional[List[str | URIRef | Agent]], RdfProperty(FOAF.fundedBy)] = None
+
+
+class LabelProperty(FoafResource):
+    """A label property."""
+    
+    rdf_type: str = str(FOAF.LabelProperty)
+
+
+
+
+
+__all__ = [
+    "FoafResource",
+    "Agent",
+    "Person",
+    "Organization",
+    "Group",
+    "Document",
+    "Image",
+    "OnlineAccount",
+    "OnlineChatAccount",
+    "OnlineEcommerceAccount",
+    "OnlineGamingAccount",
+    "PersonalProfileDocument",
+    "Project",
+    "LabelProperty",
+]

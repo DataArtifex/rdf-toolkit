@@ -5,7 +5,7 @@ from typing import Annotated, Optional
 from pydantic import Field
 from rdflib import Literal, Namespace, RDF, URIRef
 
-from dartfx.rdf import RdfBaseModel, RdfProperty
+from dartfx.rdf.pydantic import RdfBaseModel, RdfProperty
 
 
 SCHEMA = Namespace("https://schema.org/")

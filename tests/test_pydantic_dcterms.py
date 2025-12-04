@@ -1,7 +1,7 @@
 """Test pydantic_dcterms module."""
 
 from datetime import datetime
-from dartfx.rdf.pydantic_dcterms import DublinCoreRecord, Agent, DcmiFrequency
+from dartfx.rdf.pydantic.dcterms import DublinCoreRecord, Agent, DcmiFrequency
 
 
 def test_basic_dublin_core_record():

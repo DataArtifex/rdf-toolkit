@@ -14,7 +14,7 @@ from typing import Annotated, List, Optional
 
 from rdflib import URIRef, ODRL2
 
-from dartfx.rdf.pydantic_rdf import RdfBaseModel, RdfProperty
+from .rdf import RdfBaseModel, RdfProperty
 
 
 class OdrlResource(RdfBaseModel):
@@ -40,6 +40,7 @@ class Policy(OdrlResource):
     
     # Inheritance
     inherits_from: Annotated[Optional[List[str | URIRef | Policy]], RdfProperty(ODRL2.inheritFrom)] = None
+    conflict: Annotated[Optional[List[str | URIRef | ConflictTerm]], RdfProperty(ODRL2.conflict)] = None
 
 
 class Set(Policy):
@@ -79,6 +80,7 @@ class Rule(OdrlResource):
     # Relations
     relation: Annotated[Optional[List[str | URIRef]], RdfProperty(ODRL2.relation)] = None
     function: Annotated[Optional[List[str | URIRef]], RdfProperty(ODRL2["function"])] = None
+    failure: Annotated[Optional[List[str | URIRef | Rule]], RdfProperty(ODRL2.failure)] = None
 
 
 class Permission(Rule):
@@ -150,6 +152,7 @@ class Party(OdrlResource):
     # Party scope
     part_of: Annotated[Optional[List[str | URIRef | PartyCollection]], RdfProperty(ODRL2.partOf)] = None
     source: Annotated[Optional[List[str | URIRef]], RdfProperty(ODRL2.source)] = None
+    scope: Annotated[Optional[List[str | URIRef]], RdfProperty(ODRL2.scope)] = None
 
 
 class PartyCollection(OdrlResource):
@@ -169,9 +172,82 @@ class Asset(OdrlResource):
     # Asset scope
     part_of: Annotated[Optional[List[str | URIRef | AssetCollection]], RdfProperty(ODRL2.partOf)] = None
     source: Annotated[Optional[List[str | URIRef]], RdfProperty(ODRL2.source)] = None
+    has_policy: Annotated[Optional[List[str | URIRef | Policy]], RdfProperty(ODRL2.hasPolicy)] = None
 
 
 class AssetCollection(OdrlResource):
     """An ODRL Asset Collection - a group of assets."""
     
     rdf_type: str = str(ODRL2.AssetCollection)
+class Privacy(Policy):
+    """An ODRL Privacy Policy."""
+    rdf_type: str = str(ODRL2.Privacy)
+
+
+class Ticket(Policy):
+    """An ODRL Ticket."""
+    rdf_type: str = str(ODRL2.Ticket)
+
+
+class Assertion(Policy):
+    """An ODRL Assertion."""
+    rdf_type: str = str(ODRL2.Assertion)
+
+
+class Request(Policy):
+    """An ODRL Request."""
+    rdf_type: str = str(ODRL2.Request)
+
+
+class ConflictTerm(OdrlResource):
+    """Conflict strategy preference."""
+    rdf_type: str = str(ODRL2.ConflictTerm)
+
+
+class LogicalConstraint(OdrlResource):
+    """A logical constraint."""
+    rdf_type: str = str(ODRL2.LogicalConstraint)
+
+
+class LeftOperand(OdrlResource):
+    """Left operand for a constraint."""
+    rdf_type: str = str(ODRL2.LeftOperand)
+
+
+class RightOperand(OdrlResource):
+    """Right operand for a constraint."""
+    rdf_type: str = str(ODRL2.RightOperand)
+
+
+class Operator(OdrlResource):
+    """Operator for a constraint."""
+    rdf_type: str = str(ODRL2.Operator)
+
+
+__all__ = [
+    "OdrlResource",
+    "Policy",
+    "Set",
+    "Offer",
+    "Agreement",
+    "Privacy",
+    "Ticket",
+    "Assertion",
+    "Request",
+    "Rule",
+    "Permission",
+    "Prohibition",
+    "Duty",
+    "Action",
+    "Constraint",
+    "LogicalConstraint",
+    "Party",
+    "PartyCollection",
+    "Asset",
+    "AssetCollection",
+    "ConflictTerm",
+    "LeftOperand",
+    "RightOperand",
+    "Operator",
+]
+

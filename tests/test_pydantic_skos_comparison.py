@@ -1,6 +1,6 @@
 """Example showing the benefits of pydantic_skos over the old skos implementation."""
 
-from dartfx.rdf.pydantic_skos import Concept, ConceptScheme
+from dartfx.rdf.pydantic.skos import Concept, ConceptScheme
 
 
 def demonstrate_pydantic_skos():

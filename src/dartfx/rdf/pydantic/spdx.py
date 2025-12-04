@@ -15,7 +15,7 @@ from datetime import datetime
 
 from rdflib import Namespace, URIRef
 
-from dartfx.rdf.pydantic_rdf import RdfBaseModel, RdfProperty
+from .rdf import RdfBaseModel, RdfProperty
 
 
 # SPDX namespace (not built-in to rdflib)
@@ -113,6 +113,9 @@ class Package(SpdxResource):
     
     # Attribution
     attribution_text: Annotated[Optional[List[str]], RdfProperty(SPDX.attributionText)] = None
+    
+    # Other
+    primary_package_purpose: Annotated[Optional[List[str | URIRef]], RdfProperty(SPDX.primaryPackagePurpose)] = None
 
 
 class File(SpdxResource):
@@ -142,6 +145,10 @@ class File(SpdxResource):
     
     # Contributors
     file_contributor: Annotated[Optional[List[str]], RdfProperty(SPDX.fileContributor)] = None
+    
+    # Deprecated properties
+    file_dependency: Annotated[Optional[List[str | URIRef | File]], RdfProperty(SPDX.fileDependency)] = None
+    artifact_of: Annotated[Optional[List[str | URIRef]], RdfProperty(SPDX.artifactOf)] = None
 
 
 class Checksum(SpdxResource):
@@ -218,3 +225,125 @@ class ExtractedLicensingInfo(License):
     """An SPDX Extracted Licensing Info."""
     
     rdf_type: str = str(SPDX.ExtractedLicensingInfo)
+
+
+class Snippet(SpdxResource):
+    """An SPDX Snippet."""
+    
+    rdf_type: str = str(SPDX.Snippet)
+    
+    snippet_from_file: Annotated[Optional[List[str | URIRef | File]], RdfProperty(SPDX.snippetFromFile)] = None
+    snippet_byte_range: Annotated[Optional[List[str | URIRef]], RdfProperty(SPDX.snippetByteRange)] = None
+    snippet_line_range: Annotated[Optional[List[str | URIRef]], RdfProperty(SPDX.snippetLineRange)] = None
+    license_info_in_snippet: Annotated[Optional[List[str | URIRef]], RdfProperty(SPDX.licenseInfoInSnippet)] = None
+    license_concluded: Annotated[Optional[List[str | URIRef]], RdfProperty(SPDX.licenseConcluded)] = None
+    copyright_text: Annotated[Optional[List[str]], RdfProperty(SPDX.copyrightText)] = None
+    comment: Annotated[Optional[List[str]], RdfProperty(SPDX.comment)] = None
+    name: Annotated[Optional[List[str]], RdfProperty(SPDX.name)] = None
+
+
+class Review(SpdxResource):
+    """An SPDX Review."""
+    
+    rdf_type: str = str(SPDX.Review)
+    
+    reviewer: Annotated[Optional[List[str]], RdfProperty(SPDX.reviewer)] = None
+    review_date: Annotated[Optional[List[str | datetime]], RdfProperty(SPDX.reviewDate)] = None
+    comment: Annotated[Optional[List[str]], RdfProperty(SPDX.comment)] = None
+
+
+class LicenseException(SpdxResource):
+    """An SPDX License Exception."""
+    
+    rdf_type: str = str(SPDX.LicenseException)
+    
+    license_exception_id: Annotated[Optional[List[str]], RdfProperty(SPDX.licenseExceptionId)] = None
+    name: Annotated[Optional[List[str]], RdfProperty(SPDX.name)] = None
+    license_exception_text: Annotated[Optional[List[str]], RdfProperty(SPDX.licenseExceptionText)] = None
+    license_exception_template: Annotated[Optional[List[str]], RdfProperty(SPDX.licenseExceptionTemplate)] = None
+    see_also: Annotated[Optional[List[str | URIRef]], RdfProperty(SPDX.seeAlso)] = None
+    comment: Annotated[Optional[List[str]], RdfProperty(SPDX.comment)] = None
+
+
+class SimpleLicensingInfo(License):
+    """An SPDX Simple Licensing Info."""
+    
+    rdf_type: str = str(SPDX.SimpleLicensingInfo)
+
+
+class OrLaterOperator(License):
+    """An SPDX Or Later Operator."""
+    
+    rdf_type: str = str(SPDX.OrLaterOperator)
+    
+    member: Annotated[Optional[List[str | URIRef | License]], RdfProperty(SPDX.member)] = None
+
+
+class WithExceptionOperator(License):
+    """An SPDX With Exception Operator."""
+    
+    rdf_type: str = str(SPDX.WithExceptionOperator)
+    
+    member: Annotated[Optional[List[str | URIRef | License]], RdfProperty(SPDX.member)] = None
+    license_exception: Annotated[Optional[List[str | URIRef | LicenseException]], RdfProperty(SPDX.licenseException)] = None
+
+
+class ConjunctiveLicenseSet(License):
+    """An SPDX Conjunctive License Set."""
+    
+    rdf_type: str = str(SPDX.ConjunctiveLicenseSet)
+    
+    member: Annotated[Optional[List[str | URIRef | License]], RdfProperty(SPDX.member)] = None
+
+
+class DisjunctiveLicenseSet(License):
+    """An SPDX Disjunctive License Set."""
+    
+    rdf_type: str = str(SPDX.DisjunctiveLicenseSet)
+    
+    member: Annotated[Optional[List[str | URIRef | License]], RdfProperty(SPDX.member)] = None
+
+
+class ReferenceType(SpdxResource):
+    """An SPDX Reference Type."""
+    
+    rdf_type: str = str(SPDX.ReferenceType)
+    
+    contextual_example: Annotated[Optional[List[str | URIRef]], RdfProperty(SPDX.contextualExample)] = None
+    external_reference_site: Annotated[Optional[List[str | URIRef]], RdfProperty(SPDX.externalReferenceSite)] = None
+    documentation: Annotated[Optional[List[str | URIRef]], RdfProperty(SPDX.documentation)] = None
+
+
+class FileType(SpdxResource):
+    """An SPDX File Type."""
+    
+    rdf_type: str = str(SPDX.FileType)
+
+
+__all__ = [
+    "SpdxResource",
+    "SpdxDocument",
+    "CreationInfo",
+    "Package",
+    "File",
+    "Checksum",
+    "PackageVerificationCode",
+    "Relationship",
+    "Annotation",
+    "ExternalRef",
+    "ExternalDocumentRef",
+    "License",
+    "ExtractedLicensingInfo",
+    "Snippet",
+    "Review",
+    "LicenseException",
+    "SimpleLicensingInfo",
+    "OrLaterOperator",
+    "WithExceptionOperator",
+    "ConjunctiveLicenseSet",
+    "DisjunctiveLicenseSet",
+    "ReferenceType",
+    "FileType",
+]
+
+

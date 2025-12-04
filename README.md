@@ -44,14 +44,14 @@ In the meantime, you can install the package locally by following these steps:
 The toolkit ships with a lightweight integration that lets you decorate
 Pydantic models with RDF metadata and convert them directly to and from
 `rdflib` graphs. The integration is provided by the
-``dartfx.rdf.pydantic_rdf`` module.
+`dartfx.rdf.pydantic.rdf` module.
 
 ```python
 from typing import Annotated
 
-from rdflib import Namespace
+from rdflib import Namespace, URIRef
 
-from dartfx.rdf.pydantic_rdf import RdfBaseModel, RdfProperty
+from dartfx.rdf.pydantic.rdf import RdfBaseModel, RdfProperty
 
 EX = Namespace("https://example.com/ns/")
 
@@ -97,11 +97,26 @@ See the [Pydantic RDF integration guide](docs/source/pydantic_rdf.rst) for a
 deeper walk-through including language-tagged strings, custom datatypes and
 subject selection.
 
+## Supported Vocabularies
+
+The toolkit provides Pydantic models for the following vocabularies:
+
+- **DCTERMS**: Dublin Core Metadata Initiative Terms
+- **FOAF**: Friend of a Friend
+- **ODRL**: Open Digital Rights Language
+- **PROV**: PROV Ontology
+- **SKOS**: Simple Knowledge Organization System (including SKOS-XL)
+- **SPDX**: Software Package Data Exchange
+- **VCARD**: vCard / Virtual Contact File
+- **XKOS**: Extended Knowledge Organization System
+
 ## Roadmap
-- Migrate model from Python @dataclass to Pydantic
-- Explore transitioning into RDF annotation and serializer from [DCAT SeMPyRO project](https://github.com/Health-RI/SeMPyRO)
-- Peer testing and validation
-- RDF deserializer (from graph to Python)
+- [x] Migrate model from Python @dataclass to Pydantic
+- [x] Explore transitioning into RDF annotation and serializer from [DCAT SeMPyRO project](https://github.com/Health-RI/SeMPyRO)
+- [x] RDF deserializer (from graph to Python)
+- [ ] Peer testing and validation
+- [ ] Expand vocabulary coverage
+- [ ] Improve documentation
 
 ## Contributing
  

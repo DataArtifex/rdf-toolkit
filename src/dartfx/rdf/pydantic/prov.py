@@ -15,7 +15,7 @@ from datetime import datetime
 
 from rdflib import URIRef, PROV
 
-from dartfx.rdf.pydantic_rdf import RdfBaseModel, RdfProperty
+from .rdf import RdfBaseModel, RdfProperty
 
 
 class ProvResource(RdfBaseModel):
@@ -50,10 +50,13 @@ class Entity(ProvResource):
     specialization_of: Annotated[Optional[List[str | URIRef | Entity]], RdfProperty(PROV.specializationOf)] = None
     
     # Location
-    at_location: Annotated[Optional[List[str | URIRef]], RdfProperty(PROV.atLocation)] = None
+    at_location: Annotated[Optional[List[str | URIRef | Location]], RdfProperty(PROV.atLocation)] = None
     
     # Value
     value: Annotated[Optional[List[str]], RdfProperty(PROV.value)] = None
+    
+    # Influence
+    was_influenced_by: Annotated[Optional[List[str | URIRef | Agent | Entity | Activity | Influence]], RdfProperty(PROV.wasInfluencedBy)] = None
 
 
 class Activity(ProvResource):
@@ -82,7 +85,10 @@ class Activity(ProvResource):
     was_ended_by: Annotated[Optional[List[str | URIRef | Entity]], RdfProperty(PROV.wasEndedBy)] = None
     
     # Location
-    at_location: Annotated[Optional[List[str | URIRef]], RdfProperty(PROV.atLocation)] = None
+    at_location: Annotated[Optional[List[str | URIRef | Location]], RdfProperty(PROV.atLocation)] = None
+    
+    # Influence
+    was_influenced_by: Annotated[Optional[List[str | URIRef | Agent | Entity | Activity | Influence]], RdfProperty(PROV.wasInfluencedBy)] = None
 
 
 class Agent(ProvResource):
@@ -95,7 +101,10 @@ class Agent(ProvResource):
     qualified_delegation: Annotated[Optional[List[str | URIRef | Delegation]], RdfProperty(PROV.qualifiedDelegation)] = None
     
     # Location
-    at_location: Annotated[Optional[List[str | URIRef]], RdfProperty(PROV.atLocation)] = None
+    at_location: Annotated[Optional[List[str | URIRef | Location]], RdfProperty(PROV.atLocation)] = None
+    
+    # Influence
+    was_influenced_by: Annotated[Optional[List[str | URIRef | Agent | Entity | Activity | Influence]], RdfProperty(PROV.wasInfluencedBy)] = None
 
 
 class Person(Agent):
@@ -192,3 +201,81 @@ class Role(ProvResource):
     """A PROV Role - function of an entity or agent in an activity."""
     
     rdf_type: str = str(PROV.Role)
+class Influence(ProvResource):
+    """A PROV Influence - capacity of an entity, activity, or agent to have an effect on another."""
+    
+    rdf_type: str = str(PROV.Influence)
+    
+    influencer: Annotated[Optional[List[str | URIRef | Agent | Entity | Activity]], RdfProperty(PROV.influencer)] = None
+    had_role: Annotated[Optional[List[str | URIRef | Role]], RdfProperty(PROV.hadRole)] = None
+    had_activity: Annotated[Optional[List[str | URIRef | Activity]], RdfProperty(PROV.hadActivity)] = None
+    had_plan: Annotated[Optional[List[str | URIRef | Plan]], RdfProperty(PROV.hadPlan)] = None
+    had_usage: Annotated[Optional[List[str | URIRef | Usage]], RdfProperty(PROV.hadUsage)] = None
+    had_generation: Annotated[Optional[List[str | URIRef | Generation]], RdfProperty(PROV.hadGeneration)] = None
+
+
+class InstantaneousEvent(ProvResource):
+    """A PROV Instantaneous Event - happens at a specific instant in time."""
+    
+    rdf_type: str = str(PROV.InstantaneousEvent)
+    
+    at_time: Annotated[Optional[List[str | datetime]], RdfProperty(PROV.atTime)] = None
+    had_role: Annotated[Optional[List[str | URIRef | Role]], RdfProperty(PROV.hadRole)] = None
+    at_location: Annotated[Optional[List[str | URIRef | Location]], RdfProperty(PROV.atLocation)] = None
+
+
+class Location(ProvResource):
+    """A PROV Location - an identifiable geographic place."""
+    
+    rdf_type: str = str(PROV.Location)
+
+
+class End(InstantaneousEvent, Influence):
+    """A PROV End - when an activity is deemed to have ended."""
+    
+    rdf_type: str = str(PROV.End)
+    
+    had_activity: Annotated[Optional[List[str | URIRef | Activity]], RdfProperty(PROV.hadActivity)] = None
+    entity: Annotated[Optional[List[str | URIRef | Entity]], RdfProperty(PROV.entity)] = None
+
+
+class Start(InstantaneousEvent, Influence):
+    """A PROV Start - when an activity is deemed to have started."""
+    
+    rdf_type: str = str(PROV.Start)
+    
+    had_activity: Annotated[Optional[List[str | URIRef | Activity]], RdfProperty(PROV.hadActivity)] = None
+    entity: Annotated[Optional[List[str | URIRef | Entity]], RdfProperty(PROV.entity)] = None
+
+
+class EmptyCollection(Collection):
+    """A PROV Empty Collection - a collection with no members."""
+    
+    rdf_type: str = str(PROV.EmptyCollection)
+
+
+__all__ = [
+    "ProvResource",
+    "Entity",
+    "Activity",
+    "Agent",
+    "Person",
+    "Organization",
+    "SoftwareAgent",
+    "Bundle",
+    "Collection",
+    "Plan",
+    "Association",
+    "Delegation",
+    "Usage",
+    "Generation",
+    "Derivation",
+    "Role",
+    "Influence",
+    "InstantaneousEvent",
+    "Location",
+    "End",
+    "Start",
+    "EmptyCollection",
+]
+

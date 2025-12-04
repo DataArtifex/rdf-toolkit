@@ -20,7 +20,7 @@ Define a model by inheriting from RdfBaseModel and annotating fields with RdfPro
 
     from typing import Annotated, Optional, List
     from rdflib import Namespace, URIRef
-    from dartfx.rdf.pydantic_rdf import RdfBaseModel, RdfProperty
+    from dartfx.rdf.pydantic import RdfBaseModel, RdfProperty
     
     FOAF = Namespace("http://xmlns.com/foaf/0.1/")
     
@@ -148,7 +148,7 @@ from typing import Any, ClassVar, Dict, Iterable, Optional, Tuple, Type, TypeVar
 import uuid
 
 from pydantic import BaseModel, ConfigDict
-from rdflib import Graph, Literal, Namespace, RDF, URIRef, XSD
+from rdflib import Graph, Literal, Namespace, RDF, URIRef, XSD, BNode
 
 T = TypeVar("T", bound="RdfBaseModel")
 
@@ -645,8 +645,14 @@ class RdfBaseModel(BaseModel):
             objects = list(graph.objects(subject_uri, predicate))
             if not objects:
                 continue
-            if _is_rdf_model(inner_type):
-                items = [inner_type.from_rdf_graph(graph, obj, base_uri=base_uri) for obj in objects]
+            model_type = _get_rdf_model_type(inner_type)
+            if model_type:
+                items = []
+                for obj in objects:
+                    if isinstance(obj, (URIRef, BNode)):
+                        items.append(model_type.from_rdf_graph(graph, obj, base_uri=base_uri))
+                    else:
+                        items.append(_node_to_python(obj, inner_type, prop))
             else:
                 items = [_node_to_python(obj, inner_type, prop) for obj in objects]
             values[name] = items if is_list else items[0]
@@ -945,7 +951,11 @@ class RdfBaseModel(BaseModel):
             return value
         if isinstance(value, Enum):
             value = value.value
-        if isinstance(value, (datetime, date, time, int, float, bool, Decimal)):
+        if isinstance(value, bytes):
+            import base64
+            encoded = base64.b64encode(value).decode('ascii')
+            return Literal(encoded, datatype=XSD.base64Binary)
+        if isinstance(value, (datetime, date, time, int, float, bool, Decimal, uuid.UUID)):
             datatype = prop.datatype_uri()
             if datatype is None:
                 datatype = _python_datatype(value)
@@ -1146,13 +1156,16 @@ def _node_to_python(node: Any, expected_type: Any, prop: RdfProperty) -> Any:
 
     if expected_type is Any or expected_type is None:
         return value
+    
     if expected_type is str:
         return str(value)
+    
     if expected_type in {int, float, bool}:
         try:
             return expected_type(value)
         except (TypeError, ValueError):
             return value
+            
     if expected_type is datetime:
         if isinstance(value, datetime):
             return value
@@ -1160,6 +1173,7 @@ def _node_to_python(node: Any, expected_type: Any, prop: RdfProperty) -> Any:
             return datetime.fromisoformat(str(value))
         except ValueError:
             return value
+            
     if expected_type is date:
         if isinstance(value, date):
             return value
@@ -1167,6 +1181,7 @@ def _node_to_python(node: Any, expected_type: Any, prop: RdfProperty) -> Any:
             return date.fromisoformat(str(value))
         except ValueError:
             return value
+            
     if expected_type is time:
         if isinstance(value, time):
             return value
@@ -1174,13 +1189,30 @@ def _node_to_python(node: Any, expected_type: Any, prop: RdfProperty) -> Any:
             return time.fromisoformat(str(value))
         except ValueError:
             return value
+            
     if expected_type is Decimal:
         try:
             return Decimal(value)
-        except Exception:  # pragma: no cover - fallback path
+        except (ValueError, TypeError, ArithmeticError):
             return value
+            
+    if expected_type is bytes:
+        if isinstance(value, bytes):
+            return value
+        # rdflib handles base64 decoding for XSD.base64Binary
+        return value
+        
+    if expected_type is uuid.UUID:
+        if isinstance(value, uuid.UUID):
+            return value
+        try:
+            return uuid.UUID(str(value))
+        except (ValueError, TypeError):
+            return value
+
     if isinstance(expected_type, type) and issubclass(expected_type, Enum):
         return expected_type(value)
+        
     return value
 
 
@@ -1211,6 +1243,10 @@ def _python_datatype(value: Any) -> Optional[URIRef]:
         return XSD.time
     if isinstance(value, Decimal):
         return XSD.decimal
+    if isinstance(value, bytes):
+        return XSD.base64Binary
+    if isinstance(value, uuid.UUID):
+        return XSD.string
     return None
 
 
@@ -1286,11 +1322,13 @@ def _unique(values: Iterable[Any]) -> list[Any]:
     list[Any]
         A list with duplicates removed, in original order.
     """
-    seen = []
+    seen = set()
+    result = []
     for value in values:
         if value not in seen:
-            seen.append(value)
-    return seen
+            seen.add(value)
+            result.append(value)
+    return result
 
 
 def _default_prefixes() -> Dict[str, str]:
@@ -1319,6 +1357,30 @@ def _is_rdf_model(value: Any) -> bool:
         True if value is a class and a subclass of RdfBaseModel.
     """
     return isinstance(value, type) and issubclass(value, RdfBaseModel)
+
+
+def _get_rdf_model_type(type_hint: Any) -> Optional[Type[RdfBaseModel]]:
+    """Get the RdfBaseModel type from a type hint (possibly a Union).
+    
+    Parameters
+    ----------
+    type_hint : Any
+        The type hint to check.
+    
+    Returns
+    -------
+    Type[RdfBaseModel] | None
+        The RdfBaseModel subclass if found, otherwise None.
+    """
+    if _is_rdf_model(type_hint):
+        return type_hint
+    
+    origin = get_origin(type_hint)
+    if origin is Union:
+        for arg in get_args(type_hint):
+            if _is_rdf_model(arg):
+                return arg
+    return None
 
 
 

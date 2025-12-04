@@ -14,7 +14,7 @@ from typing import Annotated, List, Optional
 
 from rdflib import Namespace, URIRef, SKOS
 
-from dartfx.rdf.pydantic_rdf import RdfBaseModel, RdfProperty
+from .rdf import RdfBaseModel, RdfProperty
 
 
 # XKOS namespace
@@ -40,6 +40,11 @@ class ClassificationLevel(XkosResource):
     covers: Annotated[Optional[List[str | URIRef]], RdfProperty(XKOS.covers)] = None
     covers_exhaustively: Annotated[Optional[List[str | URIRef]], RdfProperty(XKOS.coversExhaustively)] = None
     covers_mutually_exclusively: Annotated[Optional[List[str | URIRef]], RdfProperty(XKOS.coversMutuallyExclusively)] = None
+    
+    # Textual properties
+    organized_by: Annotated[Optional[List[str | URIRef]], RdfProperty(XKOS.organizedBy)] = None
+    notation_pattern: Annotated[Optional[List[str]], RdfProperty(XKOS.notationPattern)] = None
+    max_length: Annotated[Optional[List[int]], RdfProperty(XKOS.maxLength)] = None
     
     # Labels (from SKOS)
     pref_label: Annotated[Optional[List[str]], RdfProperty(SKOS.prefLabel)] = None
@@ -140,6 +145,18 @@ class StatisticalConcept(XkosResource):
     
     # Level
     class_at: Annotated[Optional[List[str | URIRef | ClassificationLevel]], RdfProperty(XKOS.classifiedUnder)] = None
+    
+    # Concept relations
+    disjoint: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.disjoint)] = None
+    broader_generic: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.broaderGeneric)] = None
+    narrower_generic: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.narrowerGeneric)] = None
+    broader_partitive: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.broaderPartitive)] = None
+    narrower_partitive: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.narrowerPartitive)] = None
+    
+    # Notes
+    introduction: Annotated[Optional[List[str]], RdfProperty(XKOS.introduction)] = None
+    editorial_note: Annotated[Optional[List[str]], RdfProperty(XKOS.editorialNote)] = None
+    change_note: Annotated[Optional[List[str]], RdfProperty(XKOS.changeNote)] = None
 
 
 class StatisticalClassification(XkosResource):
@@ -169,3 +186,12 @@ class StatisticalClassification(XkosResource):
     # Versioning
     follows: Annotated[Optional[List[str | URIRef | StatisticalClassification]], RdfProperty(XKOS.follows)] = None
     supersedes: Annotated[Optional[List[str | URIRef | StatisticalClassification]], RdfProperty(XKOS.supersedes)] = None
+    succeeds: Annotated[Optional[List[str | URIRef | StatisticalClassification]], RdfProperty(XKOS.succeeds)] = None
+    
+    # Relations
+    disjoint: Annotated[Optional[List[str | URIRef | StatisticalClassification]], RdfProperty(XKOS.disjoint)] = None
+    
+    # Notes
+    introduction: Annotated[Optional[List[str]], RdfProperty(XKOS.introduction)] = None
+    editorial_note: Annotated[Optional[List[str]], RdfProperty(XKOS.editorialNote)] = None
+    change_note: Annotated[Optional[List[str]], RdfProperty(XKOS.changeNote)] = None

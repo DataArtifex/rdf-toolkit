@@ -4,7 +4,7 @@
 print("=" * 70)
 print("Testing FOAF")
 print("=" * 70)
-from dartfx.rdf.pydantic_foaf import Person
+from dartfx.rdf.pydantic.foaf import Person
 
 person = Person(
     name=["John Doe"],
@@ -22,7 +22,7 @@ print()
 print("=" * 70)
 print("Testing ODRL")
 print("=" * 70)
-from dartfx.rdf.pydantic_odrl import Policy
+from dartfx.rdf.pydantic.odrl import Policy
 
 policy = Policy(
     uid=["http://example.org/policy1"]
@@ -36,7 +36,7 @@ print()
 print("=" * 70)
 print("Testing PROV")
 print("=" * 70)
-from dartfx.rdf.pydantic_prov import Entity, Activity
+from dartfx.rdf.pydantic.prov import Entity, Activity
 
 entity = Entity(
     value=["Some data"]
@@ -58,7 +58,7 @@ print()
 print("=" * 70)
 print("Testing SPDX")
 print("=" * 70)
-from dartfx.rdf.pydantic_spdx import Package, Checksum
+from dartfx.rdf.pydantic.spdx import Package, Checksum
 
 checksum = Checksum(
     algorithm=["http://spdx.org/rdf/terms#checksumAlgorithm_sha1"],
@@ -80,7 +80,7 @@ print()
 print("=" * 70)
 print("Testing VCARD")
 print("=" * 70)
-from dartfx.rdf.pydantic_vcard import Individual, Name, Address
+from dartfx.rdf.pydantic.vcard import Individual, Name, Address
 
 name = Name(
     given_name=["Jane"],
@@ -109,7 +109,7 @@ print()
 print("=" * 70)
 print("Testing XKOS")
 print("=" * 70)
-from dartfx.rdf.pydantic_xkos import StatisticalClassification, ClassificationLevel
+from dartfx.rdf.pydantic.xkos import StatisticalClassification, ClassificationLevel
 
 level = ClassificationLevel(
     depth=[1],

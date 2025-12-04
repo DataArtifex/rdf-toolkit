@@ -1,6 +1,6 @@
 """Test pydantic_skos module."""
 
-from dartfx.rdf.pydantic_skos import ConceptScheme, Concept, Collection
+from dartfx.rdf.pydantic.skos import ConceptScheme, Concept, Collection
 
 
 def test_concept_scheme():
