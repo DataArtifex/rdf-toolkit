@@ -427,6 +427,7 @@ class RdfBaseModel(BaseModel):
     rdf_type: ClassVar[Union[str, URIRef, None]] = None
     rdf_namespace: ClassVar[Union[str, Namespace, None]] = None
     rdf_id_field: ClassVar[Optional[str]] = "id"
+    rdf_auto_uuid: ClassVar[bool] = True
     rdf_prefixes: ClassVar[Dict[str, Union[str, Namespace]]] = {}
 
     def to_rdf_graph(self, graph: Optional[Graph] = None, *, base_uri: Optional[str] = None) -> Graph:
@@ -772,7 +773,7 @@ class RdfBaseModel(BaseModel):
             raise ValueError("Unable to determine subject for RDF document; provide the subject explicitly.")
         return cls.from_rdf_graph(graph, subject, base_uri=base_uri)
 
-    def _serialise_into_graph(self, graph: Graph, *, base_uri: Optional[str] = None) -> URIRef:
+    def _serialise_into_graph(self, graph: Graph, *, base_uri: Optional[str] = None) -> URIRef | BNode:
         """Internal method to serialize this model into an RDF graph.
         
         Converts all annotated fields to RDF triples and adds them to the graph.
@@ -787,7 +788,7 @@ class RdfBaseModel(BaseModel):
         
         Returns
         -------
-        URIRef
+        URIRef | BNode
             The subject URI of the serialized resource.
         """
         subject = self._subject_uri(base_uri=base_uri)
@@ -860,11 +861,12 @@ class RdfBaseModel(BaseModel):
             return str(namespace)
         return str(namespace)
 
-    def _subject_uri(self, *, base_uri: Optional[str] = None) -> URIRef:
+    def _subject_uri(self, *, base_uri: Optional[str] = None) -> URIRef | BNode:
         """Generate the subject URI for this instance.
         
-        Creates a URIRef for the RDF subject based on the id field, namespace,
-        or generates a UUID if no identifier is available.
+        Creates a URIRef for the RDF subject based on the id field, functionality,
+        or generates a UUID if no identifier is available. If rdf_auto_uuid is False
+        and no identifier is available, returns a BNode.
         
         Parameters
         ----------
@@ -873,8 +875,8 @@ class RdfBaseModel(BaseModel):
         
         Returns
         -------
-        URIRef
-            The subject URI for this resource.
+        URIRef | BNode
+            The subject URI or Blank Node for this resource.
         """
         identifier: Optional[str] = None
         if self.rdf_id_field:
@@ -891,6 +893,10 @@ class RdfBaseModel(BaseModel):
             if base_uri:
                 return URIRef(_normalise_base(base_uri) + identifier)
             return URIRef(identifier)
+
+        # If opted out of auto-UUIDs, return a blank node
+        if not self.rdf_auto_uuid:
+            return BNode()
 
         namespace = self._namespace_string()
         if namespace:
