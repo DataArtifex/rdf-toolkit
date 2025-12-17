@@ -15,7 +15,7 @@ from typing import Annotated, List, Optional, Union
 
 from rdflib import Namespace, URIRef
 
-from .rdf import RdfBaseModel, RdfProperty
+from ._base import RdfBaseModel, RdfProperty
 
 
 DCTERMS = Namespace("http://purl.org/dc/terms/")

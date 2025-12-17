@@ -14,7 +14,7 @@ from typing import Annotated, List, Optional
 
 from rdflib import URIRef, ODRL2
 
-from .rdf import RdfBaseModel, RdfProperty
+from ._base import RdfBaseModel, RdfProperty
 
 
 class OdrlResource(RdfBaseModel):

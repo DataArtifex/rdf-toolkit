@@ -14,7 +14,7 @@ from typing import Annotated, List, Optional
 
 from rdflib import Namespace, URIRef
 
-from .rdf import RdfBaseModel, RdfProperty
+from ._base import RdfBaseModel, RdfProperty
 
 
 # VCARD namespace (not built-in to rdflib)

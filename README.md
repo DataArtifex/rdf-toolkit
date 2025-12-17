@@ -44,14 +44,14 @@ In the meantime, you can install the package locally by following these steps:
 The toolkit ships with a lightweight integration that lets you decorate
 Pydantic models with RDF metadata and convert them directly to and from
 `rdflib` graphs. The integration is provided by the
-`dartfx.rdf.pydantic.rdf` module.
+`dartfx.rdf.pydantic` module.
 
 ```python
 from typing import Annotated
 
 from rdflib import Namespace, URIRef
 
-from dartfx.rdf.pydantic.rdf import RdfBaseModel, RdfProperty
+from dartfx.rdf.pydantic import RdfBaseModel, RdfProperty
 
 EX = Namespace("https://example.com/ns/")
 

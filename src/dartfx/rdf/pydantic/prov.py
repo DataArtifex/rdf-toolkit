@@ -15,7 +15,7 @@ from datetime import datetime
 
 from rdflib import URIRef, PROV
 
-from .rdf import RdfBaseModel, RdfProperty
+from ._base import RdfBaseModel, RdfProperty
 
 
 class ProvResource(RdfBaseModel):

@@ -14,7 +14,7 @@ from typing import Annotated, List, Optional, Union, cast
 
 from rdflib import URIRef, SKOS, Namespace
 
-from .rdf import RdfBaseModel, RdfProperty
+from ._base import RdfBaseModel, RdfProperty
 
 
 class SkosResource(RdfBaseModel):

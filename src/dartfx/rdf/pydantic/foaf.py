@@ -13,7 +13,7 @@ from typing import Annotated, List, Optional
 
 from rdflib import URIRef, FOAF
 
-from .rdf import RdfBaseModel, RdfProperty
+from ._base import RdfBaseModel, RdfProperty
 
 
 class FoafResource(RdfBaseModel):

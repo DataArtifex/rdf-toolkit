@@ -7,7 +7,8 @@ from typing import Annotated, Optional
 import pytest
 from rdflib import Namespace, URIRef, XSD, Literal
 
-from dartfx.rdf.pydantic.rdf import RdfBaseModel, RdfProperty, _unique, _node_to_python
+from dartfx.rdf.pydantic import RdfBaseModel, RdfProperty
+from dartfx.rdf.pydantic._base import _unique, _node_to_python
 
 EX = Namespace("https://example.org/")
 

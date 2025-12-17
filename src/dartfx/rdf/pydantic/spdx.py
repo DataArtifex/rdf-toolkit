@@ -15,7 +15,7 @@ from datetime import datetime
 
 from rdflib import Namespace, URIRef
 
-from .rdf import RdfBaseModel, RdfProperty
+from ._base import RdfBaseModel, RdfProperty
 
 
 # SPDX namespace (not built-in to rdflib)

@@ -14,7 +14,7 @@ from typing import Annotated, List, Optional
 
 from rdflib import Namespace, URIRef, SKOS
 
-from .rdf import RdfBaseModel, RdfProperty
+from ._base import RdfBaseModel, RdfProperty
 
 
 # XKOS namespace
