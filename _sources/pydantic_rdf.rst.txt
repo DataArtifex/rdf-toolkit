@@ -1,7 +1,7 @@
 Pydantic ↔ RDF Integration
 ==========================
 
-The :mod:`dartfx.rdf.pydantic.rdf` module adds a thin mixin that lets you
+The :mod:`dartfx.rdf.pydantic` module adds a thin mixin that lets you
 annotate Pydantic models with RDF metadata, build `rdflib.Graph` instances, and
 reconstruct the models from existing graphs. This page walks through the most
 important building blocks and patterns.
@@ -9,8 +9,8 @@ important building blocks and patterns.
 Quick start
 -----------
 
-1. Import :class:`~dartfx.rdf.pydantic.rdf.RdfBaseModel` and
-   :class:`~dartfx.rdf.pydantic.rdf.RdfProperty`.
+1. Import :class:`~dartfx.rdf.pydantic.RdfBaseModel` and
+   :class:`~dartfx.rdf.pydantic.RdfProperty`.
 2. Define a namespace for your resources and declare any prefixes you want to be
    emitted in the resulting graph.
 3. Annotate each serialisable field with an RDF predicate.
@@ -21,7 +21,7 @@ Quick start
 
    from rdflib import Namespace, URIRef
 
-   from dartfx.rdf.pydantic.rdf import RdfBaseModel, RdfProperty
+   from dartfx.rdf.pydantic import RdfBaseModel, RdfProperty
 
    EX = Namespace("https://example.org/ns/")
 
@@ -48,13 +48,13 @@ Quick start
 
 ``RdfBaseModel`` takes care of creating a subject identifier, emitting RDF
 triples for every annotated field, and binding the default prefixes. The graph
-returned by :meth:`~dartfx.rdf.pydantic.rdf.RdfBaseModel.to_rdf_graph` can be
+returned by :meth:`~dartfx.rdf.pydantic.RdfBaseModel.to_rdf_graph` can be
 serialised in any format supported by `rdflib`.
 
 Mapping rules
 -------------
 
-* The ``predicate`` argument on :class:`~dartfx.rdf.pydantic.rdf.RdfProperty`
+* The ``predicate`` argument on :class:`~dartfx.rdf.pydantic.RdfProperty`
   can be either a full ``rdflib.term.URIRef`` or a string. Strings will be
   coerced into ``URIRef`` instances at runtime.
 * A model-level ``rdf_type`` constant adds ``rdf:type`` triples for every
