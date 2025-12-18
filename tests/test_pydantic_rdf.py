@@ -115,3 +115,15 @@ def test_turtle_01() -> None:
     assert "Bob" in ttl
     print("\n"+ttl)
     
+
+def test_custom_uri_generator_01() -> None:
+    def custom_uri_generator(obj: Any) -> Union[URIRef, BNode]:
+        type = type(obj)
+        return EX[f"{type.__name__}/{obj.id}"]
+        
+    person = build_person()
+    graph = person.to_rdf_graph(rdf_uri_generator=custom_uri_generator)
+    ttl = graph.serialize(format="turtle")
+    assert "Alice" in ttl
+    assert "Bob" in ttl
+    print("\n"+ttl)
