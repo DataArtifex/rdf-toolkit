@@ -147,8 +147,9 @@ import re
 from typing import Any, ClassVar, Dict, Iterable, Optional, Tuple, Type, TypeVar, Union, get_args, get_origin, Annotated
 import uuid
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from rdflib import Graph, Literal, Namespace, RDF, URIRef, XSD, BNode
+from typing import Callable
 
 T = TypeVar("T", bound="RdfBaseModel")
 
@@ -429,6 +430,8 @@ class RdfBaseModel(BaseModel):
     rdf_id_field: ClassVar[Optional[str]] = "id"
     rdf_auto_uuid: ClassVar[bool] = True
     rdf_prefixes: ClassVar[Dict[str, Union[str, Namespace]]] = {}
+    
+    rdf_uri_generator: Optional[Callable[[Any], Union[URIRef, BNode]]] = Field(default=None, exclude=True)
 
     def to_rdf_graph(self, graph: Optional[Graph] = None, *, base_uri: Optional[str] = None) -> Graph:
         """Serialize the model instance into an rdflib Graph.
@@ -893,6 +896,13 @@ class RdfBaseModel(BaseModel):
             if base_uri:
                 return URIRef(_normalise_base(base_uri) + identifier)
             return URIRef(identifier)
+
+        # Check for custom URI generator
+        if self.rdf_uri_generator is not None:
+             # The generator takes the model instance as argument
+             generated = self.rdf_uri_generator(self)
+             if generated is not None:
+                 return generated
 
         # If opted out of auto-UUIDs, return a blank node
         if not self.rdf_auto_uuid:
