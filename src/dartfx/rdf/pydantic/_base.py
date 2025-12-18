@@ -433,7 +433,13 @@ class RdfBaseModel(BaseModel):
     rdf_auto_uuid: bool = Field(default=True, exclude=True)
     rdf_uri_generator: Optional[Callable[[Any], Union[URIRef, BNode]]] = Field(default=None, exclude=True)
 
-    def to_rdf_graph(self, graph: Optional[Graph] = None, *, base_uri: Optional[str] = None) -> Graph:
+    def to_rdf_graph(
+        self,
+        graph: Optional[Graph] = None,
+        *,
+        base_uri: Optional[str] = None,
+        rdf_uri_generator: Optional[Callable[[Any], Union[URIRef, BNode]]] = None
+    ) -> Graph:
         """Serialize the model instance into an rdflib Graph.
         
         This method converts the Pydantic model instance into RDF triples and adds
@@ -451,6 +457,12 @@ class RdfBaseModel(BaseModel):
             A base URI for generating subject URIs when the model doesn't have a
             full URI identifier. Used for relative identifier resolution.
             Default is None.
+            
+        rdf_uri_generator : Callable[[Any], Union[URIRef, BNode]] | None, optional
+            A custom function to generate subject URIs for model instances.
+            The function receives the model instance and should return an
+            rdflib URIRef or BNode. This overrides the model's own
+            rdf_uri_generator if provided.
         
         Returns
         -------
@@ -494,10 +506,17 @@ class RdfBaseModel(BaseModel):
         """
 
         graph = graph if graph is not None else Graph()
-        self._serialise_into_graph(graph, base_uri=base_uri)
+        self._serialise_into_graph(graph, base_uri=base_uri, rdf_uri_generator=rdf_uri_generator)
         return graph
 
-    def to_rdf(self, format: str = "turtle", *, base_uri: Optional[str] = None, **kwargs: Any) -> str:
+    def to_rdf(
+        self,
+        format: str = "turtle",
+        *,
+        base_uri: Optional[str] = None,
+        rdf_uri_generator: Optional[Callable[[Any], Union[URIRef, BNode]]] = None,
+        **kwargs: Any
+    ) -> str:
         """Serialize the model instance to an RDF string.
         
         This is a convenience method that creates a Graph, serializes the model
@@ -516,6 +535,12 @@ class RdfBaseModel(BaseModel):
             
         base_uri : str | None, optional
             A base URI for generating subject URIs. Default is None.
+            
+        rdf_uri_generator : Callable[[Any], Union[URIRef, BNode]] | None, optional
+            A custom function to generate subject URIs for model instances.
+            The function receives the model instance and should return an
+            rdflib URIRef or BNode. This overrides the model's own
+            rdf_uri_generator if provided.
             
         **kwargs : Any
             Additional keyword arguments passed to rdflib's serialize() method.
@@ -560,7 +585,7 @@ class RdfBaseModel(BaseModel):
         from_rdf : Deserialize from an RDF string
         """
 
-        graph = self.to_rdf_graph(base_uri=base_uri)
+        graph = self.to_rdf_graph(base_uri=base_uri, rdf_uri_generator=rdf_uri_generator)
         return graph.serialize(format=format, **kwargs)
 
     @classmethod
@@ -776,7 +801,13 @@ class RdfBaseModel(BaseModel):
             raise ValueError("Unable to determine subject for RDF document; provide the subject explicitly.")
         return cls.from_rdf_graph(graph, subject, base_uri=base_uri)
 
-    def _serialise_into_graph(self, graph: Graph, *, base_uri: Optional[str] = None) -> URIRef | BNode:
+    def _serialise_into_graph(
+        self,
+        graph: Graph,
+        *,
+        base_uri: Optional[str] = None,
+        rdf_uri_generator: Optional[Callable[[Any], Union[URIRef, BNode]]] = None
+    ) -> URIRef | BNode:
         """Internal method to serialize this model into an RDF graph.
         
         Converts all annotated fields to RDF triples and adds them to the graph.
@@ -788,13 +819,15 @@ class RdfBaseModel(BaseModel):
             The rdflib Graph to add triples to.
         base_uri : str | None, optional
             Base URI for subject generation.
+        rdf_uri_generator : Callable[[Any], Union[URIRef, BNode]] | None, optional
+            A custom function to generate subject URIs for model instances.
         
         Returns
         -------
         URIRef | BNode
             The subject URI of the serialized resource.
         """
-        subject = self._subject_uri(base_uri=base_uri)
+        subject = self._subject_uri(base_uri=base_uri, rdf_uri_generator=rdf_uri_generator)
         self._bind_prefixes(graph)
 
         rdf_type_uri = _ensure_uri(self.rdf_type)
@@ -814,7 +847,7 @@ class RdfBaseModel(BaseModel):
             for item in values:
                 if item is None:
                     continue
-                node = self._value_to_node(item, inner_type, prop, graph, base_uri)
+                node = self._value_to_node(item, inner_type, prop, graph, base_uri, rdf_uri_generator=rdf_uri_generator)
                 graph.add((subject, predicate, node))
 
         return subject
@@ -864,7 +897,12 @@ class RdfBaseModel(BaseModel):
             return str(namespace)
         return str(namespace)
 
-    def _subject_uri(self, *, base_uri: Optional[str] = None) -> URIRef | BNode:
+    def _subject_uri(
+        self,
+        *,
+        base_uri: Optional[str] = None,
+        rdf_uri_generator: Optional[Callable[[Any], Union[URIRef, BNode]]] = None
+    ) -> URIRef | BNode:
         """Generate the subject URI for this instance.
         
         Creates a URIRef for the RDF subject based on the id field, functionality,
@@ -875,6 +913,8 @@ class RdfBaseModel(BaseModel):
         ----------
         base_uri : str | None, optional
             Base URI for relative identifier resolution.
+        rdf_uri_generator : Callable[[Any], Union[URIRef, BNode]] | None, optional
+            A custom function to generate subject URIs for model instances.
         
         Returns
         -------
@@ -898,9 +938,10 @@ class RdfBaseModel(BaseModel):
             return URIRef(identifier)
 
         # Check for custom URI generator
-        if self.rdf_uri_generator is not None:
+        generator = rdf_uri_generator if rdf_uri_generator is not None else self.rdf_uri_generator
+        if generator is not None:
              # The generator takes the model instance as argument
-             generated = self.rdf_uri_generator(self)
+             generated = generator(self)
              if generated is not None:
                  return generated
 
@@ -933,6 +974,8 @@ class RdfBaseModel(BaseModel):
         prop: RdfProperty,
         graph: Graph,
         base_uri: Optional[str],
+        *,
+        rdf_uri_generator: Optional[Callable[[Any], Union[URIRef, BNode]]] = None
     ) -> URIRef | Literal:
         """Convert a Python value to an RDF node (URIRef or Literal).
         
@@ -951,6 +994,8 @@ class RdfBaseModel(BaseModel):
             The graph for nested object serialization.
         base_uri : str | None
             Base URI for nested objects.
+        rdf_uri_generator : Callable[[Any], Union[URIRef, BNode]] | None, optional
+            A custom function to generate subject URIs for model instances.
         
         Returns
         -------
@@ -960,7 +1005,7 @@ class RdfBaseModel(BaseModel):
         if prop.serializer is not None:
             value = prop.serializer(value)
         if isinstance(value, RdfBaseModel):
-            return value._serialise_into_graph(graph, base_uri=base_uri)
+            return value._serialise_into_graph(graph, base_uri=base_uri, rdf_uri_generator=rdf_uri_generator)
         if isinstance(value, URIRef):
             return value
         if isinstance(value, Literal):
