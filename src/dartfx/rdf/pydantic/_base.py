@@ -428,9 +428,9 @@ class RdfBaseModel(BaseModel):
     rdf_type: ClassVar[Union[str, URIRef, None]] = None
     rdf_namespace: ClassVar[Union[str, Namespace, None]] = None
     rdf_id_field: ClassVar[Optional[str]] = "id"
-    rdf_auto_uuid: ClassVar[bool] = True
     rdf_prefixes: ClassVar[Dict[str, Union[str, Namespace]]] = {}
     
+    rdf_auto_uuid: bool = Field(default=True, exclude=True)
     rdf_uri_generator: Optional[Callable[[Any], Union[URIRef, BNode]]] = Field(default=None, exclude=True)
 
     def to_rdf_graph(self, graph: Optional[Graph] = None, *, base_uri: Optional[str] = None) -> Graph:
