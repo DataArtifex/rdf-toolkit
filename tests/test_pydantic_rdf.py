@@ -32,10 +32,10 @@ class Person(RdfBaseModel):
 
     id: str
     name: Annotated[str, RdfProperty(SCHEMA.name)]
-    email: Annotated[str, RdfProperty(SCHEMA.email)]
+    email: Annotated[Optional[str], RdfProperty(SCHEMA.email)] = None
     homepage: Annotated[Optional[str], RdfProperty(SCHEMA.url)] = None
-    address: Annotated[Address, RdfProperty(SCHEMA.address)]
-    knows: Annotated[list["Person"], RdfProperty(SCHEMA.knows)] = Field(default_factory=list)
+    address: Annotated[Optional[Address], RdfProperty(SCHEMA.address)] = None
+    knows: Annotated[Optional[list["Person"]], RdfProperty(SCHEMA.knows)] = Field(default_factory=list)
 
 
 Person.model_rebuild()
@@ -104,3 +104,14 @@ def test_pydantic_model_round_trip() -> None:
     reloaded_from_text = Person.from_rdf(ttl, format="turtle", subject=subject)
 
     assert reloaded_from_text.model_dump() == person.model_dump()
+
+def test_turtle_01() -> None:
+    person1 = Person(id="person-1", name="Alice")
+    person2 = Person(id="person-2", name="Bob")
+    graph = person1.to_rdf_graph()
+    person2.to_rdf_graph(graph)
+    ttl = graph.serialize(format="turtle")
+    assert "Alice" in ttl
+    assert "Bob" in ttl
+    print("\n"+ttl)
+    
