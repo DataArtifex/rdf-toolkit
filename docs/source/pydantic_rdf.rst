@@ -92,9 +92,17 @@ Language tags and datatypes
 fine-tune literal serialisation. Datatypes may be defined as strings, namespace
 terms, or full ``URIRef`` instances.
 
+Handle URIs specifically by choosing between resource identifiers or typed literals:
+
+* **Resource identifiers**: Use ``rdflib.URIRef`` as the field type. The toolkit
+  will ensure these are emitted as URI nodes in the graph.
+* **XSD.anyURI literals**: Use ``str`` (or Pydantic's ``AnyUrl``) and set
+  ``datatype=XSD.anyURI``. This emits a literal with an explicit datatype.
+
 .. code-block:: python
 
-   from rdflib import XSD
+   from pydantic import AnyUrl
+   from rdflib import XSD, SCHEMA, URIRef
 
 
    class Dataset(RdfBaseModel):
@@ -104,9 +112,19 @@ terms, or full ``URIRef`` instances.
        id: str
        title: Annotated[str, RdfProperty(EX.title, language="en")]
        created: Annotated[str, RdfProperty(EX.created, datatype=XSD.date)]
+       # Serialized as a URI Resource
+       see_also: Annotated[Optional[URIRef], RdfProperty(SCHEMA.seeAlso)] = None
+       # Serialized as "..."^^xsd:anyURI
+       download_url: Annotated[Optional[AnyUrl], RdfProperty(SCHEMA.downloadUrl, datatype=XSD.anyURI)] = None
 
 
-   dataset = Dataset(id="demo", title="Example", created="2024-03-01")
+   dataset = Dataset(
+       id="demo", 
+       title="Example", 
+       created="2024-03-01",
+       see_also=URIRef("https://example.org/docs"),
+       download_url="https://example.org/files/data.zip"
+   )
 
    graph = dataset.to_rdf_graph()
 

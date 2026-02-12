@@ -94,6 +94,28 @@ Nested models and multi-valued properties are also supported. Declare lists of
 annotated fields, or embed other ``RdfBaseModel`` subclasses, and the toolkit
 will recursively serialise and deserialise them.
 
+### Working with URIs and Datatypes
+
+The toolkit provides several ways to handle URIs and specific XSD datatypes:
+
+- **Resource Identifiers**: Use `rdflib.URIRef` as a type hint for fields that should be serialized as RDF resources.
+- **XSD Datatypes**: Specify the `datatype` in `RdfProperty` to force a literal value to a specific XSD type (e.g., `XSD.anyURI`, `XSD.integer`).
+- **Validation**: Combine with Pydantic's built-in types like `AnyUrl` for strict input validation.
+
+```python
+from typing import Annotated, Optional
+from pydantic import AnyUrl
+from rdflib import XSD, SCHEMA, URIRef
+from dartfx.rdf.pydantic import RdfBaseModel, RdfProperty
+
+class WebResource(RdfBaseModel):
+    # Serialized as an RDF resource (URIRef)
+    see_also: Annotated[Optional[URIRef], RdfProperty(SCHEMA.seeAlso)] = None
+    
+    # Validated by Pydantic, serialized as "..."^^xsd:anyURI literal
+    url: Annotated[AnyUrl, RdfProperty(SCHEMA.url, datatype=XSD.anyURI)]
+```
+
 See the [Pydantic RDF integration guide](docs/source/pydantic_rdf.rst) for a
 deeper walk-through including language-tagged strings, custom datatypes and
 subject selection.
