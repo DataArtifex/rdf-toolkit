@@ -179,7 +179,15 @@ heuristics by passing the <code class="docutils literal notranslate"><span class
 <p><code class="docutils literal notranslate"><span class="pre">RdfProperty</span></code> accepts optional <code class="docutils literal notranslate"><span class="pre">datatype</span></code> and <code class="docutils literal notranslate"><span class="pre">language</span></code> parameters to
 fine-tune literal serialisation. Datatypes may be defined as strings, namespace
 terms, or full <code class="docutils literal notranslate"><span class="pre">URIRef</span></code> instances.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">XSD</span>
+<p>Handle URIs specifically by choosing between resource identifiers or typed literals:</p>
+<ul class="simple">
+<li><p><strong>Resource identifiers</strong>: Use <code class="docutils literal notranslate"><span class="pre">rdflib.URIRef</span></code> as the field type. The toolkit
+will ensure these are emitted as URI nodes in the graph.</p></li>
+<li><p><strong>XSD.anyURI literals</strong>: Use <code class="docutils literal notranslate"><span class="pre">str</span></code> (or Pydantic’s <code class="docutils literal notranslate"><span class="pre">AnyUrl</span></code>) and set
+<code class="docutils literal notranslate"><span class="pre">datatype=XSD.anyURI</span></code>. This emits a literal with an explicit datatype.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyUrl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">XSD</span><span class="p">,</span> <span class="n">SCHEMA</span><span class="p">,</span> <span class="n">URIRef</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">Dataset</span><span class="p">(</span><span class="n">RdfBaseModel</span><span class="p">):</span>
@@ -189,9 +197,19 @@ terms, or full <code class="docutils literal notranslate"><span class="pre">URIR
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">title</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">EX</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">)]</span>
     <span class="n">created</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">EX</span><span class="o">.</span><span class="n">created</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">date</span><span class="p">)]</span>
+    <span class="c1"># Serialized as a URI Resource</span>
+    <span class="n">see_also</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">URIRef</span><span class="p">],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SCHEMA</span><span class="o">.</span><span class="n">seeAlso</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># Serialized as &quot;...&quot;^^xsd:anyURI</span>
+    <span class="n">download_url</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">AnyUrl</span><span class="p">],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SCHEMA</span><span class="o">.</span><span class="n">downloadUrl</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">anyURI</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<span class="n">dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;demo&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Example&quot;</span><span class="p">,</span> <span class="n">created</span><span class="o">=</span><span class="s2">&quot;2024-03-01&quot;</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;demo&quot;</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Example&quot;</span><span class="p">,</span>
+    <span class="n">created</span><span class="o">=</span><span class="s2">&quot;2024-03-01&quot;</span><span class="p">,</span>
+    <span class="n">see_also</span><span class="o">=</span><span class="n">URIRef</span><span class="p">(</span><span class="s2">&quot;https://example.org/docs&quot;</span><span class="p">),</span>
+    <span class="n">download_url</span><span class="o">=</span><span class="s2">&quot;https://example.org/files/data.zip&quot;</span>
+<span class="p">)</span>
 
 <span class="n">graph</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">to_rdf_graph</span><span class="p">()</span>
 </pre></div>
