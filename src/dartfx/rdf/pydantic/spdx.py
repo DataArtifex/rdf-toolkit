@@ -32,7 +32,7 @@ class SpdxResource(RdfBaseModel):
 class SpdxDocument(SpdxResource):
     """An SPDX Document."""
 
-    rdf_type: ClassVar[str] = str(SPDX.SpdxDocument)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.SpdxDocument)
 
     # Document properties
     spdx_version: Annotated[list[str] | None, RdfProperty(SPDX.spdxVersion)] = None
@@ -65,7 +65,7 @@ class SpdxDocument(SpdxResource):
 class CreationInfo(SpdxResource):
     """SPDX Creation Info."""
 
-    rdf_type: ClassVar[str] = str(SPDX.CreationInfo)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.CreationInfo)
 
     created: Annotated[list[str | datetime] | None, RdfProperty(SPDX.created)] = None
     creator: Annotated[list[str] | None, RdfProperty(SPDX.creator)] = None
@@ -76,7 +76,7 @@ class CreationInfo(SpdxResource):
 class Package(SpdxResource):
     """An SPDX Package."""
 
-    rdf_type: ClassVar[str] = str(SPDX.Package)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.Package)
 
     # Basic info
     name: Annotated[list[str] | None, RdfProperty(SPDX.name)] = None
@@ -127,7 +127,7 @@ class Package(SpdxResource):
 class File(SpdxResource):
     """An SPDX File."""
 
-    rdf_type: ClassVar[str] = str(SPDX.File)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.File)
 
     # Basic info
     file_name: Annotated[list[str] | None, RdfProperty(SPDX.fileName)] = None
@@ -160,7 +160,7 @@ class File(SpdxResource):
 class Checksum(SpdxResource):
     """An SPDX Checksum."""
 
-    rdf_type: ClassVar[str] = str(SPDX.Checksum)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.Checksum)
 
     algorithm: Annotated[list[str | URIRef] | None, RdfProperty(SPDX.algorithm)] = None
     checksum_value: Annotated[list[str] | None, RdfProperty(SPDX.checksumValue)] = None
@@ -169,7 +169,7 @@ class Checksum(SpdxResource):
 class PackageVerificationCode(SpdxResource):
     """An SPDX Package Verification Code."""
 
-    rdf_type: ClassVar[str] = str(SPDX.PackageVerificationCode)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.PackageVerificationCode)
 
     package_verification_code_value: Annotated[list[str] | None, RdfProperty(SPDX.packageVerificationCodeValue)] = None
     package_verification_code_excluded_file: Annotated[
@@ -180,7 +180,7 @@ class PackageVerificationCode(SpdxResource):
 class Relationship(SpdxResource):
     """An SPDX Relationship."""
 
-    rdf_type: ClassVar[str] = str(SPDX.Relationship)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.Relationship)
 
     relationship_type: Annotated[list[str | URIRef] | None, RdfProperty(SPDX.relationshipType)] = None
     related_spdx_element: Annotated[list[str | URIRef] | None, RdfProperty(SPDX.relatedSpdxElement)] = None
@@ -190,7 +190,7 @@ class Relationship(SpdxResource):
 class Annotation(SpdxResource):
     """An SPDX Annotation."""
 
-    rdf_type: ClassVar[str] = str(SPDX.Annotation)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.Annotation)
 
     annotator: Annotated[list[str] | None, RdfProperty(SPDX.annotator)] = None
     annotation_date: Annotated[list[str | datetime] | None, RdfProperty(SPDX.annotationDate)] = None
@@ -201,7 +201,7 @@ class Annotation(SpdxResource):
 class ExternalRef(SpdxResource):
     """An SPDX External Reference."""
 
-    rdf_type: ClassVar[str] = str(SPDX.ExternalRef)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.ExternalRef)
 
     reference_category: Annotated[list[str | URIRef] | None, RdfProperty(SPDX.referenceCategory)] = None
     reference_type: Annotated[list[str | URIRef] | None, RdfProperty(SPDX.referenceType)] = None
@@ -212,7 +212,7 @@ class ExternalRef(SpdxResource):
 class ExternalDocumentRef(SpdxResource):
     """An SPDX External Document Reference."""
 
-    rdf_type: ClassVar[str] = str(SPDX.ExternalDocumentRef)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.ExternalDocumentRef)
 
     external_document_id: Annotated[list[str] | None, RdfProperty(SPDX.externalDocumentId)] = None
     spdx_document: Annotated[list[str | URIRef] | None, RdfProperty(SPDX.spdxDocument)] = None
@@ -232,13 +232,13 @@ class License(SpdxResource):
 class ExtractedLicensingInfo(License):
     """An SPDX Extracted Licensing Info."""
 
-    rdf_type: ClassVar[str] = str(SPDX.ExtractedLicensingInfo)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.ExtractedLicensingInfo)
 
 
 class Snippet(SpdxResource):
     """An SPDX Snippet."""
 
-    rdf_type: ClassVar[str] = str(SPDX.Snippet)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.Snippet)
 
     snippet_from_file: Annotated[list[str | URIRef | File] | None, RdfProperty(SPDX.snippetFromFile)] = None
     snippet_byte_range: Annotated[list[str | URIRef] | None, RdfProperty(SPDX.snippetByteRange)] = None
@@ -253,7 +253,7 @@ class Snippet(SpdxResource):
 class Review(SpdxResource):
     """An SPDX Review."""
 
-    rdf_type: ClassVar[str] = str(SPDX.Review)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.Review)
 
     reviewer: Annotated[list[str] | None, RdfProperty(SPDX.reviewer)] = None
     review_date: Annotated[list[str | datetime] | None, RdfProperty(SPDX.reviewDate)] = None
@@ -263,7 +263,7 @@ class Review(SpdxResource):
 class LicenseException(SpdxResource):
     """An SPDX License Exception."""
 
-    rdf_type: ClassVar[str] = str(SPDX.LicenseException)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.LicenseException)
 
     license_exception_id: Annotated[list[str] | None, RdfProperty(SPDX.licenseExceptionId)] = None
     name: Annotated[list[str] | None, RdfProperty(SPDX.name)] = None
@@ -276,13 +276,13 @@ class LicenseException(SpdxResource):
 class SimpleLicensingInfo(License):
     """An SPDX Simple Licensing Info."""
 
-    rdf_type: ClassVar[str] = str(SPDX.SimpleLicensingInfo)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.SimpleLicensingInfo)
 
 
 class OrLaterOperator(License):
     """An SPDX Or Later Operator."""
 
-    rdf_type: ClassVar[str] = str(SPDX.OrLaterOperator)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.OrLaterOperator)
 
     member: Annotated[list[str | URIRef | License] | None, RdfProperty(SPDX.member)] = None
 
@@ -290,7 +290,7 @@ class OrLaterOperator(License):
 class WithExceptionOperator(License):
     """An SPDX With Exception Operator."""
 
-    rdf_type: ClassVar[str] = str(SPDX.WithExceptionOperator)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.WithExceptionOperator)
 
     member: Annotated[list[str | URIRef | License] | None, RdfProperty(SPDX.member)] = None
     license_exception: Annotated[list[str | URIRef | LicenseException] | None, RdfProperty(SPDX.licenseException)] = (
@@ -301,7 +301,7 @@ class WithExceptionOperator(License):
 class ConjunctiveLicenseSet(License):
     """An SPDX Conjunctive License Set."""
 
-    rdf_type: ClassVar[str] = str(SPDX.ConjunctiveLicenseSet)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.ConjunctiveLicenseSet)
 
     member: Annotated[list[str | URIRef | License] | None, RdfProperty(SPDX.member)] = None
 
@@ -309,7 +309,7 @@ class ConjunctiveLicenseSet(License):
 class DisjunctiveLicenseSet(License):
     """An SPDX Disjunctive License Set."""
 
-    rdf_type: ClassVar[str] = str(SPDX.DisjunctiveLicenseSet)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.DisjunctiveLicenseSet)
 
     member: Annotated[list[str | URIRef | License] | None, RdfProperty(SPDX.member)] = None
 
@@ -317,7 +317,7 @@ class DisjunctiveLicenseSet(License):
 class ReferenceType(SpdxResource):
     """An SPDX Reference Type."""
 
-    rdf_type: ClassVar[str] = str(SPDX.ReferenceType)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.ReferenceType)
 
     contextual_example: Annotated[list[str | URIRef] | None, RdfProperty(SPDX.contextualExample)] = None
     external_reference_site: Annotated[list[str | URIRef] | None, RdfProperty(SPDX.externalReferenceSite)] = None
@@ -327,7 +327,7 @@ class ReferenceType(SpdxResource):
 class FileType(SpdxResource):
     """An SPDX File Type."""
 
-    rdf_type: ClassVar[str] = str(SPDX.FileType)
+    rdf_type: ClassVar[str | URIRef | None] = str(SPDX.FileType)
 
 
 __all__ = [

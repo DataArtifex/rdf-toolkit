@@ -28,7 +28,7 @@ class OdrlResource(RdfBaseModel):
 class Policy(OdrlResource):
     """An ODRL Policy."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.Policy)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Policy)
 
     # Core policy properties
     uid: Annotated[list[str | URIRef] | None, RdfProperty(ODRL2.uid)] = None
@@ -47,19 +47,19 @@ class Policy(OdrlResource):
 class Set(Policy):
     """An ODRL Set Policy - no specific target."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.Set)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Set)
 
 
 class Offer(Policy):
     """An ODRL Offer - a policy offered by an assigner."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.Offer)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Offer)
 
 
 class Agreement(Policy):
     """An ODRL Agreement - a policy that has been agreed to."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.Agreement)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Agreement)
 
 
 class Rule(OdrlResource):
@@ -87,7 +87,7 @@ class Rule(OdrlResource):
 class Permission(Rule):
     """An ODRL Permission - the ability to perform an action."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.Permission)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Permission)
 
     # Duties
     duty: Annotated[list[str | URIRef | Duty] | None, RdfProperty(ODRL2.duty)] = None
@@ -96,7 +96,7 @@ class Permission(Rule):
 class Prohibition(Rule):
     """An ODRL Prohibition - the inability to perform an action."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.Prohibition)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Prohibition)
 
     # Remedies
     remedy: Annotated[list[str | URIRef | Duty] | None, RdfProperty(ODRL2.remedy)] = None
@@ -105,7 +105,7 @@ class Prohibition(Rule):
 class Duty(Rule):
     """An ODRL Duty - an obligation to perform an action."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.Duty)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Duty)
 
     # Consequences
     consequence: Annotated[list[str | URIRef | Duty] | None, RdfProperty(ODRL2.consequence)] = None
@@ -114,7 +114,7 @@ class Duty(Rule):
 class Action(OdrlResource):
     """An ODRL Action - an operation on an asset."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.Action)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Action)
 
     # Action refinement
     refinement: Annotated[list[str | URIRef | Constraint] | None, RdfProperty(ODRL2.refinement)] = None
@@ -124,7 +124,7 @@ class Action(OdrlResource):
 class Constraint(OdrlResource):
     """An ODRL Constraint - a boolean expression."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.Constraint)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Constraint)
 
     # Constraint properties
     left_operand: Annotated[list[str | URIRef] | None, RdfProperty(ODRL2.leftOperand)] = None
@@ -145,7 +145,7 @@ class Constraint(OdrlResource):
 class Party(OdrlResource):
     """An ODRL Party - an entity with a functional role."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.Party)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Party)
 
     # Party refinement
     refinement: Annotated[list[str | URIRef | Constraint] | None, RdfProperty(ODRL2.refinement)] = None
@@ -159,13 +159,13 @@ class Party(OdrlResource):
 class PartyCollection(OdrlResource):
     """An ODRL Party Collection - a group of parties."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.PartyCollection)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.PartyCollection)
 
 
 class Asset(OdrlResource):
     """An ODRL Asset - a resource that is the subject of a policy."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.Asset)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Asset)
 
     # Asset refinement
     refinement: Annotated[list[str | URIRef | Constraint] | None, RdfProperty(ODRL2.refinement)] = None
@@ -179,61 +179,61 @@ class Asset(OdrlResource):
 class AssetCollection(OdrlResource):
     """An ODRL Asset Collection - a group of assets."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.AssetCollection)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.AssetCollection)
 
 
 class Privacy(Policy):
     """An ODRL Privacy Policy."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.Privacy)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Privacy)
 
 
 class Ticket(Policy):
     """An ODRL Ticket."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.Ticket)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Ticket)
 
 
 class Assertion(Policy):
     """An ODRL Assertion."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.Assertion)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Assertion)
 
 
 class Request(Policy):
     """An ODRL Request."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.Request)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Request)
 
 
 class ConflictTerm(OdrlResource):
     """Conflict strategy preference."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.ConflictTerm)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.ConflictTerm)
 
 
 class LogicalConstraint(OdrlResource):
     """A logical constraint."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.LogicalConstraint)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.LogicalConstraint)
 
 
 class LeftOperand(OdrlResource):
     """Left operand for a constraint."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.LeftOperand)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.LeftOperand)
 
 
 class RightOperand(OdrlResource):
     """Right operand for a constraint."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.RightOperand)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.RightOperand)
 
 
 class Operator(OdrlResource):
     """Operator for a constraint."""
 
-    rdf_type: ClassVar[str] = str(ODRL2.Operator)
+    rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Operator)
 
 
 __all__ = [

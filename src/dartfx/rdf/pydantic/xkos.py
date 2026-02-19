@@ -31,7 +31,7 @@ class XkosResource(RdfBaseModel):
 class ClassificationLevel(XkosResource):
     """An XKOS Classification Level - a level in a statistical classification."""
 
-    rdf_type: ClassVar[str] = str(XKOS.ClassificationLevel)
+    rdf_type: ClassVar[str | URIRef | None] = str(XKOS.ClassificationLevel)
 
     # Level properties
     depth: Annotated[list[int] | None, RdfProperty(XKOS.depth)] = None
@@ -59,7 +59,7 @@ class ClassificationLevel(XkosResource):
 class ConceptAssociation(XkosResource):
     """An XKOS Concept Association - a relationship between concepts in different classifications."""
 
-    rdf_type: ClassVar[str] = str(XKOS.ConceptAssociation)
+    rdf_type: ClassVar[str | URIRef | None] = str(XKOS.ConceptAssociation)
 
     # Source and target
     source_concept: Annotated[list[str | URIRef] | None, RdfProperty(XKOS.sourceConcept)] = None
@@ -69,7 +69,7 @@ class ConceptAssociation(XkosResource):
 class Correspondence(XkosResource):
     """An XKOS Correspondence - a mapping between two classifications."""
 
-    rdf_type: ClassVar[str] = str(XKOS.Correspondence)
+    rdf_type: ClassVar[str | URIRef | None] = str(XKOS.Correspondence)
 
     # Source and target classifications
     compares: Annotated[list[str | URIRef] | None, RdfProperty(XKOS.compares)] = None
@@ -88,7 +88,7 @@ class Correspondence(XkosResource):
 class ExplanatoryNote(XkosResource):
     """An XKOS Explanatory Note - additional documentation for a concept."""
 
-    rdf_type: ClassVar[str] = str(XKOS.ExplanatoryNote)
+    rdf_type: ClassVar[str | URIRef | None] = str(XKOS.ExplanatoryNote)
 
     # Descriptive text
     plain_text: Annotated[list[str] | None, RdfProperty(XKOS.plainText)] = None
@@ -98,7 +98,7 @@ class ExplanatoryNote(XkosResource):
 class StatisticalConcept(XkosResource):
     """A SKOS Concept with XKOS extensions for statistical classifications."""
 
-    rdf_type: ClassVar[str] = str(SKOS.Concept)
+    rdf_type: ClassVar[str | URIRef | None] = str(SKOS.Concept)
 
     # SKOS properties
     pref_label: Annotated[list[str] | None, RdfProperty(SKOS.prefLabel)] = None
@@ -176,7 +176,7 @@ class StatisticalConcept(XkosResource):
 class StatisticalClassification(XkosResource):
     """A SKOS Concept Scheme representing a statistical classification."""
 
-    rdf_type: ClassVar[str] = str(SKOS.ConceptScheme)
+    rdf_type: ClassVar[str | URIRef | None] = str(SKOS.ConceptScheme)
 
     # Labels
     pref_label: Annotated[list[str] | None, RdfProperty(SKOS.prefLabel)] = None

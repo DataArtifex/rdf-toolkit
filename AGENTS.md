@@ -25,7 +25,7 @@ This toolkit provides **type-safe RDF serialization for Python** by bridging Pyd
 - Consider how changes affect both simple literals and complex nested object graphs
 
 **When fixing bugs:**
-- Test with both `Union[T, None]` and `T | None` type annotation syntaxes (Python 3.12+ compatibility)
+- Test with both `Union[T, None]` and `T | None` type annotation syntaxes (Python 3.10+ compatibility)
 - Verify fixes work with list fields, nested RdfBaseModel instances, and primitive types
 - Check that rdflib namespace handling remains compatible (especially with DefinedNamespace metaclasses)
 - Run the full test suite including nested serialization tests

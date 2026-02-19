@@ -27,7 +27,7 @@ class FoafResource(RdfBaseModel):
 class Agent(FoafResource):
     """An agent (person, group, software or physical artifact)."""
 
-    rdf_type: ClassVar[str] = str(FOAF.Agent)
+    rdf_type: ClassVar[str | URIRef | None] = str(FOAF.Agent)
 
     # Naming properties
     name: Annotated[list[str] | None, RdfProperty(FOAF.name)] = None
@@ -62,7 +62,7 @@ class Agent(FoafResource):
 class Person(Agent):
     """A person."""
 
-    rdf_type: ClassVar[str] = str(FOAF.Person)
+    rdf_type: ClassVar[str | URIRef | None] = str(FOAF.Person)
 
     # Personal info
     given_name: Annotated[list[str] | None, RdfProperty(FOAF.givenName)] = None
@@ -103,7 +103,7 @@ class Person(Agent):
 class Organization(Agent):
     """An organization."""
 
-    rdf_type: ClassVar[str] = str(FOAF.Organization)
+    rdf_type: ClassVar[str | URIRef | None] = str(FOAF.Organization)
 
     # Organization relationships
     member: Annotated[list[str | URIRef | Agent] | None, RdfProperty(FOAF.member)] = None
@@ -112,7 +112,7 @@ class Organization(Agent):
 class Group(Agent):
     """A group of agents."""
 
-    rdf_type: ClassVar[str] = str(FOAF.Group)
+    rdf_type: ClassVar[str | URIRef | None] = str(FOAF.Group)
 
     # Group membership
     member: Annotated[list[str | URIRef | Agent] | None, RdfProperty(FOAF.member)] = None
@@ -121,7 +121,7 @@ class Group(Agent):
 class Document(FoafResource):
     """A document."""
 
-    rdf_type: ClassVar[str] = str(FOAF.Document)
+    rdf_type: ClassVar[str | URIRef | None] = str(FOAF.Document)
 
     topic: Annotated[list[str | URIRef] | None, RdfProperty(FOAF.topic)] = None
     primary_topic: Annotated[list[str | URIRef] | None, RdfProperty(FOAF.primaryTopic)] = None
@@ -130,7 +130,7 @@ class Document(FoafResource):
 class Image(Document):
     """An image."""
 
-    rdf_type: ClassVar[str] = str(FOAF.Image)
+    rdf_type: ClassVar[str | URIRef | None] = str(FOAF.Image)
 
     depicts: Annotated[list[str | URIRef] | None, RdfProperty(FOAF.depicts)] = None
     thumbnail: Annotated[list[str | URIRef] | None, RdfProperty(FOAF.thumbnail)] = None
@@ -139,7 +139,7 @@ class Image(Document):
 class OnlineAccount(FoafResource):
     """An online account."""
 
-    rdf_type: ClassVar[str] = str(FOAF.OnlineAccount)
+    rdf_type: ClassVar[str | URIRef | None] = str(FOAF.OnlineAccount)
 
     account_name: Annotated[list[str] | None, RdfProperty(FOAF.accountName)] = None
     account_service_homepage: Annotated[list[str | URIRef] | None, RdfProperty(FOAF.accountServiceHomepage)] = None
@@ -148,31 +148,31 @@ class OnlineAccount(FoafResource):
 class OnlineChatAccount(OnlineAccount):
     """An online chat account."""
 
-    rdf_type: ClassVar[str] = str(FOAF.OnlineChatAccount)
+    rdf_type: ClassVar[str | URIRef | None] = str(FOAF.OnlineChatAccount)
 
 
 class OnlineEcommerceAccount(OnlineAccount):
     """An online e-commerce account."""
 
-    rdf_type: ClassVar[str] = str(FOAF.OnlineEcommerceAccount)
+    rdf_type: ClassVar[str | URIRef | None] = str(FOAF.OnlineEcommerceAccount)
 
 
 class OnlineGamingAccount(OnlineAccount):
     """An online gaming account."""
 
-    rdf_type: ClassVar[str] = str(FOAF.OnlineGamingAccount)
+    rdf_type: ClassVar[str | URIRef | None] = str(FOAF.OnlineGamingAccount)
 
 
 class PersonalProfileDocument(Document):
     """A personal profile document."""
 
-    rdf_type: ClassVar[str] = str(FOAF.PersonalProfileDocument)
+    rdf_type: ClassVar[str | URIRef | None] = str(FOAF.PersonalProfileDocument)
 
 
 class Project(FoafResource):
     """A project (a collective endeavour of some kind)."""
 
-    rdf_type: ClassVar[str] = str(FOAF.Project)
+    rdf_type: ClassVar[str | URIRef | None] = str(FOAF.Project)
 
     name: Annotated[list[str] | None, RdfProperty(FOAF.name)] = None
     homepage: Annotated[list[str | URIRef] | None, RdfProperty(FOAF.homepage)] = None
@@ -183,7 +183,7 @@ class Project(FoafResource):
 class LabelProperty(FoafResource):
     """A label property."""
 
-    rdf_type: ClassVar[str] = str(FOAF.LabelProperty)
+    rdf_type: ClassVar[str | URIRef | None] = str(FOAF.LabelProperty)
 
 
 __all__ = [

@@ -29,7 +29,7 @@ class ProvResource(RdfBaseModel):
 class Entity(ProvResource):
     """A PROV Entity - a physical, digital, conceptual, or other kind of thing."""
 
-    rdf_type: ClassVar[str] = str(PROV.Entity)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.Entity)
 
     # Generation and invalidation
     was_generated_by: Annotated[list[str | URIRef | Activity] | None, RdfProperty(PROV.wasGeneratedBy)] = None
@@ -66,7 +66,7 @@ class Entity(ProvResource):
 class Activity(ProvResource):
     """A PROV Activity - something that occurs over a period of time."""
 
-    rdf_type: ClassVar[str] = str(PROV.Activity)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.Activity)
 
     # Timing
     started_at_time: Annotated[list[str | datetime] | None, RdfProperty(PROV.startedAtTime)] = None
@@ -103,7 +103,7 @@ class Activity(ProvResource):
 class Agent(ProvResource):
     """A PROV Agent - something that bears some form of responsibility."""
 
-    rdf_type: ClassVar[str] = str(PROV.Agent)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.Agent)
 
     # Agency relationships
     acted_on_behalf_of: Annotated[list[str | URIRef | Agent] | None, RdfProperty(PROV.actedOnBehalfOf)] = None
@@ -124,31 +124,31 @@ class Agent(ProvResource):
 class Person(Agent):
     """A PROV Person."""
 
-    rdf_type: ClassVar[str] = str(PROV.Person)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.Person)
 
 
 class Organization(Agent):
     """A PROV Organization."""
 
-    rdf_type: ClassVar[str] = str(PROV.Organization)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.Organization)
 
 
 class SoftwareAgent(Agent):
     """A PROV Software Agent."""
 
-    rdf_type: ClassVar[str] = str(PROV.SoftwareAgent)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.SoftwareAgent)
 
 
 class Bundle(Entity):
     """A PROV Bundle - a named set of provenance descriptions."""
 
-    rdf_type: ClassVar[str] = str(PROV.Bundle)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.Bundle)
 
 
 class Collection(Entity):
     """A PROV Collection - an entity that provides a structure for its members."""
 
-    rdf_type: ClassVar[str] = str(PROV.Collection)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.Collection)
 
     had_member: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.hadMember)] = None
 
@@ -156,13 +156,13 @@ class Collection(Entity):
 class Plan(Entity):
     """A PROV Plan - a set of actions or steps intended by an agent."""
 
-    rdf_type: ClassVar[str] = str(PROV.Plan)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.Plan)
 
 
 class Association(ProvResource):
     """A PROV Association - an assignment of responsibility to an agent."""
 
-    rdf_type: ClassVar[str] = str(PROV.Association)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.Association)
 
     agent: Annotated[list[str | URIRef | Agent] | None, RdfProperty(PROV.agent)] = None
     had_plan: Annotated[list[str | URIRef | Plan] | None, RdfProperty(PROV.hadPlan)] = None
@@ -172,7 +172,7 @@ class Association(ProvResource):
 class Delegation(ProvResource):
     """A PROV Delegation - responsibility transfer from one agent to another."""
 
-    rdf_type: ClassVar[str] = str(PROV.Delegation)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.Delegation)
 
     agent: Annotated[list[str | URIRef | Agent] | None, RdfProperty(PROV.agent)] = None
     had_activity: Annotated[list[str | URIRef | Activity] | None, RdfProperty(PROV.hadActivity)] = None
@@ -182,7 +182,7 @@ class Delegation(ProvResource):
 class Usage(ProvResource):
     """A PROV Usage - consumption of an entity by an activity."""
 
-    rdf_type: ClassVar[str] = str(PROV.Usage)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.Usage)
 
     entity: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.entity)] = None
     had_role: Annotated[list[str | URIRef | Role] | None, RdfProperty(PROV.hadRole)] = None
@@ -192,7 +192,7 @@ class Usage(ProvResource):
 class Generation(ProvResource):
     """A PROV Generation - completion of production of a new entity."""
 
-    rdf_type: ClassVar[str] = str(PROV.Generation)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.Generation)
 
     entity: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.entity)] = None
     activity: Annotated[list[str | URIRef | Activity] | None, RdfProperty(PROV.activity)] = None
@@ -203,7 +203,7 @@ class Generation(ProvResource):
 class Derivation(ProvResource):
     """A PROV Derivation - transformation of an entity into another."""
 
-    rdf_type: ClassVar[str] = str(PROV.Derivation)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.Derivation)
 
     entity: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.entity)] = None
     had_generation: Annotated[list[str | URIRef | Generation] | None, RdfProperty(PROV.hadGeneration)] = None
@@ -214,13 +214,13 @@ class Derivation(ProvResource):
 class Role(ProvResource):
     """A PROV Role - function of an entity or agent in an activity."""
 
-    rdf_type: ClassVar[str] = str(PROV.Role)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.Role)
 
 
 class Influence(ProvResource):
     """A PROV Influence - capacity of an entity, activity, or agent to have an effect on another."""
 
-    rdf_type: ClassVar[str] = str(PROV.Influence)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.Influence)
 
     influencer: Annotated[
         list[str | URIRef | Agent | Entity | Activity] | None,
@@ -236,7 +236,7 @@ class Influence(ProvResource):
 class InstantaneousEvent(ProvResource):
     """A PROV Instantaneous Event - happens at a specific instant in time."""
 
-    rdf_type: ClassVar[str] = str(PROV.InstantaneousEvent)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.InstantaneousEvent)
 
     at_time: Annotated[list[str | datetime] | None, RdfProperty(PROV.atTime)] = None
     had_role: Annotated[list[str | URIRef | Role] | None, RdfProperty(PROV.hadRole)] = None
@@ -246,13 +246,13 @@ class InstantaneousEvent(ProvResource):
 class Location(ProvResource):
     """A PROV Location - an identifiable geographic place."""
 
-    rdf_type: ClassVar[str] = str(PROV.Location)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.Location)
 
 
 class End(InstantaneousEvent, Influence):
     """A PROV End - when an activity is deemed to have ended."""
 
-    rdf_type: ClassVar[str] = str(PROV.End)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.End)
 
     had_activity: Annotated[list[str | URIRef | Activity] | None, RdfProperty(PROV.hadActivity)] = None
     entity: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.entity)] = None
@@ -261,7 +261,7 @@ class End(InstantaneousEvent, Influence):
 class Start(InstantaneousEvent, Influence):
     """A PROV Start - when an activity is deemed to have started."""
 
-    rdf_type: ClassVar[str] = str(PROV.Start)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.Start)
 
     had_activity: Annotated[list[str | URIRef | Activity] | None, RdfProperty(PROV.hadActivity)] = None
     entity: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.entity)] = None
@@ -270,7 +270,7 @@ class Start(InstantaneousEvent, Influence):
 class EmptyCollection(Collection):
     """A PROV Empty Collection - a collection with no members."""
 
-    rdf_type: ClassVar[str] = str(PROV.EmptyCollection)
+    rdf_type: ClassVar[str | URIRef | None] = str(PROV.EmptyCollection)
 
 
 __all__ = [
