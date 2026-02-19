@@ -95,7 +95,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">ClassVar</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">SKOS</span><span class="p">,</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">URIRef</span>
 
@@ -110,8 +110,8 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">XkosResource</span><span class="p">(</span><span class="n">RdfBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for XKOS resources.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_namespace</span> <span class="o">=</span> <span class="n">XKOS</span>
-    <span class="n">rdf_prefixes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;xkos&quot;</span><span class="p">:</span> <span class="n">XKOS</span><span class="p">,</span> <span class="s2">&quot;skos&quot;</span><span class="p">:</span> <span class="n">SKOS</span><span class="p">}</span></div>
+    <span class="n">rdf_namespace</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="n">XKOS</span>
+    <span class="n">rdf_prefixes</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;xkos&quot;</span><span class="p">:</span> <span class="n">XKOS</span><span class="p">,</span> <span class="s2">&quot;skos&quot;</span><span class="p">:</span> <span class="n">SKOS</span><span class="p">}</span>  <span class="c1"># type: ignore[dict-item]</span></div>
 
 
 
@@ -120,7 +120,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">ClassificationLevel</span><span class="p">(</span><span class="n">XkosResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An XKOS Classification Level - a level in a statistical classification.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">ClassificationLevel</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">ClassificationLevel</span><span class="p">)</span>
 
     <span class="c1"># Level properties</span>
     <span class="n">depth</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">depth</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -151,7 +151,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">ConceptAssociation</span><span class="p">(</span><span class="n">XkosResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An XKOS Concept Association - a relationship between concepts in different classifications.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">ConceptAssociation</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">ConceptAssociation</span><span class="p">)</span>
 
     <span class="c1"># Source and target</span>
     <span class="n">source_concept</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">sourceConcept</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -164,7 +164,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Correspondence</span><span class="p">(</span><span class="n">XkosResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An XKOS Correspondence - a mapping between two classifications.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">Correspondence</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">Correspondence</span><span class="p">)</span>
 
     <span class="c1"># Source and target classifications</span>
     <span class="n">compares</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">compares</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -186,7 +186,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">ExplanatoryNote</span><span class="p">(</span><span class="n">XkosResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An XKOS Explanatory Note - additional documentation for a concept.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">ExplanatoryNote</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">ExplanatoryNote</span><span class="p">)</span>
 
     <span class="c1"># Descriptive text</span>
     <span class="n">plain_text</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">plainText</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -199,7 +199,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">StatisticalConcept</span><span class="p">(</span><span class="n">XkosResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A SKOS Concept with XKOS extensions for statistical classifications.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">Concept</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">Concept</span><span class="p">)</span>
 
     <span class="c1"># SKOS properties</span>
     <span class="n">pref_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">prefLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -280,7 +280,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">StatisticalClassification</span><span class="p">(</span><span class="n">XkosResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A SKOS Concept Scheme representing a statistical classification.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">ConceptScheme</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">ConceptScheme</span><span class="p">)</span>
 
     <span class="c1"># Labels</span>
     <span class="n">pref_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">prefLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>

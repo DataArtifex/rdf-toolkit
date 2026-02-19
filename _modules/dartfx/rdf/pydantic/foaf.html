@@ -94,7 +94,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">ClassVar</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">FOAF</span><span class="p">,</span> <span class="n">URIRef</span>
 
@@ -106,8 +106,8 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">FoafResource</span><span class="p">(</span><span class="n">RdfBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for FOAF resources.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_namespace</span> <span class="o">=</span> <span class="n">FOAF</span>
-    <span class="n">rdf_prefixes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;foaf&quot;</span><span class="p">:</span> <span class="n">FOAF</span><span class="p">}</span></div>
+    <span class="n">rdf_namespace</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="n">FOAF</span>  <span class="c1"># type: ignore[assignment]</span>
+    <span class="n">rdf_prefixes</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;foaf&quot;</span><span class="p">:</span> <span class="n">FOAF</span><span class="p">}</span>  <span class="c1"># type: ignore[dict-item]</span></div>
 
 
 
@@ -116,7 +116,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Agent</span><span class="p">(</span><span class="n">FoafResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An agent (person, group, software or physical artifact).&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">Agent</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">Agent</span><span class="p">)</span>
 
     <span class="c1"># Naming properties</span>
     <span class="n">name</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -154,7 +154,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Person</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A person.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">Person</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">Person</span><span class="p">)</span>
 
     <span class="c1"># Personal info</span>
     <span class="n">given_name</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">givenName</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -198,7 +198,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Organization</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An organization.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">Organization</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">Organization</span><span class="p">)</span>
 
     <span class="c1"># Organization relationships</span>
     <span class="n">member</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Agent</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">member</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -210,7 +210,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Group</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A group of agents.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">Group</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">Group</span><span class="p">)</span>
 
     <span class="c1"># Group membership</span>
     <span class="n">member</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Agent</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">member</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -222,7 +222,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Document</span><span class="p">(</span><span class="n">FoafResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A document.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">Document</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">Document</span><span class="p">)</span>
 
     <span class="n">topic</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">topic</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">primary_topic</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">primaryTopic</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -234,7 +234,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Image</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An image.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">Image</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">Image</span><span class="p">)</span>
 
     <span class="n">depicts</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">depicts</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">thumbnail</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">thumbnail</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -246,7 +246,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">OnlineAccount</span><span class="p">(</span><span class="n">FoafResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An online account.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">OnlineAccount</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">OnlineAccount</span><span class="p">)</span>
 
     <span class="n">account_name</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">accountName</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">account_service_homepage</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">accountServiceHomepage</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -258,7 +258,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">OnlineChatAccount</span><span class="p">(</span><span class="n">OnlineAccount</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An online chat account.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">OnlineChatAccount</span><span class="p">)</span></div>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">OnlineChatAccount</span><span class="p">)</span></div>
 
 
 
@@ -267,7 +267,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">OnlineEcommerceAccount</span><span class="p">(</span><span class="n">OnlineAccount</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An online e-commerce account.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">OnlineEcommerceAccount</span><span class="p">)</span></div>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">OnlineEcommerceAccount</span><span class="p">)</span></div>
 
 
 
@@ -276,7 +276,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">OnlineGamingAccount</span><span class="p">(</span><span class="n">OnlineAccount</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An online gaming account.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">OnlineGamingAccount</span><span class="p">)</span></div>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">OnlineGamingAccount</span><span class="p">)</span></div>
 
 
 
@@ -285,7 +285,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">PersonalProfileDocument</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A personal profile document.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">PersonalProfileDocument</span><span class="p">)</span></div>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">PersonalProfileDocument</span><span class="p">)</span></div>
 
 
 
@@ -294,7 +294,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Project</span><span class="p">(</span><span class="n">FoafResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A project (a collective endeavour of some kind).&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">Project</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">Project</span><span class="p">)</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">homepage</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">homepage</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -308,7 +308,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">LabelProperty</span><span class="p">(</span><span class="n">FoafResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A label property.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">LabelProperty</span><span class="p">)</span></div>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">FOAF</span><span class="o">.</span><span class="n">LabelProperty</span><span class="p">)</span></div>
 
 
 

@@ -96,7 +96,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">ClassVar</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">URIRef</span>
 
@@ -111,8 +111,8 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">SpdxResource</span><span class="p">(</span><span class="n">RdfBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for SPDX resources.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_namespace</span> <span class="o">=</span> <span class="n">SPDX</span>
-    <span class="n">rdf_prefixes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;spdx&quot;</span><span class="p">:</span> <span class="n">SPDX</span><span class="p">}</span></div>
+    <span class="n">rdf_namespace</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="n">SPDX</span>
+    <span class="n">rdf_prefixes</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;spdx&quot;</span><span class="p">:</span> <span class="n">SPDX</span><span class="p">}</span></div>
 
 
 
@@ -121,7 +121,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">SpdxDocument</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Document.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">SpdxDocument</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">SpdxDocument</span><span class="p">)</span>
 
     <span class="c1"># Document properties</span>
     <span class="n">spdx_version</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">spdxVersion</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -157,7 +157,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">CreationInfo</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;SPDX Creation Info.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">CreationInfo</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">CreationInfo</span><span class="p">)</span>
 
     <span class="n">created</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">datetime</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">created</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">creator</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">creator</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -171,7 +171,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Package</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Package.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Package</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Package</span><span class="p">)</span>
 
     <span class="c1"># Basic info</span>
     <span class="n">name</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -225,7 +225,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">File</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX File.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">File</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">File</span><span class="p">)</span>
 
     <span class="c1"># Basic info</span>
     <span class="n">file_name</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">fileName</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -261,7 +261,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Checksum</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Checksum.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Checksum</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Checksum</span><span class="p">)</span>
 
     <span class="n">algorithm</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">algorithm</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">checksum_value</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">checksumValue</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -273,7 +273,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">PackageVerificationCode</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Package Verification Code.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">PackageVerificationCode</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">PackageVerificationCode</span><span class="p">)</span>
 
     <span class="n">package_verification_code_value</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">packageVerificationCodeValue</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">package_verification_code_excluded_file</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
@@ -287,7 +287,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Relationship</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Relationship.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Relationship</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Relationship</span><span class="p">)</span>
 
     <span class="n">relationship_type</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">relationshipType</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">related_spdx_element</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">relatedSpdxElement</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -300,7 +300,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Annotation</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Annotation.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Annotation</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Annotation</span><span class="p">)</span>
 
     <span class="n">annotator</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">annotator</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">annotation_date</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">datetime</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">annotationDate</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -314,7 +314,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">ExternalRef</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX External Reference.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">ExternalRef</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">ExternalRef</span><span class="p">)</span>
 
     <span class="n">reference_category</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">referenceCategory</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">reference_type</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">referenceType</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -328,7 +328,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">ExternalDocumentRef</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX External Document Reference.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">ExternalDocumentRef</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">ExternalDocumentRef</span><span class="p">)</span>
 
     <span class="n">external_document_id</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">externalDocumentId</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">spdx_document</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">spdxDocument</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -354,7 +354,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">ExtractedLicensingInfo</span><span class="p">(</span><span class="n">License</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Extracted Licensing Info.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">ExtractedLicensingInfo</span><span class="p">)</span></div>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">ExtractedLicensingInfo</span><span class="p">)</span></div>
 
 
 
@@ -363,7 +363,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Snippet</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Snippet.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Snippet</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Snippet</span><span class="p">)</span>
 
     <span class="n">snippet_from_file</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">File</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">snippetFromFile</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">snippet_byte_range</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">snippetByteRange</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -381,7 +381,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Review</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Review.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Review</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">Review</span><span class="p">)</span>
 
     <span class="n">reviewer</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">reviewer</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">review_date</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">datetime</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">reviewDate</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -394,7 +394,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">LicenseException</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX License Exception.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">LicenseException</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">LicenseException</span><span class="p">)</span>
 
     <span class="n">license_exception_id</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseExceptionId</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">name</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -410,7 +410,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">SimpleLicensingInfo</span><span class="p">(</span><span class="n">License</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Simple Licensing Info.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">SimpleLicensingInfo</span><span class="p">)</span></div>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">SimpleLicensingInfo</span><span class="p">)</span></div>
 
 
 
@@ -419,7 +419,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">OrLaterOperator</span><span class="p">(</span><span class="n">License</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Or Later Operator.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">OrLaterOperator</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">OrLaterOperator</span><span class="p">)</span>
 
     <span class="n">member</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">License</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">member</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
@@ -430,7 +430,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">WithExceptionOperator</span><span class="p">(</span><span class="n">License</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX With Exception Operator.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">WithExceptionOperator</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">WithExceptionOperator</span><span class="p">)</span>
 
     <span class="n">member</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">License</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">member</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">license_exception</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">LicenseException</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">licenseException</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span>
@@ -444,7 +444,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">ConjunctiveLicenseSet</span><span class="p">(</span><span class="n">License</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Conjunctive License Set.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">ConjunctiveLicenseSet</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">ConjunctiveLicenseSet</span><span class="p">)</span>
 
     <span class="n">member</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">License</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">member</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
@@ -455,7 +455,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">DisjunctiveLicenseSet</span><span class="p">(</span><span class="n">License</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Disjunctive License Set.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">DisjunctiveLicenseSet</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">DisjunctiveLicenseSet</span><span class="p">)</span>
 
     <span class="n">member</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">License</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">member</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
@@ -466,7 +466,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">ReferenceType</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX Reference Type.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">ReferenceType</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">ReferenceType</span><span class="p">)</span>
 
     <span class="n">contextual_example</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">contextualExample</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">external_reference_site</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">externalReferenceSite</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -479,7 +479,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">FileType</span><span class="p">(</span><span class="n">SpdxResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An SPDX File Type.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">FileType</span><span class="p">)</span></div>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SPDX</span><span class="o">.</span><span class="n">FileType</span><span class="p">)</span></div>
 
 
 

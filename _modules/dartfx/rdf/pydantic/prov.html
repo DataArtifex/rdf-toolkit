@@ -96,7 +96,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">ClassVar</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">PROV</span><span class="p">,</span> <span class="n">URIRef</span>
 
@@ -108,8 +108,8 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">ProvResource</span><span class="p">(</span><span class="n">RdfBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for PROV resources.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_namespace</span> <span class="o">=</span> <span class="n">PROV</span>
-    <span class="n">rdf_prefixes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;prov&quot;</span><span class="p">:</span> <span class="n">PROV</span><span class="p">}</span></div>
+    <span class="n">rdf_namespace</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="n">PROV</span>  <span class="c1"># type: ignore[assignment]</span>
+    <span class="n">rdf_prefixes</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;prov&quot;</span><span class="p">:</span> <span class="n">PROV</span><span class="p">}</span>  <span class="c1"># type: ignore[dict-item]</span></div>
 
 
 
@@ -118,7 +118,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Entity</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Entity - a physical, digital, conceptual, or other kind of thing.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Entity</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Entity</span><span class="p">)</span>
 
     <span class="c1"># Generation and invalidation</span>
     <span class="n">was_generated_by</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Activity</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">wasGeneratedBy</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -158,7 +158,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Activity</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Activity - something that occurs over a period of time.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Activity</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Activity</span><span class="p">)</span>
 
     <span class="c1"># Timing</span>
     <span class="n">started_at_time</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">datetime</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">startedAtTime</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -198,7 +198,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Agent</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Agent - something that bears some form of responsibility.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Agent</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Agent</span><span class="p">)</span>
 
     <span class="c1"># Agency relationships</span>
     <span class="n">acted_on_behalf_of</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Agent</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">actedOnBehalfOf</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -222,7 +222,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Person</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Person.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Person</span><span class="p">)</span></div>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Person</span><span class="p">)</span></div>
 
 
 
@@ -231,7 +231,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Organization</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Organization.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Organization</span><span class="p">)</span></div>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Organization</span><span class="p">)</span></div>
 
 
 
@@ -240,7 +240,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">SoftwareAgent</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Software Agent.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">SoftwareAgent</span><span class="p">)</span></div>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">SoftwareAgent</span><span class="p">)</span></div>
 
 
 
@@ -249,7 +249,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Bundle</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Bundle - a named set of provenance descriptions.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Bundle</span><span class="p">)</span></div>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Bundle</span><span class="p">)</span></div>
 
 
 
@@ -258,7 +258,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Collection</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Collection - an entity that provides a structure for its members.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Collection</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Collection</span><span class="p">)</span>
 
     <span class="n">had_member</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadMember</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
@@ -269,7 +269,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Plan</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Plan - a set of actions or steps intended by an agent.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Plan</span><span class="p">)</span></div>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Plan</span><span class="p">)</span></div>
 
 
 
@@ -278,7 +278,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Association</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Association - an assignment of responsibility to an agent.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Association</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Association</span><span class="p">)</span>
 
     <span class="n">agent</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Agent</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">agent</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">had_plan</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Plan</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadPlan</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -291,7 +291,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Delegation</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Delegation - responsibility transfer from one agent to another.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Delegation</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Delegation</span><span class="p">)</span>
 
     <span class="n">agent</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Agent</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">agent</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">had_activity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Activity</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadActivity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -304,7 +304,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Usage</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Usage - consumption of an entity by an activity.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Usage</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Usage</span><span class="p">)</span>
 
     <span class="n">entity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">entity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">had_role</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Role</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadRole</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -317,7 +317,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Generation</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Generation - completion of production of a new entity.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Generation</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Generation</span><span class="p">)</span>
 
     <span class="n">entity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">entity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">activity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Activity</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">activity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -331,7 +331,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Derivation</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Derivation - transformation of an entity into another.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Derivation</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Derivation</span><span class="p">)</span>
 
     <span class="n">entity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">entity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">had_generation</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Generation</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadGeneration</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -345,7 +345,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Role</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Role - function of an entity or agent in an activity.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Role</span><span class="p">)</span></div>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Role</span><span class="p">)</span></div>
 
 
 
@@ -354,7 +354,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Influence</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Influence - capacity of an entity, activity, or agent to have an effect on another.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Influence</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Influence</span><span class="p">)</span>
 
     <span class="n">influencer</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
         <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Agent</span> <span class="o">|</span> <span class="n">Entity</span> <span class="o">|</span> <span class="n">Activity</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
@@ -373,7 +373,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">InstantaneousEvent</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Instantaneous Event - happens at a specific instant in time.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">InstantaneousEvent</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">InstantaneousEvent</span><span class="p">)</span>
 
     <span class="n">at_time</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">datetime</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">atTime</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">had_role</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Role</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadRole</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -386,7 +386,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Location</span><span class="p">(</span><span class="n">ProvResource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Location - an identifiable geographic place.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Location</span><span class="p">)</span></div>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Location</span><span class="p">)</span></div>
 
 
 
@@ -395,7 +395,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">End</span><span class="p">(</span><span class="n">InstantaneousEvent</span><span class="p">,</span> <span class="n">Influence</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV End - when an activity is deemed to have ended.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">End</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">End</span><span class="p">)</span>
 
     <span class="n">had_activity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Activity</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadActivity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">entity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">entity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -407,7 +407,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Start</span><span class="p">(</span><span class="n">InstantaneousEvent</span><span class="p">,</span> <span class="n">Influence</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Start - when an activity is deemed to have started.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Start</span><span class="p">)</span>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">Start</span><span class="p">)</span>
 
     <span class="n">had_activity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Activity</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">hadActivity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">entity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">entity</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -419,7 +419,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">EmptyCollection</span><span class="p">(</span><span class="n">Collection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A PROV Empty Collection - a collection with no members.&quot;&quot;&quot;</span>
 
-    <span class="n">rdf_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">EmptyCollection</span><span class="p">)</span></div>
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">PROV</span><span class="o">.</span><span class="n">EmptyCollection</span><span class="p">)</span></div>
 
 
 
