@@ -140,6 +140,7 @@ See Also
 from __future__ import annotations
 
 import re
+import types
 import uuid
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass
@@ -1146,7 +1147,8 @@ def _field_type_info(field: Any) -> tuple[bool, Any]:
     annotation = _unwrap_annotation(annotation)
 
     origin = get_origin(annotation)
-    if origin is Union:
+    # Handle both Union[T, None] and T | None syntax
+    if origin is Union or origin is types.UnionType:
         args = [arg for arg in get_args(annotation) if arg is not type(None)]
         if len(args) == 1:
             annotation = _unwrap_annotation(args[0])
