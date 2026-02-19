@@ -21,14 +21,14 @@ Define a model by inheriting from RdfBaseModel and annotating fields with RdfPro
     from typing import Annotated, Optional, List
     from rdflib import Namespace, URIRef
     from dartfx.rdf.pydantic import RdfBaseModel, RdfProperty
-    
+
     FOAF = Namespace("http://xmlns.com/foaf/0.1/")
-    
+
     class Person(RdfBaseModel):
         rdf_type: str = str(FOAF.Person)
         rdf_namespace = FOAF
         rdf_prefixes = {"foaf": FOAF}
-        
+
         name: Annotated[Optional[List[str]], RdfProperty(FOAF.name)] = None
         email: Annotated[Optional[List[str]], RdfProperty(FOAF.mbox)] = None
         knows: Annotated[Optional[List[URIRef | Person]], RdfProperty(FOAF.knows)] = None
@@ -63,10 +63,10 @@ Custom serializers and parsers::
 
     def serialize_date(d: date) -> str:
         return d.isoformat()
-    
+
     def parse_date(node: Literal) -> date:
         return date.fromisoformat(str(node))
-    
+
     birth_date: Annotated[Optional[date], RdfProperty(
         SCHEMA.birthDate,
         serializer=serialize_date,
@@ -93,14 +93,14 @@ Examples
 Simple metadata example::
 
     from rdflib import Namespace, DCTERMS
-    
+
     class Document(RdfBaseModel):
         rdf_namespace = DCTERMS
         rdf_prefixes = {"dcterms": DCTERMS}
-        
+
         title: Annotated[Optional[List[str]], RdfProperty(DCTERMS.title)] = None
         creator: Annotated[Optional[List[str]], RdfProperty(DCTERMS.creator)] = None
-    
+
     doc = Document(title=["My Document"], creator=["John Doe"])
     print(doc.to_rdf("turtle"))
 
@@ -109,12 +109,12 @@ Nested objects example::
     class Organization(RdfBaseModel):
         rdf_type: str = str(FOAF.Organization)
         name: Annotated[Optional[List[str]], RdfProperty(FOAF.name)] = None
-    
+
     class Person(RdfBaseModel):
         rdf_type: str = str(FOAF.Person)
         name: Annotated[Optional[List[str]], RdfProperty(FOAF.name)] = None
         works_for: Annotated[Optional[List[Organization]], RdfProperty(FOAF.workplaceHomepage)] = None
-    
+
     org = Organization(name=["ACME Corp"])
     person = Person(name=["Alice"], works_for=[org])
     # Both person and organization are serialized to the graph
@@ -139,17 +139,25 @@ See Also
 
 from __future__ import annotations
 
+import re
+import uuid
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from datetime import date, datetime, time
 from decimal import Decimal
 from enum import Enum
-import re
-from typing import Any, ClassVar, Dict, Iterable, Optional, Tuple, Type, TypeVar, Union, get_args, get_origin, Annotated
-import uuid
+from typing import (
+    Annotated,
+    Any,
+    ClassVar,
+    TypeVar,
+    Union,
+    get_args,
+    get_origin,
+)
 
 from pydantic import BaseModel, ConfigDict, Field
-from rdflib import Graph, Literal, Namespace, RDF, URIRef, XSD, BNode
-from typing import Callable
+from rdflib import RDF, XSD, BNode, Graph, Literal, Namespace, URIRef
 
 T = TypeVar("T", bound="RdfBaseModel")
 
@@ -157,38 +165,38 @@ T = TypeVar("T", bound="RdfBaseModel")
 @dataclass(frozen=True)
 class RdfProperty:
     """Metadata descriptor for mapping Pydantic fields to RDF predicates.
-    
+
     This class is used as metadata in type annotations to specify how a Pydantic
     field should be serialized to and deserialized from RDF. It provides control
     over the RDF predicate URI, datatype, language tags, and custom serialization.
-    
+
     Parameters
     ----------
     predicate : str | URIRef
         The RDF predicate URI for this property. Can be a string URI or an
         rdflib URIRef. Typically uses a namespace property like `FOAF.name`.
-        
+
     datatype : str | URIRef | None, optional
         The XSD datatype URI for literal values. If None, the datatype is
         inferred from the Python type. Examples: XSD.string, XSD.integer,
         XSD.dateTime. Default is None.
-        
+
     language : str | None, optional
         The language tag for string literals (e.g., "en", "fr", "de").
         Creates language-tagged RDF literals. Cannot be used with datatype.
         Default is None.
-        
+
     serializer : Callable | None, optional
         A custom function to transform Python values before RDF serialization.
         Signature: (value: Any) -> Any. The returned value should be compatible
         with RDF serialization (str, int, URIRef, Literal, etc.).
         Default is None.
-        
-    parser : Callable | None, optional  
+
+    parser : Callable | None, optional
         A custom function to transform RDF nodes back to Python values during
         deserialization. Signature: (node: URIRef | Literal) -> Any.
         Default is None.
-    
+
     Attributes
     ----------
     predicate : str | URIRef
@@ -201,55 +209,55 @@ class RdfProperty:
         Custom serialization function.
     parser : Callable | None
         Custom parsing function.
-    
+
     Methods
     -------
     predicate_uri() -> URIRef
         Convert the predicate to an rdflib URIRef.
     datatype_uri() -> URIRef | None
         Convert the datatype to an rdflib URIRef, or None if not specified.
-    
+
     Examples
     --------
     Basic property mapping::
-    
+
         from rdflib import FOAF
         from typing import Annotated, Optional, List
-        
+
         name: Annotated[Optional[List[str]], RdfProperty(FOAF.name)] = None
-    
+
     With datatype::
-    
+
         from rdflib import XSD
-        
+
         age: Annotated[Optional[int], RdfProperty(
             FOAF.age,
             datatype=XSD.integer
         )] = None
-    
+
     With language tag::
-    
+
         description: Annotated[Optional[List[str]], RdfProperty(
             DCTERMS.description,
             language="en"
         )] = None
-    
+
     With custom serializer/parser::
-    
+
         from datetime import date
-        
+
         def serialize_date(d: date) -> str:
             return d.isoformat()
-        
+
         def parse_date(node) -> date:
             return date.fromisoformat(str(node))
-        
+
         birth_date: Annotated[Optional[date], RdfProperty(
             SCHEMA.birthDate,
             serializer=serialize_date,
             parser=parse_date
         )] = None
-    
+
     Notes
     -----
     - RdfProperty instances are immutable (frozen dataclass)
@@ -257,26 +265,26 @@ class RdfProperty:
     - Language and datatype are mutually exclusive
     - Custom serializers/parsers override default behavior
     - The predicate URI is the only required parameter
-    
+
     See Also
     --------
     RdfBaseModel : Base class for RDF-enabled Pydantic models
     """
 
-    predicate: Union[str, URIRef]
-    datatype: Union[str, URIRef, None] = None
-    language: Optional[str] = None
-    serializer: Optional[Any] = None
-    parser: Optional[Any] = None
+    predicate: str | URIRef
+    datatype: str | URIRef | None = None
+    language: str | None = None
+    serializer: Any | None = None
+    parser: Any | None = None
 
     def predicate_uri(self) -> URIRef:
         """Convert the predicate to an rdflib URIRef.
-        
+
         Returns
         -------
         URIRef
             The predicate as an rdflib URIRef.
-        
+
         Examples
         --------
         >>> from rdflib import FOAF
@@ -286,14 +294,14 @@ class RdfProperty:
         """
         return _ensure_uri(self.predicate)
 
-    def datatype_uri(self) -> Optional[URIRef]:
+    def datatype_uri(self) -> URIRef | None:
         """Convert the datatype to an rdflib URIRef.
-        
+
         Returns
         -------
         URIRef | None
             The datatype as an rdflib URIRef, or None if no datatype is specified.
-        
+
         Examples
         --------
         >>> from rdflib import XSD
@@ -306,109 +314,109 @@ class RdfProperty:
 
 class RdfBaseModel(BaseModel):
     """Base class for Pydantic models with RDF serialization capabilities.
-    
+
     This class extends Pydantic's BaseModel to provide automatic conversion to and
     from RDF graphs. Models inheriting from RdfBaseModel can be serialized to various
     RDF formats (Turtle, RDF/XML, JSON-LD, etc.) and deserialized back to Python objects.
-    
+
     Class Attributes
     ----------------
     rdf_type : str | URIRef | None
         The RDF type (rdf:type) for instances of this class. Typically set to a
         vocabulary class URI like `FOAF.Person` or `SKOS.Concept`. If None, no
         rdf:type triple is added to the graph.
-        
+
     rdf_namespace : str | Namespace | None
         The default namespace for generating subject URIs. Used when an instance
         has an `id` but not a full URI. For example, with namespace `FOAF` and
         id `"john"`, the subject becomes `<http://xmlns.com/foaf/0.1/john>`.
-        
+
     rdf_id_field : str | None
         The name of the field to use for the RDF subject identifier. Defaults to
         `"id"`. Set to None to disable ID field mapping and always use UUIDs.
-        
+
     rdf_prefixes : Dict[str, str | Namespace]
         Namespace prefix bindings for RDF serialization. Used to create readable
         output with prefixes like `foaf:name` instead of full URIs. Automatically
         includes 'rdf' and 'xsd' prefixes.
-    
+
     Instance Attributes
     -------------------
     id : Any, optional
         If `rdf_id_field` is "id" (default), this field contains the subject
         identifier. Can be a short string (combined with namespace) or a full URI.
-    
+
     Methods
     -------
     to_rdf_graph(graph=None, *, base_uri=None) -> Graph
         Serialize this model instance into an rdflib Graph.
-        
+
     to_rdf(format="turtle", *, base_uri=None, **kwargs) -> str
         Serialize this model instance to an RDF string in the specified format.
-        
+
     from_rdf_graph(graph, subject, *, base_uri=None) -> RdfBaseModel
         Class method to deserialize a model from an RDF graph.
-        
+
     from_rdf(data, *, format="turtle", subject=None, base_uri=None) -> RdfBaseModel
         Class method to deserialize a model from an RDF string or bytes.
-    
+
     Configuration
     -------------
     The model_config allows arbitrary types (URIRef, Literal, etc.) in fields.
-    
+
     Examples
     --------
     Basic model definition::
-    
+
         from rdflib import Namespace, FOAF
         from typing import Annotated, Optional, List
-        
+
         class Person(RdfBaseModel):
             rdf_type: str = str(FOAF.Person)
             rdf_namespace = FOAF
             rdf_prefixes = {"foaf": FOAF}
-            
+
             name: Annotated[Optional[List[str]], RdfProperty(FOAF.name)] = None
             email: Annotated[Optional[List[str]], RdfProperty(FOAF.mbox)] = None
-    
+
     Creating and serializing::
-    
+
         person = Person(name=["Alice Smith"], email=["alice@example.org"])
         turtle_output = person.to_rdf("turtle")
         # Output includes proper @prefix declarations and triples
-    
+
     Deserializing::
-    
+
         restored = Person.from_rdf(turtle_output, format="turtle")
         assert restored.name == ["Alice Smith"]
-    
+
     With custom ID::
-    
+
         person = Person(id="alice", name=["Alice Smith"])
         # Subject URI becomes: <http://xmlns.com/foaf/0.1/alice>
-    
+
     With full URI as ID::
-    
+
         person = Person(id="http://example.org/people/alice", name=["Alice"])
         # Subject URI is: <http://example.org/people/alice>
-    
+
     Nested objects::
-    
+
         class Organization(RdfBaseModel):
             rdf_type: str = str(FOAF.Organization)
             name: Annotated[Optional[List[str]], RdfProperty(FOAF.name)] = None
-        
+
         class Person(RdfBaseModel):
             rdf_type: str = str(FOAF.Person)
             name: Annotated[Optional[List[str]], RdfProperty(FOAF.name)] = None
             org: Annotated[Optional[List[Organization]], RdfProperty(FOAF.member)] = None
-        
+
         person = Person(
             name=["Alice"],
             org=[Organization(name=["ACME Corp"])]
         )
         # Both person and organization are serialized to the graph
-    
+
     Notes
     -----
     - All fields mapped to RDF should use `Annotated[..., RdfProperty(...)]`
@@ -417,7 +425,7 @@ class RdfBaseModel(BaseModel):
     - Nested RdfBaseModel instances are automatically serialized
     - Round-trip serialization is lossless for supported types
     - Custom serializers/parsers can handle complex types
-    
+
     See Also
     --------
     RdfProperty : Metadata for field-to-predicate mapping
@@ -425,80 +433,80 @@ class RdfBaseModel(BaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    rdf_type: ClassVar[Union[str, URIRef, None]] = None
-    rdf_namespace: ClassVar[Union[str, Namespace, None]] = None
-    rdf_id_field: ClassVar[Optional[str]] = "id"
-    rdf_prefixes: ClassVar[Dict[str, Union[str, Namespace]]] = {}
-    
+    rdf_type: ClassVar[str | URIRef | None] = None
+    rdf_namespace: ClassVar[str | Namespace | None] = None
+    rdf_id_field: ClassVar[str | None] = "id"
+    rdf_prefixes: ClassVar[dict[str, str | Namespace]] = {}
+
     rdf_auto_uuid: bool = Field(default=True, exclude=True)
-    rdf_uri_generator: Optional[Callable[[Any], Union[URIRef, BNode]]] = Field(default=None, exclude=True)
+    rdf_uri_generator: Callable[[Any], URIRef | BNode] | None = Field(default=None, exclude=True)
 
     def to_rdf_graph(
         self,
-        graph: Optional[Graph] = None,
+        graph: Graph | None = None,
         *,
-        base_uri: Optional[str] = None,
-        rdf_uri_generator: Optional[Callable[[Any], Union[URIRef, BNode]]] = None
+        base_uri: str | None = None,
+        rdf_uri_generator: Callable[[Any], URIRef | BNode] | None = None,
     ) -> Graph:
         """Serialize the model instance into an rdflib Graph.
-        
+
         This method converts the Pydantic model instance into RDF triples and adds
         them to an rdflib Graph. All fields annotated with RdfProperty are converted
         to RDF predicates and objects. Nested RdfBaseModel instances are recursively
         serialized.
-        
+
         Parameters
         ----------
         graph : Graph | None, optional
             An existing rdflib Graph to add triples to. If None, a new Graph is
             created. Default is None.
-            
+
         base_uri : str | None, optional
             A base URI for generating subject URIs when the model doesn't have a
             full URI identifier. Used for relative identifier resolution.
             Default is None.
-            
+
         rdf_uri_generator : Callable[[Any], Union[URIRef, BNode]] | None, optional
             A custom function to generate subject URIs for model instances.
             The function receives the model instance and should return an
             rdflib URIRef or BNode. This overrides the model's own
             rdf_uri_generator if provided.
-        
+
         Returns
         -------
         Graph
             The rdflib Graph containing the serialized RDF triples.
-        
+
         Examples
         --------
         Basic serialization::
-        
+
             person = Person(name=["Alice"])
             graph = person.to_rdf_graph()
             # graph now contains triples for the person
-        
+
         Adding to existing graph::
-        
+
             graph = Graph()
             person1 = Person(name=["Alice"])
             person2 = Person(name=["Bob"])
             person1.to_rdf_graph(graph)
             person2.to_rdf_graph(graph)
             # graph contains triples for both persons
-        
+
         With base URI::
-        
+
             person = Person(id="alice", name=["Alice"])
             graph = person.to_rdf_graph(base_uri="http://example.org/people/")
             # Subject becomes: <http://example.org/people/alice>
-        
+
         Notes
         -----
         - Namespace prefixes from rdf_prefixes are automatically bound
         - rdf:type triple is added if rdf_type is set
         - None values and empty lists are skipped
         - The subject URI is generated from the id field or a UUID
-        
+
         See Also
         --------
         to_rdf : Serialize directly to a string format
@@ -513,15 +521,15 @@ class RdfBaseModel(BaseModel):
         self,
         format: str = "turtle",
         *,
-        base_uri: Optional[str] = None,
-        rdf_uri_generator: Optional[Callable[[Any], Union[URIRef, BNode]]] = None,
-        **kwargs: Any
+        base_uri: str | None = None,
+        rdf_uri_generator: Callable[[Any], URIRef | BNode] | None = None,
+        **kwargs: Any,
     ) -> str:
         """Serialize the model instance to an RDF string.
-        
+
         This is a convenience method that creates a Graph, serializes the model
         into it, and then serializes the Graph to the specified format.
-        
+
         Parameters
         ----------
         format : str, optional
@@ -532,53 +540,53 @@ class RdfBaseModel(BaseModel):
             - "nt" or "ntriples": N-Triples format
             - "n3": Notation3 format
             Default is "turtle".
-            
+
         base_uri : str | None, optional
             A base URI for generating subject URIs. Default is None.
-            
+
         rdf_uri_generator : Callable[[Any], Union[URIRef, BNode]] | None, optional
             A custom function to generate subject URIs for model instances.
             The function receives the model instance and should return an
             rdflib URIRef or BNode. This overrides the model's own
             rdf_uri_generator if provided.
-            
+
         **kwargs : Any
             Additional keyword arguments passed to rdflib's serialize() method.
-        
+
         Returns
         -------
         str
             The serialized RDF as a string.
-        
+
         Examples
         --------
         Turtle format (default)::
-        
+
             person = Person(name=["Alice Smith"])
             turtle = person.to_rdf("turtle")
             print(turtle)
             # @prefix foaf: <http://xmlns.com/foaf/0.1/> .
             # foaf:alice a foaf:Person ;
             #     foaf:name "Alice Smith" .
-        
+
         RDF/XML format::
-        
+
             xml = person.to_rdf("xml")
-        
+
         JSON-LD format::
-        
+
             jsonld = person.to_rdf("json-ld")
-        
+
         N-Triples format::
-        
+
             ntriples = person.to_rdf("ntriples")
-        
+
         Notes
         -----
         - Turtle format is most human-readable with prefix support
         - Format names are case-insensitive
         - The output encoding is UTF-8
-        
+
         See Also
         --------
         to_rdf_graph : Get the Graph object directly
@@ -590,65 +598,69 @@ class RdfBaseModel(BaseModel):
 
     @classmethod
     def from_rdf_graph(
-        cls: Type[T], graph: Graph, subject: Union[URIRef, str], *, base_uri: Optional[str] = None
+        cls: type[T],
+        graph: Graph,
+        subject: URIRef | str,
+        *,
+        base_uri: str | None = None,
     ) -> T:
         """Deserialize a model instance from an RDF graph.
-        
+
         This class method reconstructs a Pydantic model instance from RDF triples
         in a Graph. It extracts values for all fields annotated with RdfProperty
         by querying the graph for triples with the specified subject.
-        
+
         Parameters
         ----------
         graph : Graph
             The rdflib Graph containing the RDF data.
-            
+
         subject : URIRef | str
             The subject URI of the resource to deserialize. Can be a URIRef or
             a string that will be converted to a URIRef.
-            
+
         base_uri : str | None, optional
             A base URI for converting the subject back to a relative identifier
             for the id field. If the subject starts with this base, the remainder
             is used as the id. Default is None.
-        
+
         Returns
         -------
         RdfBaseModel
             A new instance of the model class populated with data from the graph.
-        
+
         Raises
         ------
         ValidationError
             If the extracted values don't pass Pydantic validation.
-        
+
         Examples
         --------
         Basic deserialization::
-        
+
             graph = Graph()
             graph.parse(data=turtle_data, format="turtle")
             person = Person.from_rdf_graph(
-                graph, 
+                graph,
                 URIRef("http://example.org/people/alice")
             )
-        
+
         With base URI::
-        
+
             person = Person.from_rdf_graph(
                 graph,
                 URIRef("http://example.org/people/alice"),
                 base_uri="http://example.org/people/"
             )
             # person.id becomes "alice"
-        
+
         Nested objects::
-        
+
             # If the graph contains triples for both Person and Organization,
             # nested objects are automatically reconstructed
             person = Person.from_rdf_graph(graph, subject_uri)
             assert isinstance(person.org[0], Organization)
-        
+
         Notes
         -----
         - Multi-valued properties are always returned as lists
@@ -656,7 +668,7 @@ class RdfBaseModel(BaseModel):
         - Nested RdfBaseModel instances are recursively deserialized
         - Custom parsers in RdfProperty are applied during conversion
         - Type coercion follows Pydantic's validation rules
-        
+
         See Also
         --------
         from_rdf : Deserialize from an RDF string
@@ -664,7 +676,7 @@ class RdfBaseModel(BaseModel):
         """
 
         subject_uri = _ensure_uri(subject)
-        values: Dict[str, Any] = {}
+        values: dict[str, Any] = {}
         for name, field in cls.model_fields.items():
             prop = _get_rdf_property(field)
             if prop is None:
@@ -696,21 +708,25 @@ class RdfBaseModel(BaseModel):
 
     @classmethod
     def from_rdf(
-        cls: Type[T], data: Union[str, bytes], *, format: str = "turtle", subject: Union[URIRef, str, None] = None,
-        base_uri: Optional[str] = None
+        cls: type[T],
+        data: str | bytes,
+        *,
+        format: str = "turtle",
+        subject: URIRef | str | None = None,
+        base_uri: str | None = None,
     ) -> T:
         """Deserialize a model instance from an RDF string or bytes.
-        
+
         This class method parses RDF data and reconstructs a Pydantic model instance.
         If the subject is not specified, it attempts to infer it from the graph
         (using rdf:type if available, or assuming a single subject).
-        
+
         Parameters
         ----------
         data : str | bytes
             The RDF data as a string or bytes. Can be in any format supported
             by rdflib (Turtle, RDF/XML, JSON-LD, N-Triples, etc.).
-            
+
         format : str, optional
             The RDF format of the input data. Common formats:
             - "turtle": Turtle/Trig format (default)
@@ -719,20 +735,20 @@ class RdfBaseModel(BaseModel):
             - "nt" or "ntriples": N-Triples format
             - "n3": Notation3 format
             Default is "turtle".
-            
+
         subject : URIRef | str | None, optional
             The subject URI to deserialize. If None, the subject is automatically
             inferred from the graph. Use this when the graph contains multiple
             resources. Default is None.
-            
+
         base_uri : str | None, optional
             A base URI for generating relative identifiers. Default is None.
-        
+
         Returns
         -------
         RdfBaseModel
             A new instance of the model class populated with the RDF data.
-        
+
         Raises
         ------
         ValueError
@@ -740,53 +756,53 @@ class RdfBaseModel(BaseModel):
             subjects are found and none is specified.
         ValidationError
             If the deserialized data doesn't pass Pydantic validation.
-        
+
         Examples
         --------
         From Turtle string::
-        
+
             turtle = '''
             @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-            
+
             foaf:alice a foaf:Person ;
                 foaf:name "Alice Smith" ;
                 foaf:mbox "alice@example.org" .
             '''
             person = Person.from_rdf(turtle, format="turtle")
-        
+
         With explicit subject::
-        
+
             person = Person.from_rdf(
                 turtle_data,
                 format="turtle",
                 subject="http://example.org/people/alice"
             )
-        
+
         From RDF/XML::
-        
+
             person = Person.from_rdf(xml_data, format="xml")
-        
+
         From JSON-LD::
-        
+
             person = Person.from_rdf(jsonld_data, format="json-ld")
-        
+
         Round-trip example::
-        
+
             # Serialize
             original = Person(name=["Alice"])
             turtle = original.to_rdf("turtle")
-            
+
             # Deserialize
             restored = Person.from_rdf(turtle)
             assert restored.name == original.name
-        
+
         Notes
         -----
         - Subject inference works best with single-resource graphs
         - If rdf_type is set, it's used to find the subject
         - Format detection is not automatic; always specify the format
         - Bytes input is decoded as UTF-8
-        
+
         See Also
         --------
         from_rdf_graph : Deserialize from a Graph object
@@ -805,14 +821,14 @@ class RdfBaseModel(BaseModel):
         self,
         graph: Graph,
         *,
-        base_uri: Optional[str] = None,
-        rdf_uri_generator: Optional[Callable[[Any], Union[URIRef, BNode]]] = None
+        base_uri: str | None = None,
+        rdf_uri_generator: Callable[[Any], URIRef | BNode] | None = None,
     ) -> URIRef | BNode:
         """Internal method to serialize this model into an RDF graph.
-        
+
         Converts all annotated fields to RDF triples and adds them to the graph.
         This method handles the core serialization logic.
-        
+
         Parameters
         ----------
         graph : Graph
@@ -821,7 +837,7 @@ class RdfBaseModel(BaseModel):
             Base URI for subject generation.
         rdf_uri_generator : Callable[[Any], Union[URIRef, BNode]] | None, optional
             A custom function to generate subject URIs for model instances.
-        
+
         Returns
         -------
         URIRef | BNode
@@ -847,25 +863,32 @@ class RdfBaseModel(BaseModel):
             for item in values:
                 if item is None:
                     continue
-                node = self._value_to_node(item, inner_type, prop, graph, base_uri, rdf_uri_generator=rdf_uri_generator)
+                node = self._value_to_node(
+                    item,
+                    inner_type,
+                    prop,
+                    graph,
+                    base_uri,
+                    rdf_uri_generator=rdf_uri_generator,
+                )
                 graph.add((subject, predicate, node))
 
         return subject
 
     @classmethod
-    def _identifier_from_subject(cls, subject: URIRef, *, base_uri: Optional[str] = None) -> Optional[str]:
+    def _identifier_from_subject(cls, subject: URIRef, *, base_uri: str | None = None) -> str | None:
         """Extract an identifier from a subject URI.
-        
+
         Attempts to convert a subject URI back to a short identifier by removing
         the namespace or base URI prefix.
-        
+
         Parameters
         ----------
         subject : URIRef
             The subject URI to convert.
         base_uri : str | None, optional
             Base URI to strip from the subject.
-        
+
         Returns
         -------
         str | None
@@ -874,17 +897,17 @@ class RdfBaseModel(BaseModel):
         subject_str = str(subject)
         namespace = cls._namespace_string()
         if namespace and subject_str.startswith(namespace):
-            return subject_str[len(namespace):]
+            return subject_str[len(namespace) :]
         if base_uri:
             normalised = _normalise_base(base_uri)
             if subject_str.startswith(normalised):
-                return subject_str[len(normalised):]
+                return subject_str[len(normalised) :]
         return subject_str
 
     @classmethod
-    def _namespace_string(cls) -> Optional[str]:
+    def _namespace_string(cls) -> str | None:
         """Get the namespace as a string.
-        
+
         Returns
         -------
         str | None
@@ -900,28 +923,28 @@ class RdfBaseModel(BaseModel):
     def _subject_uri(
         self,
         *,
-        base_uri: Optional[str] = None,
-        rdf_uri_generator: Optional[Callable[[Any], Union[URIRef, BNode]]] = None
+        base_uri: str | None = None,
+        rdf_uri_generator: Callable[[Any], URIRef | BNode] | None = None,
     ) -> URIRef | BNode:
         """Generate the subject URI for this instance.
-        
+
         Creates a URIRef for the RDF subject based on the id field, functionality,
         or generates a UUID if no identifier is available. If rdf_auto_uuid is False
         and no identifier is available, returns a BNode.
-        
+
         Parameters
         ----------
         base_uri : str | None, optional
             Base URI for relative identifier resolution.
         rdf_uri_generator : Callable[[Any], Union[URIRef, BNode]] | None, optional
             A custom function to generate subject URIs for model instances.
-        
+
         Returns
         -------
         URIRef | BNode
             The subject URI or Blank Node for this resource.
         """
-        identifier: Optional[str] = None
+        identifier: str | None = None
         if self.rdf_id_field:
             value = getattr(self, self.rdf_id_field, None)
             if value is not None:
@@ -940,10 +963,10 @@ class RdfBaseModel(BaseModel):
         # Check for custom URI generator
         generator = rdf_uri_generator if rdf_uri_generator is not None else self.rdf_uri_generator
         if generator is not None:
-             # The generator takes the model instance as argument
-             generated = generator(self)
-             if generated is not None:
-                 return generated
+            # The generator takes the model instance as argument
+            generated = generator(self)
+            if generated is not None:
+                return generated
 
         # If opted out of auto-UUIDs, return a blank node
         if not self.rdf_auto_uuid:
@@ -956,7 +979,7 @@ class RdfBaseModel(BaseModel):
 
     def _bind_prefixes(self, graph: Graph) -> None:
         """Bind namespace prefixes to the graph for readable serialization.
-        
+
         Parameters
         ----------
         graph : Graph
@@ -973,15 +996,15 @@ class RdfBaseModel(BaseModel):
         expected_type: Any,
         prop: RdfProperty,
         graph: Graph,
-        base_uri: Optional[str],
+        base_uri: str | None,
         *,
-        rdf_uri_generator: Optional[Callable[[Any], Union[URIRef, BNode]]] = None
+        rdf_uri_generator: Callable[[Any], URIRef | BNode] | None = None,
     ) -> URIRef | Literal:
         """Convert a Python value to an RDF node (URIRef or Literal).
-        
+
         Handles various Python types and converts them to appropriate RDF
         representations based on the field type and RdfProperty configuration.
-        
+
         Parameters
         ----------
         value : Any
@@ -996,7 +1019,7 @@ class RdfBaseModel(BaseModel):
             Base URI for nested objects.
         rdf_uri_generator : Callable[[Any], Union[URIRef, BNode]] | None, optional
             A custom function to generate subject URIs for model instances.
-        
+
         Returns
         -------
         URIRef | Literal
@@ -1014,7 +1037,8 @@ class RdfBaseModel(BaseModel):
             value = value.value
         if isinstance(value, bytes):
             import base64
-            encoded = base64.b64encode(value).decode('ascii')
+
+            encoded = base64.b64encode(value).decode("ascii")
             return Literal(encoded, datatype=XSD.base64Binary)
         if isinstance(value, (datetime, date, time, int, float, bool, Decimal, uuid.UUID)):
             datatype = prop.datatype_uri()
@@ -1033,22 +1057,22 @@ class RdfBaseModel(BaseModel):
         return Literal(value)
 
     @classmethod
-    def _infer_subject(cls, graph: Graph) -> Optional[URIRef]:
+    def _infer_subject(cls, graph: Graph) -> URIRef | None:
         """Infer the subject URI from a graph.
-        
+
         Attempts to determine which subject in the graph corresponds to this
         model type, using rdf:type if available or assuming a single subject.
-        
+
         Parameters
         ----------
         graph : Graph
             The graph to analyze.
-        
+
         Returns
         -------
         URIRef | None
             The inferred subject URI, or None if it cannot be determined.
-        
+
         Raises
         ------
         ValueError
@@ -1072,14 +1096,14 @@ class RdfBaseModel(BaseModel):
         return subjects[0]
 
 
-def _get_rdf_property(field: Any) -> Optional[RdfProperty]:
+def _get_rdf_property(field: Any) -> RdfProperty | None:
     """Extract RdfProperty metadata from a field's metadata or annotation.
-    
+
     Parameters
     ----------
     field : Any
         A Pydantic field information object.
-    
+
     Returns
     -------
     RdfProperty | None
@@ -1097,16 +1121,16 @@ def _get_rdf_property(field: Any) -> Optional[RdfProperty]:
     return None
 
 
-def _field_type_info(field: Any) -> Tuple[bool, Any]:
+def _field_type_info(field: Any) -> tuple[bool, Any]:
     """Determine if a field is a list type and extract its inner type.
-    
+
     Also handles Optional types by unwrapping Union[T, None].
-    
+
     Parameters
     ----------
     field : Any
         A Pydantic field information object.
-    
+
     Returns
     -------
     tuple[bool, Any]
@@ -1132,14 +1156,14 @@ def _field_type_info(field: Any) -> Tuple[bool, Any]:
 
 def _unwrap_annotation(annotation: Any) -> Any:
     """Unwrap Annotated type to get the actual type.
-    
+
     Recursively unwraps until reaching a non-Annotated type.
-    
+
     Parameters
     ----------
     annotation : Any
         A potentially Annotated type hint.
-    
+
     Returns
     -------
     Any
@@ -1155,14 +1179,14 @@ def _unwrap_annotation(annotation: Any) -> Any:
         return annotation
 
 
-def _annotation_metadata(annotation: Any) -> Tuple[Any, ...]:
+def _annotation_metadata(annotation: Any) -> tuple[Any, ...]:
     """Extract metadata from an Annotated type.
-    
+
     Parameters
     ----------
     annotation : Any
         A type annotation, possibly Annotated.
-    
+
     Returns
     -------
     tuple[Any, ...]
@@ -1176,10 +1200,10 @@ def _annotation_metadata(annotation: Any) -> Tuple[Any, ...]:
 
 def _node_to_python(node: Any, expected_type: Any, prop: RdfProperty) -> Any:
     """Convert an RDF node to a Python value.
-    
+
     Handles deserialization of URIRef and Literal nodes to appropriate Python
     types based on field type hints and RdfProperty configuration.
-    
+
     Parameters
     ----------
     node : Any
@@ -1188,12 +1212,12 @@ def _node_to_python(node: Any, expected_type: Any, prop: RdfProperty) -> Any:
         The expected Python type from field annotations.
     prop : RdfProperty
         The RDF property metadata.
-    
+
     Returns
     -------
     Any
         The converted Python value.
-    
+
     Raises
     ------
     TypeError
@@ -1217,16 +1241,16 @@ def _node_to_python(node: Any, expected_type: Any, prop: RdfProperty) -> Any:
 
     if expected_type is Any or expected_type is None:
         return value
-    
+
     if expected_type is str:
         return str(value)
-    
+
     if expected_type in {int, float, bool}:
         try:
             return expected_type(value)
         except (TypeError, ValueError):
             return value
-            
+
     if expected_type is datetime:
         if isinstance(value, datetime):
             return value
@@ -1234,7 +1258,7 @@ def _node_to_python(node: Any, expected_type: Any, prop: RdfProperty) -> Any:
             return datetime.fromisoformat(str(value))
         except ValueError:
             return value
-            
+
     if expected_type is date:
         if isinstance(value, date):
             return value
@@ -1242,7 +1266,7 @@ def _node_to_python(node: Any, expected_type: Any, prop: RdfProperty) -> Any:
             return date.fromisoformat(str(value))
         except ValueError:
             return value
-            
+
     if expected_type is time:
         if isinstance(value, time):
             return value
@@ -1250,19 +1274,19 @@ def _node_to_python(node: Any, expected_type: Any, prop: RdfProperty) -> Any:
             return time.fromisoformat(str(value))
         except ValueError:
             return value
-            
+
     if expected_type is Decimal:
         try:
             return Decimal(value)
         except (ValueError, TypeError, ArithmeticError):
             return value
-            
+
     if expected_type is bytes:
         if isinstance(value, bytes):
             return value
         # rdflib handles base64 decoding for XSD.base64Binary
         return value
-        
+
     if expected_type is uuid.UUID:
         if isinstance(value, uuid.UUID):
             return value
@@ -1273,18 +1297,18 @@ def _node_to_python(node: Any, expected_type: Any, prop: RdfProperty) -> Any:
 
     if isinstance(expected_type, type) and issubclass(expected_type, Enum):
         return expected_type(value)
-        
+
     return value
 
 
-def _python_datatype(value: Any) -> Optional[URIRef]:
+def _python_datatype(value: Any) -> URIRef | None:
     """Infer XSD datatype URI from a Python value.
-    
+
     Parameters
     ----------
     value : Any
         A Python value to determine the datatype for.
-    
+
     Returns
     -------
     URIRef | None
@@ -1311,14 +1335,14 @@ def _python_datatype(value: Any) -> Optional[URIRef]:
     return None
 
 
-def _ensure_uri(value: Union[str, URIRef, Namespace, None]) -> Optional[URIRef]:
+def _ensure_uri(value: str | URIRef | Namespace | None) -> URIRef | None:
     """Convert various types to a URIRef.
-    
+
     Parameters
     ----------
     value : str | URIRef | Namespace | None
         A value that might represent a URI.
-    
+
     Returns
     -------
     URIRef | None
@@ -1338,12 +1362,12 @@ URI_PATTERN = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*:")
 
 def _looks_like_uri(value: str) -> bool:
     """Check if a string looks like a URI using a URI scheme pattern.
-    
+
     Parameters
     ----------
     value : str
         A string to check.
-    
+
     Returns
     -------
     bool
@@ -1354,30 +1378,30 @@ def _looks_like_uri(value: str) -> bool:
 
 def _normalise_base(base_uri: str) -> str:
     """Normalize a base URI to ensure it ends with '/' or '#'.
-    
+
     Parameters
     ----------
     base_uri : str
         A base URI string.
-    
+
     Returns
     -------
     str
         The normalized base URI.
     """
-    if base_uri.endswith(('/', '#')):
+    if base_uri.endswith(("/", "#")):
         return base_uri
-    return base_uri + '/'
+    return base_uri + "/"
 
 
 def _unique(values: Iterable[Any]) -> list[Any]:
     """Return unique items from an iterable, preserving order.
-    
+
     Parameters
     ----------
     values : Iterable[Any]
         An iterable of items.
-    
+
     Returns
     -------
     list[Any]
@@ -1392,9 +1416,9 @@ def _unique(values: Iterable[Any]) -> list[Any]:
     return result
 
 
-def _default_prefixes() -> Dict[str, str]:
+def _default_prefixes() -> dict[str, str]:
     """Get the default namespace prefixes for RDF serialization.
-    
+
     Returns
     -------
     dict[str, str]
@@ -1406,12 +1430,12 @@ def _default_prefixes() -> Dict[str, str]:
 
 def _is_rdf_model(value: Any) -> bool:
     """Check if a value is an RdfBaseModel subclass.
-    
+
     Parameters
     ----------
     value : Any
         A value to check (typically a type).
-    
+
     Returns
     -------
     bool
@@ -1420,14 +1444,14 @@ def _is_rdf_model(value: Any) -> bool:
     return isinstance(value, type) and issubclass(value, RdfBaseModel)
 
 
-def _get_rdf_model_type(type_hint: Any) -> Optional[Type[RdfBaseModel]]:
+def _get_rdf_model_type(type_hint: Any) -> type[RdfBaseModel] | None:
     """Get the RdfBaseModel type from a type hint (possibly a Union).
-    
+
     Parameters
     ----------
     type_hint : Any
         The type hint to check.
-    
+
     Returns
     -------
     Type[RdfBaseModel] | None
@@ -1435,7 +1459,7 @@ def _get_rdf_model_type(type_hint: Any) -> Optional[Type[RdfBaseModel]]:
     """
     if _is_rdf_model(type_hint):
         return type_hint
-    
+
     origin = get_origin(type_hint)
     if origin is Union:
         for arg in get_args(type_hint):
@@ -1444,9 +1468,7 @@ def _get_rdf_model_type(type_hint: Any) -> Optional[Type[RdfBaseModel]]:
     return None
 
 
-
 __all__ = ["RdfBaseModel", "RdfProperty"]
 
 # Ensure defaults are preserved when using lightweight pydantic substitutes.
 RdfBaseModel.rdf_id_field = "id"
-

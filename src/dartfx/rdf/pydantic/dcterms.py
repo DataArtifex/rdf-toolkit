@@ -10,21 +10,20 @@ References:
 """
 
 from datetime import datetime
-from enum import Enum
-from typing import Annotated, List, Optional, Union
+from enum import StrEnum
+from typing import Annotated
 
 from rdflib import Namespace, URIRef
 
 from ._base import RdfBaseModel, RdfProperty
 
-
 DCTERMS = Namespace("http://purl.org/dc/terms/")
 FREQ = Namespace("http://purl.org/cld/freq/")
 
 
-class DcmiFrequency(str, Enum):
+class DcmiFrequency(StrEnum):
     """DCMI Collection Description Frequency Vocabulary."""
-    
+
     ANNUAL = "http://purl.org/cld/freq/annual"
     BIENNIAL = "http://purl.org/cld/freq/biennial"
     BIMONTHLY = "http://purl.org/cld/freq/bimonthly"
@@ -45,175 +44,205 @@ class DcmiFrequency(str, Enum):
 
 class DctermsResource(RdfBaseModel):
     """Base class for Dublin Core Terms resources."""
-    
+
     rdf_namespace = DCTERMS
     rdf_prefixes = {"dcterms": DCTERMS, "freq": FREQ}
 
 
 class Agent(DctermsResource):
     """A resource that acts or has the power to act."""
-    
+
     rdf_type = DCTERMS.Agent
     id: str
-    name: Annotated[Optional[str], RdfProperty(DCTERMS.name)] = None
+    name: Annotated[str | None, RdfProperty(DCTERMS.name)] = None
 
-
-    valid: Annotated[Optional[datetime], RdfProperty(DCTERMS.valid)] = None
+    valid: Annotated[datetime | None, RdfProperty(DCTERMS.valid)] = None
 
 
 class BibliographicResource(DctermsResource):
     """A bibliographic resource."""
+
     rdf_type = DCTERMS.BibliographicResource
 
 
 class FileFormat(DctermsResource):
     """A file format."""
+
     rdf_type = DCTERMS.FileFormat
 
 
 class Frequency(DctermsResource):
     """A rate of occurrence."""
+
     rdf_type = DCTERMS.Frequency
 
 
 class Jurisdiction(DctermsResource):
     """The extent or range of judicial, law enforcement, or other authority."""
+
     rdf_type = DCTERMS.Jurisdiction
 
 
 class LicenseDocument(DctermsResource):
     """A legal document giving official permission to do something with a Resource."""
+
     rdf_type = DCTERMS.LicenseDocument
 
 
 class Location(DctermsResource):
     """A spatial region or named place."""
+
     rdf_type = DCTERMS.Location
 
 
 class LocationPeriodOrJurisdiction(DctermsResource):
     """A location, period of time, or jurisdiction."""
+
     rdf_type = DCTERMS.LocationPeriodOrJurisdiction
 
 
 class MediaType(DctermsResource):
     """A file format or physical medium."""
+
     rdf_type = DCTERMS.MediaType
 
 
 class MediaTypeOrExtent(DctermsResource):
     """A media type or extent."""
+
     rdf_type = DCTERMS.MediaTypeOrExtent
 
 
 class MethodOfAccrual(DctermsResource):
     """A method by which items are added to a collection."""
+
     rdf_type = DCTERMS.MethodOfAccrual
 
 
 class MethodOfInstruction(DctermsResource):
     """A process that is used to engender knowledge, attitudes, and skills."""
+
     rdf_type = DCTERMS.MethodOfInstruction
 
 
 class PeriodOfTime(DctermsResource):
     """An interval of time that is named or defined by its start and end dates."""
+
     rdf_type = DCTERMS.PeriodOfTime
 
 
 class PhysicalMedium(DctermsResource):
     """A physical material or carrier."""
+
     rdf_type = DCTERMS.PhysicalMedium
 
 
 class PhysicalResource(DctermsResource):
     """A material thing."""
+
     rdf_type = DCTERMS.PhysicalResource
 
 
 class Policy(DctermsResource):
-    """A plan or course of action by an authority, intended to influence and determine decisions, actions, and other matters."""
+    """A plan or course of action by an authority.
+
+    Intended to influence and determine decisions, actions, and other matters.
+    """
+
     rdf_type = DCTERMS.Policy
 
 
 class ProvenanceStatement(DctermsResource):
-    """A statement of any changes in ownership and custody of a resource since its creation that are significant for its authenticity, integrity, and interpretation."""
+    """A statement of changes in ownership and custody of a resource.
+
+    Includes changes since creation that are significant for authenticity, integrity, and interpretation.
+    """
+
     rdf_type = DCTERMS.ProvenanceStatement
 
 
 class RightsStatement(DctermsResource):
-    """A statement about the intellectual property rights (IPR) held in or over a Resource, a legal document giving official permission to do something with a resource, or a statement about access rights."""
+    """A statement about intellectual property rights or permissions.
+
+    This includes IPR held in or over a Resource, legal documents giving official permission to do
+    something with a resource, or statements about access rights.
+    """
+
     rdf_type = DCTERMS.RightsStatement
 
 
 class SizeOrDuration(DctermsResource):
     """A dimension or extent, or a time taken to play or execute."""
+
     rdf_type = DCTERMS.SizeOrDuration
 
 
 class Standard(DctermsResource):
     """A basis for comparison; a reference point against which other things can be evaluated."""
+
     rdf_type = DCTERMS.Standard
 
 
 class DublinCoreRecord(DctermsResource):
     """A resource with Dublin Core metadata properties."""
-    
-    id: str
-    title: Annotated[Optional[str], RdfProperty(DCTERMS.title, language="en")] = None
-    description: Annotated[Optional[str], RdfProperty(DCTERMS.description, language="en")] = None
-    creator: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.creator)] = None
-    subject: Annotated[Optional[List[str]], RdfProperty(DCTERMS.subject)] = None
-    publisher: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.publisher)] = None
-    contributor: Annotated[Optional[List[Union[str, URIRef]]], RdfProperty(DCTERMS.contributor)] = None
-    date: Annotated[Optional[datetime], RdfProperty(DCTERMS.date)] = None
-    created: Annotated[Optional[datetime], RdfProperty(DCTERMS.created)] = None
-    issued: Annotated[Optional[datetime], RdfProperty(DCTERMS.issued)] = None
-    modified: Annotated[Optional[datetime], RdfProperty(DCTERMS.modified)] = None
-    type: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.type)] = None
-    format: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS["format"])] = None
-    identifier: Annotated[Optional[str], RdfProperty(DCTERMS.identifier)] = None
-    source: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.source)] = None
-    language: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.language)] = None
-    relation: Annotated[Optional[List[Union[str, URIRef]]], RdfProperty(DCTERMS.relation)] = None
-    coverage: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.coverage)] = None
-    rights: Annotated[Optional[str], RdfProperty(DCTERMS.rights)] = None
-    license: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.license)] = None
-    accrual_periodicity: Annotated[Optional[Union[str, DcmiFrequency]], RdfProperty(DCTERMS.accrualPeriodicity)] = None
-    
-    # New properties
-    abstract: Annotated[Optional[str], RdfProperty(DCTERMS.abstract)] = None
-    access_rights: Annotated[Optional[Union[str, URIRef, RightsStatement]], RdfProperty(DCTERMS.accessRights)] = None
-    alternative: Annotated[Optional[str], RdfProperty(DCTERMS.alternative)] = None
-    audience: Annotated[Optional[Union[str, URIRef, Agent]], RdfProperty(DCTERMS.audience)] = None
-    available: Annotated[Optional[datetime], RdfProperty(DCTERMS.available)] = None
-    bibliographic_citation: Annotated[Optional[str], RdfProperty(DCTERMS.bibliographicCitation)] = None
-    conforms_to: Annotated[Optional[Union[str, URIRef, Standard]], RdfProperty(DCTERMS.conformsTo)] = None
-    date_accepted: Annotated[Optional[datetime], RdfProperty(DCTERMS.dateAccepted)] = None
-    date_copyrighted: Annotated[Optional[datetime], RdfProperty(DCTERMS.dateCopyrighted)] = None
-    date_submitted: Annotated[Optional[datetime], RdfProperty(DCTERMS.dateSubmitted)] = None
-    education_level: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.educationLevel)] = None
-    extent: Annotated[Optional[Union[str, URIRef, SizeOrDuration]], RdfProperty(DCTERMS.extent)] = None
-    has_format: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.hasFormat)] = None
-    has_part: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.hasPart)] = None
-    has_version: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.hasVersion)] = None
-    instructional_method: Annotated[Optional[Union[str, URIRef, MethodOfInstruction]], RdfProperty(DCTERMS.instructionalMethod)] = None
-    is_format_of: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.isFormatOf)] = None
-    is_part_of: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.isPartOf)] = None
-    is_referenced_by: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.isReferencedBy)] = None
-    is_replaced_by: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.isReplacedBy)] = None
-    is_required_by: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.isRequiredBy)] = None
-    is_version_of: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.isVersionOf)] = None
-    mediator: Annotated[Optional[Union[str, URIRef, Agent]], RdfProperty(DCTERMS.mediator)] = None
-    medium: Annotated[Optional[Union[str, URIRef, PhysicalMedium, MediaType]], RdfProperty(DCTERMS.medium)] = None
-    references: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.references)] = None
-    replaces: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.replaces)] = None
-    requires: Annotated[Optional[Union[str, URIRef]], RdfProperty(DCTERMS.requires)] = None
-    spatial: Annotated[Optional[Union[str, URIRef, Location]], RdfProperty(DCTERMS.spatial)] = None
-    table_of_contents: Annotated[Optional[str], RdfProperty(DCTERMS.tableOfContents)] = None
-    temporal: Annotated[Optional[Union[str, URIRef, PeriodOfTime]], RdfProperty(DCTERMS.temporal)] = None
-    valid: Annotated[Optional[datetime], RdfProperty(DCTERMS.valid)] = None
 
+    id: str
+    title: Annotated[str | None, RdfProperty(DCTERMS.title, language="en")] = None
+    description: Annotated[str | None, RdfProperty(DCTERMS.description, language="en")] = None
+    creator: Annotated[str | URIRef | None, RdfProperty(DCTERMS.creator)] = None
+    subject: Annotated[list[str] | None, RdfProperty(DCTERMS.subject)] = None
+    publisher: Annotated[str | URIRef | None, RdfProperty(DCTERMS.publisher)] = None
+    contributor: Annotated[list[str | URIRef] | None, RdfProperty(DCTERMS.contributor)] = None
+    date: Annotated[datetime | None, RdfProperty(DCTERMS.date)] = None
+    created: Annotated[datetime | None, RdfProperty(DCTERMS.created)] = None
+    issued: Annotated[datetime | None, RdfProperty(DCTERMS.issued)] = None
+    modified: Annotated[datetime | None, RdfProperty(DCTERMS.modified)] = None
+    type: Annotated[str | URIRef | None, RdfProperty(DCTERMS.type)] = None
+    format: Annotated[str | URIRef | None, RdfProperty(DCTERMS["format"])] = None
+    identifier: Annotated[str | None, RdfProperty(DCTERMS.identifier)] = None
+    source: Annotated[str | URIRef | None, RdfProperty(DCTERMS.source)] = None
+    language: Annotated[str | URIRef | None, RdfProperty(DCTERMS.language)] = None
+    relation: Annotated[list[str | URIRef] | None, RdfProperty(DCTERMS.relation)] = None
+    coverage: Annotated[str | URIRef | None, RdfProperty(DCTERMS.coverage)] = None
+    rights: Annotated[str | None, RdfProperty(DCTERMS.rights)] = None
+    license: Annotated[str | URIRef | None, RdfProperty(DCTERMS.license)] = None
+    accrual_periodicity: Annotated[str | DcmiFrequency | None, RdfProperty(DCTERMS.accrualPeriodicity)] = None
+
+    # New properties
+    abstract: Annotated[str | None, RdfProperty(DCTERMS.abstract)] = None
+    access_rights: Annotated[str | URIRef | RightsStatement | None, RdfProperty(DCTERMS.accessRights)] = None
+    alternative: Annotated[str | None, RdfProperty(DCTERMS.alternative)] = None
+    audience: Annotated[str | URIRef | Agent | None, RdfProperty(DCTERMS.audience)] = None
+    available: Annotated[datetime | None, RdfProperty(DCTERMS.available)] = None
+    bibliographic_citation: Annotated[str | None, RdfProperty(DCTERMS.bibliographicCitation)] = None
+    conforms_to: Annotated[str | URIRef | Standard | None, RdfProperty(DCTERMS.conformsTo)] = None
+    date_accepted: Annotated[datetime | None, RdfProperty(DCTERMS.dateAccepted)] = None
+    date_copyrighted: Annotated[datetime | None, RdfProperty(DCTERMS.dateCopyrighted)] = None
+    date_submitted: Annotated[datetime | None, RdfProperty(DCTERMS.dateSubmitted)] = None
+    education_level: Annotated[str | URIRef | None, RdfProperty(DCTERMS.educationLevel)] = None
+    extent: Annotated[str | URIRef | SizeOrDuration | None, RdfProperty(DCTERMS.extent)] = None
+    has_format: Annotated[str | URIRef | None, RdfProperty(DCTERMS.hasFormat)] = None
+    has_part: Annotated[str | URIRef | None, RdfProperty(DCTERMS.hasPart)] = None
+    has_version: Annotated[str | URIRef | None, RdfProperty(DCTERMS.hasVersion)] = None
+    instructional_method: Annotated[
+        str | URIRef | MethodOfInstruction | None,
+        RdfProperty(DCTERMS.instructionalMethod),
+    ] = None
+    is_format_of: Annotated[str | URIRef | None, RdfProperty(DCTERMS.isFormatOf)] = None
+    is_part_of: Annotated[str | URIRef | None, RdfProperty(DCTERMS.isPartOf)] = None
+    is_referenced_by: Annotated[str | URIRef | None, RdfProperty(DCTERMS.isReferencedBy)] = None
+    is_replaced_by: Annotated[str | URIRef | None, RdfProperty(DCTERMS.isReplacedBy)] = None
+    is_required_by: Annotated[str | URIRef | None, RdfProperty(DCTERMS.isRequiredBy)] = None
+    is_version_of: Annotated[str | URIRef | None, RdfProperty(DCTERMS.isVersionOf)] = None
+    mediator: Annotated[str | URIRef | Agent | None, RdfProperty(DCTERMS.mediator)] = None
+    medium: Annotated[str | URIRef | PhysicalMedium | MediaType | None, RdfProperty(DCTERMS.medium)] = None
+    references: Annotated[str | URIRef | None, RdfProperty(DCTERMS.references)] = None
+    replaces: Annotated[str | URIRef | None, RdfProperty(DCTERMS.replaces)] = None
+    requires: Annotated[str | URIRef | None, RdfProperty(DCTERMS.requires)] = None
+    spatial: Annotated[str | URIRef | Location | None, RdfProperty(DCTERMS.spatial)] = None
+    table_of_contents: Annotated[str | None, RdfProperty(DCTERMS.tableOfContents)] = None
+    temporal: Annotated[str | URIRef | PeriodOfTime | None, RdfProperty(DCTERMS.temporal)] = None
+    valid: Annotated[datetime | None, RdfProperty(DCTERMS.valid)] = None
 
 
 __all__ = [
@@ -241,4 +270,3 @@ __all__ = [
     "SizeOrDuration",
     "Standard",
 ]
-

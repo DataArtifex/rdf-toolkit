@@ -111,7 +111,7 @@ from dartfx.rdf.pydantic import RdfBaseModel, RdfProperty
 class WebResource(RdfBaseModel):
     # Serialized as an RDF resource (URIRef)
     see_also: Annotated[Optional[URIRef], RdfProperty(SCHEMA.seeAlso)] = None
-    
+
     # Validated by Pydantic, serialized as "..."^^xsd:anyURI literal
     url: Annotated[AnyUrl, RdfProperty(SCHEMA.url, datatype=XSD.anyURI)]
 ```
@@ -142,7 +142,7 @@ The toolkit provides Pydantic models for the following vocabularies:
 - [ ] Improve documentation
 
 ## Contributing
- 
+
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
 3. Commit your changes: `git commit -am 'Add some feature'`

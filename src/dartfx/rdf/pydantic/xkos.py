@@ -10,12 +10,12 @@ References:
 """
 
 from __future__ import annotations
-from typing import Annotated, List, Optional
 
-from rdflib import Namespace, URIRef, SKOS
+from typing import Annotated
+
+from rdflib import SKOS, Namespace, URIRef
 
 from ._base import RdfBaseModel, RdfProperty
-
 
 # XKOS namespace
 XKOS = Namespace("http://rdf-vocabulary.ddialliance.org/xkos#")
@@ -23,175 +23,198 @@ XKOS = Namespace("http://rdf-vocabulary.ddialliance.org/xkos#")
 
 class XkosResource(RdfBaseModel):
     """Base class for XKOS resources."""
-    
+
     rdf_namespace = XKOS
     rdf_prefixes = {"xkos": XKOS, "skos": SKOS}
 
 
 class ClassificationLevel(XkosResource):
     """An XKOS Classification Level - a level in a statistical classification."""
-    
+
     rdf_type: str = str(XKOS.ClassificationLevel)
-    
+
     # Level properties
-    depth: Annotated[Optional[List[int]], RdfProperty(XKOS.depth)] = None
-    notations_equal: Annotated[Optional[List[str]], RdfProperty(XKOS.notationsEqual)] = None
-    organizes: Annotated[Optional[List[str | URIRef]], RdfProperty(XKOS.organizes)] = None
-    covers: Annotated[Optional[List[str | URIRef]], RdfProperty(XKOS.covers)] = None
-    covers_exhaustively: Annotated[Optional[List[str | URIRef]], RdfProperty(XKOS.coversExhaustively)] = None
-    covers_mutually_exclusively: Annotated[Optional[List[str | URIRef]], RdfProperty(XKOS.coversMutuallyExclusively)] = None
-    
+    depth: Annotated[list[int] | None, RdfProperty(XKOS.depth)] = None
+    notations_equal: Annotated[list[str] | None, RdfProperty(XKOS.notationsEqual)] = None
+    organizes: Annotated[list[str | URIRef] | None, RdfProperty(XKOS.organizes)] = None
+    covers: Annotated[list[str | URIRef] | None, RdfProperty(XKOS.covers)] = None
+    covers_exhaustively: Annotated[list[str | URIRef] | None, RdfProperty(XKOS.coversExhaustively)] = None
+    covers_mutually_exclusively: Annotated[list[str | URIRef] | None, RdfProperty(XKOS.coversMutuallyExclusively)] = (
+        None
+    )
+
     # Textual properties
-    organized_by: Annotated[Optional[List[str | URIRef]], RdfProperty(XKOS.organizedBy)] = None
-    notation_pattern: Annotated[Optional[List[str]], RdfProperty(XKOS.notationPattern)] = None
-    max_length: Annotated[Optional[List[int]], RdfProperty(XKOS.maxLength)] = None
-    
+    organized_by: Annotated[list[str | URIRef] | None, RdfProperty(XKOS.organizedBy)] = None
+    notation_pattern: Annotated[list[str] | None, RdfProperty(XKOS.notationPattern)] = None
+    max_length: Annotated[list[int] | None, RdfProperty(XKOS.maxLength)] = None
+
     # Labels (from SKOS)
-    pref_label: Annotated[Optional[List[str]], RdfProperty(SKOS.prefLabel)] = None
-    alt_label: Annotated[Optional[List[str]], RdfProperty(SKOS.altLabel)] = None
-    
+    pref_label: Annotated[list[str] | None, RdfProperty(SKOS.prefLabel)] = None
+    alt_label: Annotated[list[str] | None, RdfProperty(SKOS.altLabel)] = None
+
     # Notes
-    note: Annotated[Optional[List[str]], RdfProperty(SKOS.note)] = None
+    note: Annotated[list[str] | None, RdfProperty(SKOS.note)] = None
 
 
 class ConceptAssociation(XkosResource):
     """An XKOS Concept Association - a relationship between concepts in different classifications."""
-    
+
     rdf_type: str = str(XKOS.ConceptAssociation)
-    
+
     # Source and target
-    source_concept: Annotated[Optional[List[str | URIRef]], RdfProperty(XKOS.sourceConcept)] = None
-    target_concept: Annotated[Optional[List[str | URIRef]], RdfProperty(XKOS.targetConcept)] = None
+    source_concept: Annotated[list[str | URIRef] | None, RdfProperty(XKOS.sourceConcept)] = None
+    target_concept: Annotated[list[str | URIRef] | None, RdfProperty(XKOS.targetConcept)] = None
 
 
 class Correspondence(XkosResource):
     """An XKOS Correspondence - a mapping between two classifications."""
-    
+
     rdf_type: str = str(XKOS.Correspondence)
-    
+
     # Source and target classifications
-    compares: Annotated[Optional[List[str | URIRef]], RdfProperty(XKOS.compares)] = None
-    
+    compares: Annotated[list[str | URIRef] | None, RdfProperty(XKOS.compares)] = None
+
     # Labels
-    pref_label: Annotated[Optional[List[str]], RdfProperty(SKOS.prefLabel)] = None
-    alt_label: Annotated[Optional[List[str]], RdfProperty(SKOS.altLabel)] = None
-    
+    pref_label: Annotated[list[str] | None, RdfProperty(SKOS.prefLabel)] = None
+    alt_label: Annotated[list[str] | None, RdfProperty(SKOS.altLabel)] = None
+
     # Definition
-    definition: Annotated[Optional[List[str]], RdfProperty(SKOS.definition)] = None
-    
+    definition: Annotated[list[str] | None, RdfProperty(SKOS.definition)] = None
+
     # Associations
-    made_of: Annotated[Optional[List[str | URIRef | ConceptAssociation]], RdfProperty(XKOS.madeOf)] = None
+    made_of: Annotated[list[str | URIRef | ConceptAssociation] | None, RdfProperty(XKOS.madeOf)] = None
 
 
 class ExplanatoryNote(XkosResource):
     """An XKOS Explanatory Note - additional documentation for a concept."""
-    
+
     rdf_type: str = str(XKOS.ExplanatoryNote)
-    
+
     # Descriptive text
-    plain_text: Annotated[Optional[List[str]], RdfProperty(XKOS.plainText)] = None
+    plain_text: Annotated[list[str] | None, RdfProperty(XKOS.plainText)] = None
 
 
 # Extended SKOS Concept for statistical classifications
 class StatisticalConcept(XkosResource):
     """A SKOS Concept with XKOS extensions for statistical classifications."""
-    
+
     rdf_type: str = str(SKOS.Concept)
-    
+
     # SKOS properties
-    pref_label: Annotated[Optional[List[str]], RdfProperty(SKOS.prefLabel)] = None
-    alt_label: Annotated[Optional[List[str]], RdfProperty(SKOS.altLabel)] = None
-    hidden_label: Annotated[Optional[List[str]], RdfProperty(SKOS.hiddenLabel)] = None
-    notation: Annotated[Optional[List[str]], RdfProperty(SKOS.notation)] = None
-    definition: Annotated[Optional[List[str]], RdfProperty(SKOS.definition)] = None
-    
+    pref_label: Annotated[list[str] | None, RdfProperty(SKOS.prefLabel)] = None
+    alt_label: Annotated[list[str] | None, RdfProperty(SKOS.altLabel)] = None
+    hidden_label: Annotated[list[str] | None, RdfProperty(SKOS.hiddenLabel)] = None
+    notation: Annotated[list[str] | None, RdfProperty(SKOS.notation)] = None
+    definition: Annotated[list[str] | None, RdfProperty(SKOS.definition)] = None
+
     # SKOS semantic relations
-    broader: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(SKOS.broader)] = None
-    narrower: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(SKOS.narrower)] = None
-    related: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(SKOS.related)] = None
-    
+    broader: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(SKOS.broader)] = None
+    narrower: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(SKOS.narrower)] = None
+    related: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(SKOS.related)] = None
+
     # Concept scheme
-    in_scheme: Annotated[Optional[List[str | URIRef]], RdfProperty(SKOS.inScheme)] = None
-    top_concept_of: Annotated[Optional[List[str | URIRef]], RdfProperty(SKOS.topConceptOf)] = None
-    
+    in_scheme: Annotated[list[str | URIRef] | None, RdfProperty(SKOS.inScheme)] = None
+    top_concept_of: Annotated[list[str | URIRef] | None, RdfProperty(SKOS.topConceptOf)] = None
+
     # XKOS extensions
-    core_content_note: Annotated[Optional[List[str]], RdfProperty(XKOS.coreContentNote)] = None
-    additional_content_note: Annotated[Optional[List[str]], RdfProperty(XKOS.additionalContentNote)] = None
-    exclusion_note: Annotated[Optional[List[str]], RdfProperty(XKOS.exclusionNote)] = None
-    inclusion_note: Annotated[Optional[List[str]], RdfProperty(XKOS.inclusionNote)] = None
-    
+    core_content_note: Annotated[list[str] | None, RdfProperty(XKOS.coreContentNote)] = None
+    additional_content_note: Annotated[list[str] | None, RdfProperty(XKOS.additionalContentNote)] = None
+    exclusion_note: Annotated[list[str] | None, RdfProperty(XKOS.exclusionNote)] = None
+    inclusion_note: Annotated[list[str] | None, RdfProperty(XKOS.inclusionNote)] = None
+
     # Causal relationships
-    causal: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.causal)] = None
-    causes: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.causes)] = None
-    caused_by: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.causedBy)] = None
-    
+    causal: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(XKOS.causal)] = None
+    causes: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(XKOS.causes)] = None
+    caused_by: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(XKOS.causedBy)] = None
+
     # Sequential relationships
-    sequential: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.sequential)] = None
-    precedes: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.precedes)] = None
-    follows: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.follows)] = None
-    
+    sequential: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(XKOS.sequential)] = None
+    precedes: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(XKOS.precedes)] = None
+    follows: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(XKOS.follows)] = None
+
     # Temporal relationships
-    temporal: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.temporal)] = None
-    before: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.before)] = None
-    after: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.after)] = None
-    
+    temporal: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(XKOS.temporal)] = None
+    before: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(XKOS.before)] = None
+    after: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(XKOS.after)] = None
+
     # Part-whole relationships
-    is_part_of: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.isPartOf)] = None
-    has_part: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.hasPart)] = None
-    
+    is_part_of: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(XKOS.isPartOf)] = None
+    has_part: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(XKOS.hasPart)] = None
+
     # Specialization
-    specializes: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.specializes)] = None
-    generalizes: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.generalizes)] = None
-    
+    specializes: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(XKOS.specializes)] = None
+    generalizes: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(XKOS.generalizes)] = None
+
     # Level
-    class_at: Annotated[Optional[List[str | URIRef | ClassificationLevel]], RdfProperty(XKOS.classifiedUnder)] = None
-    
+    class_at: Annotated[
+        list[str | URIRef | ClassificationLevel] | None,
+        RdfProperty(XKOS.classifiedUnder),
+    ] = None
+
     # Concept relations
-    disjoint: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.disjoint)] = None
-    broader_generic: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.broaderGeneric)] = None
-    narrower_generic: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.narrowerGeneric)] = None
-    broader_partitive: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.broaderPartitive)] = None
-    narrower_partitive: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(XKOS.narrowerPartitive)] = None
-    
+    disjoint: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(XKOS.disjoint)] = None
+    broader_generic: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(XKOS.broaderGeneric)] = None
+    narrower_generic: Annotated[
+        list[str | URIRef | StatisticalConcept] | None,
+        RdfProperty(XKOS.narrowerGeneric),
+    ] = None
+    broader_partitive: Annotated[
+        list[str | URIRef | StatisticalConcept] | None,
+        RdfProperty(XKOS.broaderPartitive),
+    ] = None
+    narrower_partitive: Annotated[
+        list[str | URIRef | StatisticalConcept] | None,
+        RdfProperty(XKOS.narrowerPartitive),
+    ] = None
+
     # Notes
-    introduction: Annotated[Optional[List[str]], RdfProperty(XKOS.introduction)] = None
-    editorial_note: Annotated[Optional[List[str]], RdfProperty(XKOS.editorialNote)] = None
-    change_note: Annotated[Optional[List[str]], RdfProperty(XKOS.changeNote)] = None
+    introduction: Annotated[list[str] | None, RdfProperty(XKOS.introduction)] = None
+    editorial_note: Annotated[list[str] | None, RdfProperty(XKOS.editorialNote)] = None
+    change_note: Annotated[list[str] | None, RdfProperty(XKOS.changeNote)] = None
 
 
 class StatisticalClassification(XkosResource):
     """A SKOS Concept Scheme representing a statistical classification."""
-    
+
     rdf_type: str = str(SKOS.ConceptScheme)
-    
+
     # Labels
-    pref_label: Annotated[Optional[List[str]], RdfProperty(SKOS.prefLabel)] = None
-    alt_label: Annotated[Optional[List[str]], RdfProperty(SKOS.altLabel)] = None
-    
+    pref_label: Annotated[list[str] | None, RdfProperty(SKOS.prefLabel)] = None
+    alt_label: Annotated[list[str] | None, RdfProperty(SKOS.altLabel)] = None
+
     # Definition and scope
-    definition: Annotated[Optional[List[str]], RdfProperty(SKOS.definition)] = None
-    scope_note: Annotated[Optional[List[str]], RdfProperty(SKOS.scopeNote)] = None
-    
+    definition: Annotated[list[str] | None, RdfProperty(SKOS.definition)] = None
+    scope_note: Annotated[list[str] | None, RdfProperty(SKOS.scopeNote)] = None
+
     # Top concepts
-    has_top_concept: Annotated[Optional[List[str | URIRef | StatisticalConcept]], RdfProperty(SKOS.hasTopConcept)] = None
-    
+    has_top_concept: Annotated[list[str | URIRef | StatisticalConcept] | None, RdfProperty(SKOS.hasTopConcept)] = None
+
     # XKOS properties
-    number_of_levels: Annotated[Optional[List[int]], RdfProperty(XKOS.numberOfLevels)] = None
-    has_level: Annotated[Optional[List[str | URIRef | ClassificationLevel]], RdfProperty(XKOS.levels)] = None
-    
+    number_of_levels: Annotated[list[int] | None, RdfProperty(XKOS.numberOfLevels)] = None
+    has_level: Annotated[list[str | URIRef | ClassificationLevel] | None, RdfProperty(XKOS.levels)] = None
+
     # Variants
-    variant: Annotated[Optional[List[str | URIRef | StatisticalClassification]], RdfProperty(XKOS.variant)] = None
-    belongs_to: Annotated[Optional[List[str | URIRef]], RdfProperty(XKOS.belongsTo)] = None
-    
+    variant: Annotated[list[str | URIRef | StatisticalClassification] | None, RdfProperty(XKOS.variant)] = None
+    belongs_to: Annotated[list[str | URIRef] | None, RdfProperty(XKOS.belongsTo)] = None
+
     # Versioning
-    follows: Annotated[Optional[List[str | URIRef | StatisticalClassification]], RdfProperty(XKOS.follows)] = None
-    supersedes: Annotated[Optional[List[str | URIRef | StatisticalClassification]], RdfProperty(XKOS.supersedes)] = None
-    succeeds: Annotated[Optional[List[str | URIRef | StatisticalClassification]], RdfProperty(XKOS.succeeds)] = None
-    
+    follows: Annotated[list[str | URIRef | StatisticalClassification] | None, RdfProperty(XKOS.follows)] = None
+    supersedes: Annotated[
+        list[str | URIRef | StatisticalClassification] | None,
+        RdfProperty(XKOS.supersedes),
+    ] = None
+    succeeds: Annotated[
+        list[str | URIRef | StatisticalClassification] | None,
+        RdfProperty(XKOS.succeeds),
+    ] = None
+
     # Relations
-    disjoint: Annotated[Optional[List[str | URIRef | StatisticalClassification]], RdfProperty(XKOS.disjoint)] = None
-    
+    disjoint: Annotated[
+        list[str | URIRef | StatisticalClassification] | None,
+        RdfProperty(XKOS.disjoint),
+    ] = None
+
     # Notes
-    introduction: Annotated[Optional[List[str]], RdfProperty(XKOS.introduction)] = None
-    editorial_note: Annotated[Optional[List[str]], RdfProperty(XKOS.editorialNote)] = None
-    change_note: Annotated[Optional[List[str]], RdfProperty(XKOS.changeNote)] = None
+    introduction: Annotated[list[str] | None, RdfProperty(XKOS.introduction)] = None
+    editorial_note: Annotated[list[str] | None, RdfProperty(XKOS.editorialNote)] = None
+    change_note: Annotated[list[str] | None, RdfProperty(XKOS.changeNote)] = None

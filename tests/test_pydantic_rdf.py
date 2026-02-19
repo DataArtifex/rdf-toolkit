@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional
+from typing import Annotated, Any
 
 from pydantic import Field
-from rdflib import Literal, Namespace, RDF, URIRef
+from rdflib import RDF, BNode, Literal, Namespace, URIRef
 
 from dartfx.rdf.pydantic import RdfBaseModel, RdfProperty
-
 
 SCHEMA = Namespace("https://schema.org/")
 EX = Namespace("https://example.org/")
@@ -32,10 +31,10 @@ class Person(RdfBaseModel):
 
     id: str
     name: Annotated[str, RdfProperty(SCHEMA.name)]
-    email: Annotated[Optional[str], RdfProperty(SCHEMA.email)] = None
-    homepage: Annotated[Optional[str], RdfProperty(SCHEMA.url)] = None
-    address: Annotated[Optional[Address], RdfProperty(SCHEMA.address)] = None
-    knows: Annotated[Optional[list["Person"]], RdfProperty(SCHEMA.knows)] = Field(default_factory=list)
+    email: Annotated[str | None, RdfProperty(SCHEMA.email)] = None
+    homepage: Annotated[str | None, RdfProperty(SCHEMA.url)] = None
+    address: Annotated[Address | None, RdfProperty(SCHEMA.address)] = None
+    knows: Annotated[list[Person] | None, RdfProperty(SCHEMA.knows)] = Field(default_factory=list)
 
 
 Person.model_rebuild()
@@ -105,6 +104,7 @@ def test_pydantic_model_round_trip() -> None:
 
     assert reloaded_from_text.model_dump() == person.model_dump()
 
+
 def test_turtle_01() -> None:
     person1 = Person(id="person-1", name="Alice")
     person2 = Person(id="person-2", name="Bob")
@@ -113,17 +113,17 @@ def test_turtle_01() -> None:
     ttl = graph.serialize(format="turtle")
     assert "Alice" in ttl
     assert "Bob" in ttl
-    print("\n"+ttl)
-    
+    print("\n" + ttl)
+
 
 def test_custom_uri_generator_01() -> None:
-    def custom_uri_generator(obj: Any) -> Union[URIRef, BNode]:
-        type = type(obj)
-        return EX[f"{type.__name__}/{obj.id}"]
-        
+    def custom_uri_generator(obj: Any) -> URIRef | BNode:
+        obj_type = type(obj)
+        return EX[f"{obj_type.__name__}/{obj.id}"]
+
     person = build_person()
     graph = person.to_rdf_graph(rdf_uri_generator=custom_uri_generator)
     ttl = graph.serialize(format="turtle")
     assert "Alice" in ttl
     assert "Bob" in ttl
-    print("\n"+ttl)
+    print("\n" + ttl)
