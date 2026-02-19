@@ -82,8 +82,8 @@ When a model sets ``rdf_type`` the parser uses it to locate the correct subject
 in the graph. Otherwise it expects the graph to contain exactly one subject and
 raises an error if there are multiple candidates. You can always bypass the
 heuristics by passing the ``subject`` keyword argument to
-:meth:`~dartfx.rdf.pydantic.rdf.RdfBaseModel.from_rdf_graph` or
-:meth:`~dartfx.rdf.pydantic.rdf.RdfBaseModel.from_rdf`.
+:meth:`~dartfx.rdf.pydantic.RdfBaseModel.from_rdf_graph` or
+:meth:`~dartfx.rdf.pydantic.RdfBaseModel.from_rdf`.
 
 Language tags and datatypes
 ---------------------------
