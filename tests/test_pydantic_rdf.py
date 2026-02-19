@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Any
+from typing import Annotated, Any, ClassVar
 
 from pydantic import Field
 from rdflib import RDF, BNode, Literal, Namespace, URIRef
@@ -14,9 +14,9 @@ EX_ADDRESS = Namespace("https://example.org/address/")
 
 
 class Address(RdfBaseModel):
-    rdf_type = SCHEMA.PostalAddress
-    rdf_namespace = EX_ADDRESS
-    rdf_prefixes = {"schema": SCHEMA, "ex": EX}
+    rdf_type: ClassVar = SCHEMA.PostalAddress
+    rdf_namespace: ClassVar = EX_ADDRESS
+    rdf_prefixes: ClassVar = {"schema": SCHEMA, "ex": EX}
 
     id: str
     street: Annotated[str, RdfProperty(SCHEMA.streetAddress)]
@@ -25,9 +25,9 @@ class Address(RdfBaseModel):
 
 
 class Person(RdfBaseModel):
-    rdf_type = SCHEMA.Person
-    rdf_namespace = EX_PERSON
-    rdf_prefixes = {"schema": SCHEMA, "ex": EX}
+    rdf_type: ClassVar = SCHEMA.Person
+    rdf_namespace: ClassVar = EX_PERSON
+    rdf_prefixes: ClassVar = {"schema": SCHEMA, "ex": EX}
 
     id: str
     name: Annotated[str, RdfProperty(SCHEMA.name)]
@@ -75,8 +75,8 @@ def test_pydantic_model_serialisation() -> None:
     graph = person.to_rdf_graph()
 
     person_subject = URIRef(str(EX_PERSON) + person.id)
-    friend_subject = URIRef(str(EX_PERSON) + person.knows[0].id)
-    address_subject = URIRef(str(EX_ADDRESS) + person.address.id)
+    friend_subject = URIRef(str(EX_PERSON) + person.knows[0].id)  # type: ignore[index,union-attr]
+    address_subject = URIRef(str(EX_ADDRESS) + person.address.id)  # type: ignore[union-attr]
 
     assert (person_subject, RDF.type, SCHEMA.Person) in graph
     assert (person_subject, SCHEMA.name, Literal(person.name)) in graph

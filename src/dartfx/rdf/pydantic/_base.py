@@ -292,7 +292,9 @@ class RdfProperty:
         >>> prop.predicate_uri()
         rdflib.term.URIRef('http://xmlns.com/foaf/0.1/name')
         """
-        return _ensure_uri(self.predicate)
+        result = _ensure_uri(self.predicate)
+        assert result is not None  # predicate is required, so this should never be None
+        return result
 
     def datatype_uri(self) -> URIRef | None:
         """Convert the datatype to an rdflib URIRef.
@@ -594,7 +596,7 @@ class RdfBaseModel(BaseModel):
         """
 
         graph = self.to_rdf_graph(base_uri=base_uri, rdf_uri_generator=rdf_uri_generator)
-        return graph.serialize(format=format, **kwargs)
+        return graph.serialize(format=format, **kwargs)  # type: ignore[no-any-return]
 
     @classmethod
     def from_rdf_graph(
@@ -676,6 +678,9 @@ class RdfBaseModel(BaseModel):
         """
 
         subject_uri = _ensure_uri(subject)
+        if subject_uri is None:
+            msg = "Subject URI cannot be None"
+            raise ValueError(msg)
         values: dict[str, Any] = {}
         for name, field in cls.model_fields.items():
             prop = _get_rdf_property(field)
@@ -850,7 +855,7 @@ class RdfBaseModel(BaseModel):
         if rdf_type_uri is not None:
             graph.add((subject, RDF.type, rdf_type_uri))
 
-        for name, field in self.model_fields.items():
+        for name, field in self.__class__.model_fields.items():
             prop = _get_rdf_property(field)
             if prop is None:
                 continue
@@ -999,8 +1004,8 @@ class RdfBaseModel(BaseModel):
         base_uri: str | None,
         *,
         rdf_uri_generator: Callable[[Any], URIRef | BNode] | None = None,
-    ) -> URIRef | Literal:
-        """Convert a Python value to an RDF node (URIRef or Literal).
+    ) -> URIRef | BNode | Literal:
+        """Convert a Python value to an RDF node (URIRef, BNode, or Literal).
 
         Handles various Python types and converts them to appropriate RDF
         representations based on the field type and RdfProperty configuration.
@@ -1022,7 +1027,7 @@ class RdfBaseModel(BaseModel):
 
         Returns
         -------
-        URIRef | Literal
+        URIRef | BNode | Literal
             The RDF node representation of the value.
         """
         if prop.serializer is not None:
@@ -1087,13 +1092,13 @@ class RdfBaseModel(BaseModel):
                 raise ValueError(
                     "Multiple resources of the requested rdf:type were found; provide the subject explicitly."
                 )
-            return subjects[0]
+            return subjects[0]  # type: ignore[no-any-return]
         subjects = _unique(graph.subjects())
         if not subjects:
             return None
         if len(subjects) > 1:
             raise ValueError("Multiple resources found in graph; provide the subject explicitly.")
-        return subjects[0]
+        return subjects[0]  # type: ignore[no-any-return]
 
 
 def _get_rdf_property(field: Any) -> RdfProperty | None:
@@ -1458,13 +1463,13 @@ def _get_rdf_model_type(type_hint: Any) -> type[RdfBaseModel] | None:
         The RdfBaseModel subclass if found, otherwise None.
     """
     if _is_rdf_model(type_hint):
-        return type_hint
+        return type_hint  # type: ignore[no-any-return]
 
     origin = get_origin(type_hint)
     if origin is Union:
         for arg in get_args(type_hint):
             if _is_rdf_model(arg):
-                return arg
+                return arg  # type: ignore[no-any-return]
     return None
 
 

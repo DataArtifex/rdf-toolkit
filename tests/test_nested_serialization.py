@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, ClassVar
 
 from rdflib import BNode, Namespace, URIRef
 
@@ -8,8 +8,8 @@ EX = Namespace("http://example.org/")
 
 
 class Address(RdfBaseModel):
-    rdf_type = EX.Address
-    rdf_namespace = EX
+    rdf_type: ClassVar = EX.Address
+    rdf_namespace: ClassVar = EX
 
     id: str | None = None
     city: Annotated[str | None, RdfProperty(EX.city)] = None
@@ -17,8 +17,8 @@ class Address(RdfBaseModel):
 
 
 class Person(RdfBaseModel):
-    rdf_type = EX.Person
-    rdf_namespace = EX
+    rdf_type: ClassVar = EX.Person
+    rdf_namespace: ClassVar = EX
 
     id: str | None = None
     name: Annotated[str | None, RdfProperty(EX.name)] = None
@@ -27,11 +27,11 @@ class Person(RdfBaseModel):
 
 class NestedAddress(Address):
     # Disable auto UUID generation for this subclass
-    rdf_auto_uuid = False
+    rdf_auto_uuid: bool = False
 
 
 class NestedPerson(Person):
-    rdf_auto_uuid = False
+    rdf_auto_uuid: bool = False
     # Use NestedAddress for the address field
     address: Annotated[NestedAddress | None, RdfProperty(EX.address)] = None
 

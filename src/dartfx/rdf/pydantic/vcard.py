@@ -11,7 +11,7 @@ References:
 
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, ClassVar
 
 from rdflib import Namespace, URIRef
 
@@ -24,14 +24,14 @@ VCARD = Namespace("http://www.w3.org/2006/vcard/ns#")
 class VcardResource(RdfBaseModel):
     """Base class for vCard resources."""
 
-    rdf_namespace = VCARD
-    rdf_prefixes = {"vcard": VCARD}
+    rdf_namespace: ClassVar = VCARD
+    rdf_prefixes: ClassVar = {"vcard": VCARD}
 
 
 class VCard(VcardResource):
     """A vCard - electronic business card."""
 
-    rdf_type: str = str(VCARD.VCard)
+    rdf_type: ClassVar[str] = str(VCARD.VCard)
 
     # Identification
     fn: Annotated[list[str] | None, RdfProperty(VCARD.fn)] = None  # Formatted name
@@ -98,13 +98,13 @@ class VCard(VcardResource):
 class Individual(VCard):
     """An individual person."""
 
-    rdf_type: str = str(VCARD.Individual)
+    rdf_type: ClassVar[str] = str(VCARD.Individual)
 
 
 class Group(VCard):
     """A group of persons or entities."""
 
-    rdf_type: str = str(VCARD.Group)
+    rdf_type: ClassVar[str] = str(VCARD.Group)
 
     has_member: Annotated[list[str | URIRef | VCard] | None, RdfProperty(VCARD.hasMember)] = None
 
@@ -112,19 +112,19 @@ class Group(VCard):
 class Organization(VCard):
     """An organization."""
 
-    rdf_type: str = str(VCARD.Organization)
+    rdf_type: ClassVar[str] = str(VCARD.Organization)
 
 
 class Location(VCard):
     """A location."""
 
-    rdf_type: str = str(VCARD.Location)
+    rdf_type: ClassVar[str] = str(VCARD.Location)
 
 
 class Name(VcardResource):
     """A name component."""
 
-    rdf_type: str = str(VCARD.Name)
+    rdf_type: ClassVar[str] = str(VCARD.Name)
 
     family_name: Annotated[list[str] | None, RdfProperty(VCARD["family-name"])] = None
     given_name: Annotated[list[str] | None, RdfProperty(VCARD["given-name"])] = None
@@ -136,7 +136,7 @@ class Name(VcardResource):
 class Address(VcardResource):
     """A delivery address."""
 
-    rdf_type: str = str(VCARD.Address)
+    rdf_type: ClassVar[str] = str(VCARD.Address)
 
     street_address: Annotated[list[str] | None, RdfProperty(VCARD["street-address"])] = None
     locality: Annotated[list[str] | None, RdfProperty(VCARD.locality)] = None
@@ -150,7 +150,7 @@ class Address(VcardResource):
 class Telephone(VcardResource):
     """A telephone number."""
 
-    rdf_type: str = str(VCARD.Telephone)
+    rdf_type: ClassVar[str] = str(VCARD.Telephone)
 
     has_value: Annotated[list[str | URIRef] | None, RdfProperty(VCARD.hasValue)] = None
 
@@ -158,7 +158,7 @@ class Telephone(VcardResource):
 class Email(VcardResource):
     """An email address."""
 
-    rdf_type: str = str(VCARD.Email)
+    rdf_type: ClassVar[str] = str(VCARD.Email)
 
     has_value: Annotated[list[str | URIRef] | None, RdfProperty(VCARD.hasValue)] = None
 
@@ -218,7 +218,7 @@ class AddressType(VcardResource):
 class Gender(VcardResource):
     """A gender."""
 
-    rdf_type: str = str(VCARD.Gender)
+    rdf_type: ClassVar[str] = str(VCARD.Gender)
 
     sex: Annotated[list[str] | None, RdfProperty(VCARD.sex)] = None
     identity: Annotated[list[str] | None, RdfProperty(VCARD.identity)] = None
@@ -227,7 +227,7 @@ class Gender(VcardResource):
 class Related(VcardResource):
     """A related entity."""
 
-    rdf_type: str = str(VCARD.Related)
+    rdf_type: ClassVar[str] = str(VCARD.Related)
 
     has_value: Annotated[list[str | URIRef | VCard] | None, RdfProperty(VCARD.hasValue)] = None
 
@@ -235,88 +235,88 @@ class Related(VcardResource):
 class Acquaintance(Related):
     """An acquaintance."""
 
-    rdf_type: str = str(VCARD.Acquaintance)
+    rdf_type: ClassVar[str] = str(VCARD.Acquaintance)
 
 
 class Friend(Related):
     """A friend."""
 
-    rdf_type: str = str(VCARD.Friend)
+    rdf_type: ClassVar[str] = str(VCARD.Friend)
 
 
 class Parent(Related):
     """A parent."""
 
-    rdf_type: str = str(VCARD.Parent)
+    rdf_type: ClassVar[str] = str(VCARD.Parent)
 
 
 class Child(Related):
     """A child."""
 
-    rdf_type: str = str(VCARD.Child)
+    rdf_type: ClassVar[str] = str(VCARD.Child)
 
 
 class Spouse(Related):
     """A spouse."""
 
-    rdf_type: str = str(VCARD.Spouse)
+    rdf_type: ClassVar[str] = str(VCARD.Spouse)
 
 
 class Sibling(Related):
     """A sibling."""
 
-    rdf_type: str = str(VCARD.Sibling)
+    rdf_type: ClassVar[str] = str(VCARD.Sibling)
 
 
 class Kin(Related):
     """A kin."""
 
-    rdf_type: str = str(VCARD.Kin)
+    rdf_type: ClassVar[str] = str(VCARD.Kin)
 
 
 class Colleague(Related):
     """A colleague."""
 
-    rdf_type: str = str(VCARD.Colleague)
+    rdf_type: ClassVar[str] = str(VCARD.Colleague)
 
 
 class Emergency(Related):
     """An emergency contact."""
 
-    rdf_type: str = str(VCARD.Emergency)
+    rdf_type: ClassVar[str] = str(VCARD.Emergency)
 
 
 class Agent(Related):
     """An agent."""
 
-    rdf_type: str = str(VCARD.Agent)
+    rdf_type: ClassVar[str] = str(VCARD.Agent)
 
 
 class CoResident(Related):
     """A co-resident."""
 
-    rdf_type: str = str(VCARD.CoResident)
+    rdf_type: ClassVar[str] = str(VCARD.CoResident)
 
 
 class Neighbor(Related):
     """A neighbor."""
 
-    rdf_type: str = str(VCARD.Neighbor)
+    rdf_type: ClassVar[str] = str(VCARD.Neighbor)
 
 
 class Coworker(Related):
     """A coworker."""
 
-    rdf_type: str = str(VCARD.Coworker)
+    rdf_type: ClassVar[str] = str(VCARD.Coworker)
 
 
 class Kind(VcardResource):
     """A kind of vCard."""
 
-    rdf_type: str = str(VCARD.Kind)
+    rdf_type: ClassVar[str] = str(VCARD.Kind)
 
 
 class Type(VcardResource):
     """A property type."""
 
-    rdf_type: str = str(VCARD.Type)
+    rdf_type: ClassVar[str] = str(VCARD.Type)
