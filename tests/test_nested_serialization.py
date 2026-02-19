@@ -1,6 +1,5 @@
-from typing import Annotated, Optional, List, ClassVar
-from rdflib import Namespace, URIRef, BNode, Graph
-import uuid
+from typing import Annotated, Optional
+from rdflib import Namespace, URIRef, BNode
 from dartfx.rdf.pydantic import RdfBaseModel, RdfProperty
 
 EX = Namespace("http://example.org/")
