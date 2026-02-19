@@ -1,13 +1,6 @@
-RDF
----
-.. automodule:: dartfx.rdf.pydantic.rdf
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Utilities
----------
-.. automodule:: dartfx.rdf.utils
+Pydantic Core
+-------------
+.. automodule:: dartfx.rdf.pydantic
    :members:
    :undoc-members:
    :show-inheritance:

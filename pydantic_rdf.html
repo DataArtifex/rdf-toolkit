@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pydantic ↔ RDF Integration &mdash; Data Artifex Foo 0.1.0 documentation</title>
+  <title>Pydantic ↔ RDF Integration &mdash; Data Artifex RDF Toolkit 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -22,7 +22,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="RDF" href="modules.html" />
+    <link rel="next" title="Pydantic Core" href="modules.html" />
     <link rel="prev" title="Data Artifex RDF Toolkit" href="index.html" /> 
 </head>
 
@@ -35,7 +35,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            Data Artifex Foo
+            Data Artifex RDF Toolkit
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -56,8 +56,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#advanced-scenarios">Advanced scenarios</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">RDF</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html#utilities">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Pydantic Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.pydantic.dcterms">DCTERMS: Dublin Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.pydantic.foaf">FOAF: Friend of a Friend</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.pydantic.odrl">ODRL:  Open Digital Rights Language</a></li>
@@ -74,7 +73,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Data Artifex Foo</a>
+          <a href="index.html">Data Artifex RDF Toolkit</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -94,15 +93,15 @@
              
   <section id="pydantic-rdf-integration">
 <h1>Pydantic ↔ RDF Integration<a class="headerlink" href="#pydantic-rdf-integration" title="Link to this heading"></a></h1>
-<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">dartfx.rdf.pydantic</span></code> module adds a thin mixin that lets you
+<p>The <a class="reference internal" href="modules.html#module-dartfx.rdf.pydantic" title="dartfx.rdf.pydantic"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dartfx.rdf.pydantic</span></code></a> module adds a thin mixin that lets you
 annotate Pydantic models with RDF metadata, build <cite>rdflib.Graph</cite> instances, and
 reconstruct the models from existing graphs. This page walks through the most
 important building blocks and patterns.</p>
 <section id="quick-start">
 <h2>Quick start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
-<li><p>Import <code class="xref py py-class docutils literal notranslate"><span class="pre">RdfBaseModel</span></code> and
-<code class="xref py py-class docutils literal notranslate"><span class="pre">RdfProperty</span></code>.</p></li>
+<li><p>Import <a class="reference internal" href="modules.html#dartfx.rdf.pydantic.RdfBaseModel" title="dartfx.rdf.pydantic.RdfBaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">RdfBaseModel</span></code></a> and
+<a class="reference internal" href="modules.html#dartfx.rdf.pydantic.RdfProperty" title="dartfx.rdf.pydantic.RdfProperty"><code class="xref py py-class docutils literal notranslate"><span class="pre">RdfProperty</span></code></a>.</p></li>
 <li><p>Define a namespace for your resources and declare any prefixes you want to be
 emitted in the resulting graph.</p></li>
 <li><p>Annotate each serialisable field with an RDF predicate.</p></li>
@@ -139,13 +138,13 @@ emitted in the resulting graph.</p></li>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">RdfBaseModel</span></code> takes care of creating a subject identifier, emitting RDF
 triples for every annotated field, and binding the default prefixes. The graph
-returned by <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_rdf_graph()</span></code> can be
+returned by <a class="reference internal" href="modules.html#id3" title="dartfx.rdf.pydantic.RdfBaseModel.to_rdf_graph"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_rdf_graph()</span></code></a> can be
 serialised in any format supported by <cite>rdflib</cite>.</p>
 </section>
 <section id="mapping-rules">
 <h2>Mapping rules<a class="headerlink" href="#mapping-rules" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p>The <code class="docutils literal notranslate"><span class="pre">predicate</span></code> argument on <code class="xref py py-class docutils literal notranslate"><span class="pre">RdfProperty</span></code>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">predicate</span></code> argument on <a class="reference internal" href="modules.html#dartfx.rdf.pydantic.RdfProperty" title="dartfx.rdf.pydantic.RdfProperty"><code class="xref py py-class docutils literal notranslate"><span class="pre">RdfProperty</span></code></a>
 can be either a full <code class="docutils literal notranslate"><span class="pre">rdflib.term.URIRef</span></code> or a string. Strings will be
 coerced into <code class="docutils literal notranslate"><span class="pre">URIRef</span></code> instances at runtime.</p></li>
 <li><p>A model-level <code class="docutils literal notranslate"><span class="pre">rdf_type</span></code> constant adds <code class="docutils literal notranslate"><span class="pre">rdf:type</span></code> triples for every
@@ -171,8 +170,8 @@ serialisation.</p>
 in the graph. Otherwise it expects the graph to contain exactly one subject and
 raises an error if there are multiple candidates. You can always bypass the
 heuristics by passing the <code class="docutils literal notranslate"><span class="pre">subject</span></code> keyword argument to
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">from_rdf_graph()</span></code> or
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">from_rdf()</span></code>.</p>
+<a class="reference internal" href="modules.html#id1" title="dartfx.rdf.pydantic.RdfBaseModel.from_rdf_graph"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_rdf_graph()</span></code></a> or
+<a class="reference internal" href="modules.html#id0" title="dartfx.rdf.pydantic.RdfBaseModel.from_rdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_rdf()</span></code></a>.</p>
 </section>
 <section id="language-tags-and-datatypes">
 <h2>Language tags and datatypes<a class="headerlink" href="#language-tags-and-datatypes" title="Link to this heading"></a></h2>
@@ -264,7 +263,7 @@ cover nested resources, optional values, and custom datatypes.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Data Artifex RDF Toolkit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="modules.html" class="btn btn-neutral float-right" title="RDF" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="Pydantic Core" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; Data Artifex Foo 0.1.0 documentation</title>
+  <title>Index &mdash; Data Artifex RDF Toolkit 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -32,7 +32,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            Data Artifex Foo
+            Data Artifex RDF Toolkit
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -45,8 +45,7 @@
               <p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pydantic_rdf.html">Pydantic ↔ RDF Integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">RDF</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html#utilities">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Pydantic Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.pydantic.dcterms">DCTERMS: Dublin Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.pydantic.foaf">FOAF: Friend of a Friend</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.pydantic.odrl">ODRL:  Open Digital Rights Language</a></li>
@@ -63,7 +62,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Data Artifex Foo</a>
+          <a href="index.html">Data Artifex RDF Toolkit</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -390,6 +389,8 @@
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.skos.ConceptScheme">ConceptScheme (class in dartfx.rdf.pydantic.skos)</a>
 </li>
+      <li><a href="modules.html#dartfx.rdf.pydantic.RdfBaseModel.Configuration">Configuration() (dartfx.rdf.pydantic.RdfBaseModel method)</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.pydantic.odrl.Policy.conflict">conflict (dartfx.rdf.pydantic.odrl.Policy attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.odrl.ConflictTerm">ConflictTerm (class in dartfx.rdf.pydantic.odrl)</a>
@@ -463,6 +464,13 @@
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DcmiFrequency.DAILY">DAILY (dartfx.rdf.pydantic.dcterms.DcmiFrequency attribute)</a>
 </li>
       <li>
+    dartfx.rdf.pydantic
+
+      <ul>
+        <li><a href="modules.html#module-dartfx.rdf.pydantic">module</a>
+</li>
+      </ul></li>
+      <li>
     dartfx.rdf.pydantic.dcterms
 
       <ul>
@@ -522,18 +530,22 @@
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.odrl.Constraint.data_type">data_type (dartfx.rdf.pydantic.odrl.Constraint attribute)</a>
 </li>
+      <li><a href="modules.html#dartfx.rdf.pydantic.RdfProperty.datatype">datatype (dartfx.rdf.pydantic.RdfProperty attribute)</a>, <a href="modules.html#id4">[1]</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.pydantic.RdfProperty.datatype_uri">datatype_uri() (dartfx.rdf.pydantic.RdfProperty method)</a>, <a href="modules.html#id5">[1]</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DublinCoreRecord.date">date (dartfx.rdf.pydantic.dcterms.DublinCoreRecord attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DublinCoreRecord.date_accepted">date_accepted (dartfx.rdf.pydantic.dcterms.DublinCoreRecord attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DublinCoreRecord.date_copyrighted">date_copyrighted (dartfx.rdf.pydantic.dcterms.DublinCoreRecord attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DublinCoreRecord.date_submitted">date_submitted (dartfx.rdf.pydantic.dcterms.DublinCoreRecord attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DcmiFrequency">DcmiFrequency (class in dartfx.rdf.pydantic.dcterms)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DctermsResource">DctermsResource (class in dartfx.rdf.pydantic.dcterms)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.skos.Concept.definition">definition (dartfx.rdf.pydantic.skos.Concept attribute)</a>
@@ -696,12 +708,12 @@
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.spdx.FileType">FileType (class in dartfx.rdf.pydantic.spdx)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#dartfx.rdf.pydantic.foaf.Person.first_name">first_name (dartfx.rdf.pydantic.foaf.Person attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.vcard.VCard.fn">fn (dartfx.rdf.pydantic.vcard.VCard attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#dartfx.rdf.pydantic.foaf.FoafResource">FoafResource (class in dartfx.rdf.pydantic.foaf)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.xkos.StatisticalClassification.follows">follows (dartfx.rdf.pydantic.xkos.StatisticalClassification attribute)</a>
@@ -716,6 +728,18 @@
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.vcard.Friend">Friend (class in dartfx.rdf.pydantic.vcard)</a>
 </li>
+      <li><a href="modules.html#id0">from_rdf() (dartfx.rdf.pydantic.RdfBaseModel class method)</a>
+
+      <ul>
+        <li><a href="modules.html#dartfx.rdf.pydantic.RdfBaseModel.from_rdf">(dartfx.rdf.pydantic.RdfBaseModel method)</a>
+</li>
+      </ul></li>
+      <li><a href="modules.html#id1">from_rdf_graph() (dartfx.rdf.pydantic.RdfBaseModel class method)</a>
+
+      <ul>
+        <li><a href="modules.html#dartfx.rdf.pydantic.RdfBaseModel.from_rdf_graph">(dartfx.rdf.pydantic.RdfBaseModel method)</a>
+</li>
+      </ul></li>
       <li><a href="modules.html#dartfx.rdf.pydantic.odrl.Rule.function">function (dartfx.rdf.pydantic.odrl.Rule attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.foaf.Project.funded_by">funded_by (dartfx.rdf.pydantic.foaf.Project attribute)</a>
@@ -1029,6 +1053,8 @@
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DublinCoreRecord.language">language (dartfx.rdf.pydantic.dcterms.DublinCoreRecord attribute)</a>
 
       <ul>
+        <li><a href="modules.html#dartfx.rdf.pydantic.RdfProperty.language">(dartfx.rdf.pydantic.RdfProperty attribute)</a>, <a href="modules.html#id6">[1]</a>
+</li>
         <li><a href="modules.html#dartfx.rdf.pydantic.vcard.VCard.language">(dartfx.rdf.pydantic.vcard.VCard attribute)</a>
 </li>
       </ul></li>
@@ -1062,10 +1088,10 @@
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.spdx.LicenseException.license_exception_id">license_exception_id (dartfx.rdf.pydantic.spdx.LicenseException attribute)</a>
 </li>
-      <li><a href="modules.html#dartfx.rdf.pydantic.spdx.LicenseException.license_exception_template">license_exception_template (dartfx.rdf.pydantic.spdx.LicenseException attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.pydantic.spdx.LicenseException.license_exception_template">license_exception_template (dartfx.rdf.pydantic.spdx.LicenseException attribute)</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.pydantic.spdx.LicenseException.license_exception_text">license_exception_text (dartfx.rdf.pydantic.spdx.LicenseException attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.spdx.License.license_id">license_id (dartfx.rdf.pydantic.spdx.License attribute)</a>
@@ -1317,6 +1343,8 @@
 </li>
         <li><a href="modules.html#dartfx.rdf.pydantic.prov.Usage.model_config">(dartfx.rdf.pydantic.prov.Usage attribute)</a>
 </li>
+        <li><a href="modules.html#dartfx.rdf.pydantic.RdfBaseModel.model_config">(dartfx.rdf.pydantic.RdfBaseModel attribute)</a>
+</li>
         <li><a href="modules.html#dartfx.rdf.pydantic.skos.Collection.model_config">(dartfx.rdf.pydantic.skos.Collection attribute)</a>
 </li>
         <li><a href="modules.html#dartfx.rdf.pydantic.skos.Concept.model_config">(dartfx.rdf.pydantic.skos.Concept attribute)</a>
@@ -1458,6 +1486,8 @@
     module
 
       <ul>
+        <li><a href="modules.html#module-dartfx.rdf.pydantic">dartfx.rdf.pydantic</a>
+</li>
         <li><a href="modules.html#module-dartfx.rdf.pydantic.dcterms">dartfx.rdf.pydantic.dcterms</a>
 </li>
         <li><a href="modules.html#module-dartfx.rdf.pydantic.foaf">dartfx.rdf.pydantic.foaf</a>
@@ -1639,6 +1669,8 @@
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.vcard.Parent">Parent (class in dartfx.rdf.pydantic.vcard)</a>
 </li>
+      <li><a href="modules.html#dartfx.rdf.pydantic.RdfProperty.parser">parser (dartfx.rdf.pydantic.RdfProperty attribute)</a>, <a href="modules.html#id7">[1]</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.pydantic.odrl.Asset.part_of">part_of (dartfx.rdf.pydantic.odrl.Asset attribute)</a>
 
       <ul>
@@ -1690,6 +1722,10 @@
       <li><a href="modules.html#dartfx.rdf.pydantic.vcard.Address.postal_code">postal_code (dartfx.rdf.pydantic.vcard.Address attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.xkos.StatisticalConcept.precedes">precedes (dartfx.rdf.pydantic.xkos.StatisticalConcept attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.pydantic.RdfProperty.predicate">predicate (dartfx.rdf.pydantic.RdfProperty attribute)</a>, <a href="modules.html#id8">[1]</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.pydantic.RdfProperty.predicate_uri">predicate_uri() (dartfx.rdf.pydantic.RdfProperty method)</a>, <a href="modules.html#id9">[1]</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.skos.Collection.pref_label">pref_label (dartfx.rdf.pydantic.skos.Collection attribute)</a>
 
@@ -1757,6 +1793,10 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.pydantic.RdfBaseModel.rdf_auto_uuid">rdf_auto_uuid (dartfx.rdf.pydantic.RdfBaseModel attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.pydantic.RdfBaseModel.rdf_id_field">rdf_id_field (dartfx.rdf.pydantic.RdfBaseModel attribute)</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DctermsResource.rdf_namespace">rdf_namespace (dartfx.rdf.pydantic.dcterms.DctermsResource attribute)</a>
 
       <ul>
@@ -1765,6 +1805,8 @@
         <li><a href="modules.html#dartfx.rdf.pydantic.odrl.OdrlResource.rdf_namespace">(dartfx.rdf.pydantic.odrl.OdrlResource attribute)</a>
 </li>
         <li><a href="modules.html#dartfx.rdf.pydantic.prov.ProvResource.rdf_namespace">(dartfx.rdf.pydantic.prov.ProvResource attribute)</a>
+</li>
+        <li><a href="modules.html#dartfx.rdf.pydantic.RdfBaseModel.rdf_namespace">(dartfx.rdf.pydantic.RdfBaseModel attribute)</a>
 </li>
         <li><a href="modules.html#dartfx.rdf.pydantic.skos.Label.rdf_namespace">(dartfx.rdf.pydantic.skos.Label attribute)</a>
 </li>
@@ -1785,6 +1827,8 @@
         <li><a href="modules.html#dartfx.rdf.pydantic.odrl.OdrlResource.rdf_prefixes">(dartfx.rdf.pydantic.odrl.OdrlResource attribute)</a>
 </li>
         <li><a href="modules.html#dartfx.rdf.pydantic.prov.ProvResource.rdf_prefixes">(dartfx.rdf.pydantic.prov.ProvResource attribute)</a>
+</li>
+        <li><a href="modules.html#dartfx.rdf.pydantic.RdfBaseModel.rdf_prefixes">(dartfx.rdf.pydantic.RdfBaseModel attribute)</a>
 </li>
         <li><a href="modules.html#dartfx.rdf.pydantic.skos.Label.rdf_prefixes">(dartfx.rdf.pydantic.skos.Label attribute)</a>
 </li>
@@ -1950,6 +1994,8 @@
 </li>
         <li><a href="modules.html#dartfx.rdf.pydantic.prov.Usage.rdf_type">(dartfx.rdf.pydantic.prov.Usage attribute)</a>
 </li>
+        <li><a href="modules.html#dartfx.rdf.pydantic.RdfBaseModel.rdf_type">(dartfx.rdf.pydantic.RdfBaseModel attribute)</a>
+</li>
         <li><a href="modules.html#dartfx.rdf.pydantic.skos.Collection.rdf_type">(dartfx.rdf.pydantic.skos.Collection attribute)</a>
 </li>
         <li><a href="modules.html#dartfx.rdf.pydantic.skos.Concept.rdf_type">(dartfx.rdf.pydantic.skos.Concept attribute)</a>
@@ -2069,6 +2115,12 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.pydantic.RdfBaseModel.rdf_uri_generator">rdf_uri_generator (dartfx.rdf.pydantic.RdfBaseModel attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.pydantic.RdfBaseModel">RdfBaseModel (class in dartfx.rdf.pydantic)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.pydantic.RdfProperty">RdfProperty (class in dartfx.rdf.pydantic)</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.pydantic.spdx.ExternalRef.reference_category">reference_category (dartfx.rdf.pydantic.spdx.ExternalRef attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.spdx.ExternalRef.reference_locator">reference_locator (dartfx.rdf.pydantic.spdx.ExternalRef attribute)</a>
@@ -2176,6 +2228,8 @@
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DcmiFrequency.SEMIWEEKLY">SEMIWEEKLY (dartfx.rdf.pydantic.dcterms.DcmiFrequency attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.xkos.StatisticalConcept.sequential">sequential (dartfx.rdf.pydantic.xkos.StatisticalConcept attribute)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.pydantic.RdfProperty.serializer">serializer (dartfx.rdf.pydantic.RdfProperty attribute)</a>, <a href="modules.html#id10">[1]</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.odrl.Set">Set (class in dartfx.rdf.pydantic.odrl)</a>
 </li>
@@ -2289,10 +2343,10 @@
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.foaf.Image.thumbnail">thumbnail (dartfx.rdf.pydantic.foaf.Image attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#dartfx.rdf.pydantic.odrl.Ticket">Ticket (class in dartfx.rdf.pydantic.odrl)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#dartfx.rdf.pydantic.foaf.Agent.tipjar">tipjar (dartfx.rdf.pydantic.foaf.Agent attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DublinCoreRecord.title">title (dartfx.rdf.pydantic.dcterms.DublinCoreRecord attribute)</a>
@@ -2303,6 +2357,10 @@
         <li><a href="modules.html#dartfx.rdf.pydantic.vcard.VCard.title">(dartfx.rdf.pydantic.vcard.VCard attribute)</a>
 </li>
       </ul></li>
+      <li><a href="modules.html#dartfx.rdf.pydantic.RdfBaseModel.to_rdf">to_rdf() (dartfx.rdf.pydantic.RdfBaseModel method)</a>, <a href="modules.html#id2">[1]</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.pydantic.RdfBaseModel.to_rdf_graph">to_rdf_graph() (dartfx.rdf.pydantic.RdfBaseModel method)</a>, <a href="modules.html#id3">[1]</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.pydantic.skos.Concept.top_concept_of">top_concept_of (dartfx.rdf.pydantic.skos.Concept attribute)</a>
 
       <ul>

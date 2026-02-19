@@ -1,0 +1,1618 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dartfx.rdf.pydantic._base &mdash; Data Artifex RDF Toolkit 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Data Artifex RDF Toolkit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydantic_rdf.html">Pydantic ↔ RDF Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">Pydantic Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.dcterms">DCTERMS: Dublin Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.foaf">FOAF: Friend of a Friend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.odrl">ODRL:  Open Digital Rights Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.prov">PROV:  Prov Ontology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.skos">SKOS:  Simple Knowledge Organization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.spdx">SPDX:  Software Package Data Exchange</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.vcard">VCARD: vCard / Virtual Contact File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.xkos">XKOS: SKOS extension for representing statistical classifications</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Data Artifex RDF Toolkit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">dartfx.rdf.pydantic._base</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for dartfx.rdf.pydantic._base</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Pydantic RDF Base Model - Bridge between Pydantic models and RDF graphs.</span>
+
+<span class="sd">This module provides a base class and utilities for seamlessly converting Pydantic models</span>
+<span class="sd">to and from RDF (Resource Description Framework) graphs using rdflib. It enables type-safe,</span>
+<span class="sd">validated RDF data modeling with automatic serialization and deserialization.</span>
+
+<span class="sd">The core components are:</span>
+
+<span class="sd">- :class:`RdfBaseModel`: A Pydantic BaseModel subclass that provides RDF serialization</span>
+<span class="sd">  and deserialization capabilities. Models inheriting from this class can be automatically</span>
+<span class="sd">  converted to/from RDF graphs in various formats (Turtle, RDF/XML, JSON-LD, etc.).</span>
+
+<span class="sd">- :class:`RdfProperty`: A metadata descriptor used in type annotations to map Pydantic</span>
+<span class="sd">  fields to RDF predicates, with optional datatype and language specifications.</span>
+
+<span class="sd">Basic Usage</span>
+<span class="sd">-----------</span>
+
+<span class="sd">Define a model by inheriting from RdfBaseModel and annotating fields with RdfProperty::</span>
+
+<span class="sd">    from typing import Annotated, Optional, List</span>
+<span class="sd">    from rdflib import Namespace, URIRef</span>
+<span class="sd">    from dartfx.rdf.pydantic import RdfBaseModel, RdfProperty</span>
+
+<span class="sd">    FOAF = Namespace(&quot;http://xmlns.com/foaf/0.1/&quot;)</span>
+
+<span class="sd">    class Person(RdfBaseModel):</span>
+<span class="sd">        rdf_type: str = str(FOAF.Person)</span>
+<span class="sd">        rdf_namespace = FOAF</span>
+<span class="sd">        rdf_prefixes = {&quot;foaf&quot;: FOAF}</span>
+
+<span class="sd">        name: Annotated[Optional[List[str]], RdfProperty(FOAF.name)] = None</span>
+<span class="sd">        email: Annotated[Optional[List[str]], RdfProperty(FOAF.mbox)] = None</span>
+<span class="sd">        knows: Annotated[Optional[List[URIRef | Person]], RdfProperty(FOAF.knows)] = None</span>
+
+<span class="sd">Serialize to RDF::</span>
+
+<span class="sd">    person = Person(name=[&quot;Alice&quot;], email=[&quot;alice@example.org&quot;])</span>
+<span class="sd">    turtle = person.to_rdf(&quot;turtle&quot;)</span>
+<span class="sd">    # Output: Turtle format RDF with proper namespace bindings</span>
+
+<span class="sd">Deserialize from RDF::</span>
+
+<span class="sd">    restored = Person.from_rdf(turtle, format=&quot;turtle&quot;)</span>
+<span class="sd">    assert restored.name == [&quot;Alice&quot;]</span>
+
+<span class="sd">Key Features</span>
+<span class="sd">------------</span>
+
+<span class="sd">- **Type Safety**: Full Pydantic validation for RDF data</span>
+<span class="sd">- **Multiple Formats**: Serialize to Turtle, RDF/XML, JSON-LD, N-Triples, etc.</span>
+<span class="sd">- **Round-trip Support**: Lossless conversion between Python objects and RDF</span>
+<span class="sd">- **Nested Objects**: Support for nested RdfBaseModel instances</span>
+<span class="sd">- **List Values**: Automatic handling of multi-valued properties</span>
+<span class="sd">- **Custom Datatypes**: Specify XSD datatypes and language tags</span>
+<span class="sd">- **Namespace Management**: Automatic prefix binding for clean serialization</span>
+<span class="sd">- **Flexible Identifiers**: Use custom ID fields or auto-generate UUIDs</span>
+
+<span class="sd">Advanced Features</span>
+<span class="sd">-----------------</span>
+
+<span class="sd">Custom serializers and parsers::</span>
+
+<span class="sd">    def serialize_date(d: date) -&gt; str:</span>
+<span class="sd">        return d.isoformat()</span>
+
+<span class="sd">    def parse_date(node: Literal) -&gt; date:</span>
+<span class="sd">        return date.fromisoformat(str(node))</span>
+
+<span class="sd">    birth_date: Annotated[Optional[date], RdfProperty(</span>
+<span class="sd">        SCHEMA.birthDate,</span>
+<span class="sd">        serializer=serialize_date,</span>
+<span class="sd">        parser=parse_date</span>
+<span class="sd">    )] = None</span>
+
+<span class="sd">Language-tagged literals::</span>
+
+<span class="sd">    description: Annotated[Optional[List[str]], RdfProperty(</span>
+<span class="sd">        DC.description,</span>
+<span class="sd">        language=&quot;en&quot;</span>
+<span class="sd">    )] = None</span>
+
+<span class="sd">Custom datatypes::</span>
+
+<span class="sd">    age: Annotated[Optional[int], RdfProperty(</span>
+<span class="sd">        FOAF.age,</span>
+<span class="sd">        datatype=XSD.integer</span>
+<span class="sd">    )] = None</span>
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+
+<span class="sd">Simple metadata example::</span>
+
+<span class="sd">    from rdflib import Namespace, DCTERMS</span>
+
+<span class="sd">    class Document(RdfBaseModel):</span>
+<span class="sd">        rdf_namespace = DCTERMS</span>
+<span class="sd">        rdf_prefixes = {&quot;dcterms&quot;: DCTERMS}</span>
+
+<span class="sd">        title: Annotated[Optional[List[str]], RdfProperty(DCTERMS.title)] = None</span>
+<span class="sd">        creator: Annotated[Optional[List[str]], RdfProperty(DCTERMS.creator)] = None</span>
+
+<span class="sd">    doc = Document(title=[&quot;My Document&quot;], creator=[&quot;John Doe&quot;])</span>
+<span class="sd">    print(doc.to_rdf(&quot;turtle&quot;))</span>
+
+<span class="sd">Nested objects example::</span>
+
+<span class="sd">    class Organization(RdfBaseModel):</span>
+<span class="sd">        rdf_type: str = str(FOAF.Organization)</span>
+<span class="sd">        name: Annotated[Optional[List[str]], RdfProperty(FOAF.name)] = None</span>
+
+<span class="sd">    class Person(RdfBaseModel):</span>
+<span class="sd">        rdf_type: str = str(FOAF.Person)</span>
+<span class="sd">        name: Annotated[Optional[List[str]], RdfProperty(FOAF.name)] = None</span>
+<span class="sd">        works_for: Annotated[Optional[List[Organization]], RdfProperty(FOAF.workplaceHomepage)] = None</span>
+
+<span class="sd">    org = Organization(name=[&quot;ACME Corp&quot;])</span>
+<span class="sd">    person = Person(name=[&quot;Alice&quot;], works_for=[org])</span>
+<span class="sd">    # Both person and organization are serialized to the graph</span>
+
+<span class="sd">Notes</span>
+<span class="sd">-----</span>
+
+<span class="sd">- Field names don&#39;t need to match RDF predicate names - use RdfProperty to map them</span>
+<span class="sd">- Use `Optional[List[T]]` for multi-valued properties (standard in RDF)</span>
+<span class="sd">- The `id` field is special and maps to the RDF subject URI</span>
+<span class="sd">- Custom `rdf_id_field` can be specified per model</span>
+<span class="sd">- Auto-generated UUIDs are used when no ID is provided</span>
+<span class="sd">- Namespace prefixes improve readability of serialized output</span>
+
+<span class="sd">See Also</span>
+<span class="sd">--------</span>
+
+<span class="sd">- rdflib documentation: https://rdflib.readthedocs.io/</span>
+<span class="sd">- Pydantic documentation: https://docs.pydantic.dev/</span>
+<span class="sd">- RDF Primer: https://www.w3.org/TR/rdf11-primer/</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">types</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Annotated</span><span class="p">,</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">ClassVar</span><span class="p">,</span>
+    <span class="n">TypeVar</span><span class="p">,</span>
+    <span class="n">Union</span><span class="p">,</span>
+    <span class="n">get_args</span><span class="p">,</span>
+    <span class="n">get_origin</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">ConfigDict</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">RDF</span><span class="p">,</span> <span class="n">XSD</span><span class="p">,</span> <span class="n">BNode</span><span class="p">,</span> <span class="n">Graph</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">URIRef</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">&quot;RdfBaseModel&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="RdfProperty">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.RdfProperty">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RdfProperty</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Metadata descriptor for mapping Pydantic fields to RDF predicates.</span>
+
+<span class="sd">    This class is used as metadata in type annotations to specify how a Pydantic</span>
+<span class="sd">    field should be serialized to and deserialized from RDF. It provides control</span>
+<span class="sd">    over the RDF predicate URI, datatype, language tags, and custom serialization.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    predicate : str | URIRef</span>
+<span class="sd">        The RDF predicate URI for this property. Can be a string URI or an</span>
+<span class="sd">        rdflib URIRef. Typically uses a namespace property like `FOAF.name`.</span>
+
+<span class="sd">    datatype : str | URIRef | None, optional</span>
+<span class="sd">        The XSD datatype URI for literal values. If None, the datatype is</span>
+<span class="sd">        inferred from the Python type. Examples: XSD.string, XSD.integer,</span>
+<span class="sd">        XSD.dateTime. Default is None.</span>
+
+<span class="sd">    language : str | None, optional</span>
+<span class="sd">        The language tag for string literals (e.g., &quot;en&quot;, &quot;fr&quot;, &quot;de&quot;).</span>
+<span class="sd">        Creates language-tagged RDF literals. Cannot be used with datatype.</span>
+<span class="sd">        Default is None.</span>
+
+<span class="sd">    serializer : Callable | None, optional</span>
+<span class="sd">        A custom function to transform Python values before RDF serialization.</span>
+<span class="sd">        Signature: (value: Any) -&gt; Any. The returned value should be compatible</span>
+<span class="sd">        with RDF serialization (str, int, URIRef, Literal, etc.).</span>
+<span class="sd">        Default is None.</span>
+
+<span class="sd">    parser : Callable | None, optional</span>
+<span class="sd">        A custom function to transform RDF nodes back to Python values during</span>
+<span class="sd">        deserialization. Signature: (node: URIRef | Literal) -&gt; Any.</span>
+<span class="sd">        Default is None.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    predicate : str | URIRef</span>
+<span class="sd">        The RDF predicate URI.</span>
+<span class="sd">    datatype : str | URIRef | None</span>
+<span class="sd">        The XSD datatype URI for literals.</span>
+<span class="sd">    language : str | None</span>
+<span class="sd">        The language tag for string literals.</span>
+<span class="sd">    serializer : Callable | None</span>
+<span class="sd">        Custom serialization function.</span>
+<span class="sd">    parser : Callable | None</span>
+<span class="sd">        Custom parsing function.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    predicate_uri() -&gt; URIRef</span>
+<span class="sd">        Convert the predicate to an rdflib URIRef.</span>
+<span class="sd">    datatype_uri() -&gt; URIRef | None</span>
+<span class="sd">        Convert the datatype to an rdflib URIRef, or None if not specified.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Basic property mapping::</span>
+
+<span class="sd">        from rdflib import FOAF</span>
+<span class="sd">        from typing import Annotated, Optional, List</span>
+
+<span class="sd">        name: Annotated[Optional[List[str]], RdfProperty(FOAF.name)] = None</span>
+
+<span class="sd">    With datatype::</span>
+
+<span class="sd">        from rdflib import XSD</span>
+
+<span class="sd">        age: Annotated[Optional[int], RdfProperty(</span>
+<span class="sd">            FOAF.age,</span>
+<span class="sd">            datatype=XSD.integer</span>
+<span class="sd">        )] = None</span>
+
+<span class="sd">    With language tag::</span>
+
+<span class="sd">        description: Annotated[Optional[List[str]], RdfProperty(</span>
+<span class="sd">            DCTERMS.description,</span>
+<span class="sd">            language=&quot;en&quot;</span>
+<span class="sd">        )] = None</span>
+
+<span class="sd">    With custom serializer/parser::</span>
+
+<span class="sd">        from datetime import date</span>
+
+<span class="sd">        def serialize_date(d: date) -&gt; str:</span>
+<span class="sd">            return d.isoformat()</span>
+
+<span class="sd">        def parse_date(node) -&gt; date:</span>
+<span class="sd">            return date.fromisoformat(str(node))</span>
+
+<span class="sd">        birth_date: Annotated[Optional[date], RdfProperty(</span>
+<span class="sd">            SCHEMA.birthDate,</span>
+<span class="sd">            serializer=serialize_date,</span>
+<span class="sd">            parser=parse_date</span>
+<span class="sd">        )] = None</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    - RdfProperty instances are immutable (frozen dataclass)</span>
+<span class="sd">    - Use in Annotated type hints as metadata</span>
+<span class="sd">    - Language and datatype are mutually exclusive</span>
+<span class="sd">    - Custom serializers/parsers override default behavior</span>
+<span class="sd">    - The predicate URI is the only required parameter</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    RdfBaseModel : Base class for RDF-enabled Pydantic models</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">predicate</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span>
+    <span class="n">datatype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">serializer</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">parser</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="RdfProperty.predicate_uri">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.RdfProperty.predicate_uri">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predicate_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the predicate to an rdflib URIRef.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        URIRef</span>
+<span class="sd">            The predicate as an rdflib URIRef.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from rdflib import FOAF</span>
+<span class="sd">        &gt;&gt;&gt; prop = RdfProperty(FOAF.name)</span>
+<span class="sd">        &gt;&gt;&gt; prop.predicate_uri()</span>
+<span class="sd">        rdflib.term.URIRef(&#39;http://xmlns.com/foaf/0.1/name&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_ensure_uri</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predicate</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="c1"># predicate is required, so this should never be None</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="RdfProperty.datatype_uri">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.RdfProperty.datatype_uri">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">datatype_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the datatype to an rdflib URIRef.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        URIRef | None</span>
+<span class="sd">            The datatype as an rdflib URIRef, or None if no datatype is specified.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from rdflib import XSD</span>
+<span class="sd">        &gt;&gt;&gt; prop = RdfProperty(FOAF.age, datatype=XSD.integer)</span>
+<span class="sd">        &gt;&gt;&gt; prop.datatype_uri()</span>
+<span class="sd">        rdflib.term.URIRef(&#39;http://www.w3.org/2001/XMLSchema#integer&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_ensure_uri</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datatype</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="RdfBaseModel">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.RdfBaseModel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RdfBaseModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for Pydantic models with RDF serialization capabilities.</span>
+
+<span class="sd">    This class extends Pydantic&#39;s BaseModel to provide automatic conversion to and</span>
+<span class="sd">    from RDF graphs. Models inheriting from RdfBaseModel can be serialized to various</span>
+<span class="sd">    RDF formats (Turtle, RDF/XML, JSON-LD, etc.) and deserialized back to Python objects.</span>
+
+<span class="sd">    Class Attributes</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    rdf_type : str | URIRef | None</span>
+<span class="sd">        The RDF type (rdf:type) for instances of this class. Typically set to a</span>
+<span class="sd">        vocabulary class URI like `FOAF.Person` or `SKOS.Concept`. If None, no</span>
+<span class="sd">        rdf:type triple is added to the graph.</span>
+
+<span class="sd">    rdf_namespace : str | Namespace | None</span>
+<span class="sd">        The default namespace for generating subject URIs. Used when an instance</span>
+<span class="sd">        has an `id` but not a full URI. For example, with namespace `FOAF` and</span>
+<span class="sd">        id `&quot;john&quot;`, the subject becomes `&lt;http://xmlns.com/foaf/0.1/john&gt;`.</span>
+
+<span class="sd">    rdf_id_field : str | None</span>
+<span class="sd">        The name of the field to use for the RDF subject identifier. Defaults to</span>
+<span class="sd">        `&quot;id&quot;`. Set to None to disable ID field mapping and always use UUIDs.</span>
+
+<span class="sd">    rdf_prefixes : Dict[str, str | Namespace]</span>
+<span class="sd">        Namespace prefix bindings for RDF serialization. Used to create readable</span>
+<span class="sd">        output with prefixes like `foaf:name` instead of full URIs. Automatically</span>
+<span class="sd">        includes &#39;rdf&#39; and &#39;xsd&#39; prefixes.</span>
+
+<span class="sd">    Instance Attributes</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    id : Any, optional</span>
+<span class="sd">        If `rdf_id_field` is &quot;id&quot; (default), this field contains the subject</span>
+<span class="sd">        identifier. Can be a short string (combined with namespace) or a full URI.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    to_rdf_graph(graph=None, *, base_uri=None) -&gt; Graph</span>
+<span class="sd">        Serialize this model instance into an rdflib Graph.</span>
+
+<span class="sd">    to_rdf(format=&quot;turtle&quot;, *, base_uri=None, **kwargs) -&gt; str</span>
+<span class="sd">        Serialize this model instance to an RDF string in the specified format.</span>
+
+<span class="sd">    from_rdf_graph(graph, subject, *, base_uri=None) -&gt; RdfBaseModel</span>
+<span class="sd">        Class method to deserialize a model from an RDF graph.</span>
+
+<span class="sd">    from_rdf(data, *, format=&quot;turtle&quot;, subject=None, base_uri=None) -&gt; RdfBaseModel</span>
+<span class="sd">        Class method to deserialize a model from an RDF string or bytes.</span>
+
+<span class="sd">    Configuration</span>
+<span class="sd">    -------------</span>
+<span class="sd">    The model_config allows arbitrary types (URIRef, Literal, etc.) in fields.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Basic model definition::</span>
+
+<span class="sd">        from rdflib import Namespace, FOAF</span>
+<span class="sd">        from typing import Annotated, Optional, List</span>
+
+<span class="sd">        class Person(RdfBaseModel):</span>
+<span class="sd">            rdf_type: str = str(FOAF.Person)</span>
+<span class="sd">            rdf_namespace = FOAF</span>
+<span class="sd">            rdf_prefixes = {&quot;foaf&quot;: FOAF}</span>
+
+<span class="sd">            name: Annotated[Optional[List[str]], RdfProperty(FOAF.name)] = None</span>
+<span class="sd">            email: Annotated[Optional[List[str]], RdfProperty(FOAF.mbox)] = None</span>
+
+<span class="sd">    Creating and serializing::</span>
+
+<span class="sd">        person = Person(name=[&quot;Alice Smith&quot;], email=[&quot;alice@example.org&quot;])</span>
+<span class="sd">        turtle_output = person.to_rdf(&quot;turtle&quot;)</span>
+<span class="sd">        # Output includes proper @prefix declarations and triples</span>
+
+<span class="sd">    Deserializing::</span>
+
+<span class="sd">        restored = Person.from_rdf(turtle_output, format=&quot;turtle&quot;)</span>
+<span class="sd">        assert restored.name == [&quot;Alice Smith&quot;]</span>
+
+<span class="sd">    With custom ID::</span>
+
+<span class="sd">        person = Person(id=&quot;alice&quot;, name=[&quot;Alice Smith&quot;])</span>
+<span class="sd">        # Subject URI becomes: &lt;http://xmlns.com/foaf/0.1/alice&gt;</span>
+
+<span class="sd">    With full URI as ID::</span>
+
+<span class="sd">        person = Person(id=&quot;http://example.org/people/alice&quot;, name=[&quot;Alice&quot;])</span>
+<span class="sd">        # Subject URI is: &lt;http://example.org/people/alice&gt;</span>
+
+<span class="sd">    Nested objects::</span>
+
+<span class="sd">        class Organization(RdfBaseModel):</span>
+<span class="sd">            rdf_type: str = str(FOAF.Organization)</span>
+<span class="sd">            name: Annotated[Optional[List[str]], RdfProperty(FOAF.name)] = None</span>
+
+<span class="sd">        class Person(RdfBaseModel):</span>
+<span class="sd">            rdf_type: str = str(FOAF.Person)</span>
+<span class="sd">            name: Annotated[Optional[List[str]], RdfProperty(FOAF.name)] = None</span>
+<span class="sd">            org: Annotated[Optional[List[Organization]], RdfProperty(FOAF.member)] = None</span>
+
+<span class="sd">        person = Person(</span>
+<span class="sd">            name=[&quot;Alice&quot;],</span>
+<span class="sd">            org=[Organization(name=[&quot;ACME Corp&quot;])]</span>
+<span class="sd">        )</span>
+<span class="sd">        # Both person and organization are serialized to the graph</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    - All fields mapped to RDF should use `Annotated[..., RdfProperty(...)]`</span>
+<span class="sd">    - Multi-valued properties use `Optional[List[T]]` (standard in RDF)</span>
+<span class="sd">    - The `id` field is optional; if not provided, a UUID is generated</span>
+<span class="sd">    - Nested RdfBaseModel instances are automatically serialized</span>
+<span class="sd">    - Round-trip serialization is lossless for supported types</span>
+<span class="sd">    - Custom serializers/parsers can handle complex types</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    RdfProperty : Metadata for field-to-predicate mapping</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">arbitrary_types_allowed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">rdf_namespace</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">Namespace</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">rdf_id_field</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;id&quot;</span>
+    <span class="n">rdf_prefixes</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Namespace</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">rdf_auto_uuid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">rdf_uri_generator</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">BNode</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RdfBaseModel.to_rdf_graph">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.RdfBaseModel.to_rdf_graph">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_rdf_graph</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">graph</span><span class="p">:</span> <span class="n">Graph</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">base_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">rdf_uri_generator</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">BNode</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Graph</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Serialize the model instance into an rdflib Graph.</span>
+
+<span class="sd">        This method converts the Pydantic model instance into RDF triples and adds</span>
+<span class="sd">        them to an rdflib Graph. All fields annotated with RdfProperty are converted</span>
+<span class="sd">        to RDF predicates and objects. Nested RdfBaseModel instances are recursively</span>
+<span class="sd">        serialized.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graph : Graph | None, optional</span>
+<span class="sd">            An existing rdflib Graph to add triples to. If None, a new Graph is</span>
+<span class="sd">            created. Default is None.</span>
+
+<span class="sd">        base_uri : str | None, optional</span>
+<span class="sd">            A base URI for generating subject URIs when the model doesn&#39;t have a</span>
+<span class="sd">            full URI identifier. Used for relative identifier resolution.</span>
+<span class="sd">            Default is None.</span>
+
+<span class="sd">        rdf_uri_generator : Callable[[Any], Union[URIRef, BNode]] | None, optional</span>
+<span class="sd">            A custom function to generate subject URIs for model instances.</span>
+<span class="sd">            The function receives the model instance and should return an</span>
+<span class="sd">            rdflib URIRef or BNode. This overrides the model&#39;s own</span>
+<span class="sd">            rdf_uri_generator if provided.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Graph</span>
+<span class="sd">            The rdflib Graph containing the serialized RDF triples.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Basic serialization::</span>
+
+<span class="sd">            person = Person(name=[&quot;Alice&quot;])</span>
+<span class="sd">            graph = person.to_rdf_graph()</span>
+<span class="sd">            # graph now contains triples for the person</span>
+
+<span class="sd">        Adding to existing graph::</span>
+
+<span class="sd">            graph = Graph()</span>
+<span class="sd">            person1 = Person(name=[&quot;Alice&quot;])</span>
+<span class="sd">            person2 = Person(name=[&quot;Bob&quot;])</span>
+<span class="sd">            person1.to_rdf_graph(graph)</span>
+<span class="sd">            person2.to_rdf_graph(graph)</span>
+<span class="sd">            # graph contains triples for both persons</span>
+
+<span class="sd">        With base URI::</span>
+
+<span class="sd">            person = Person(id=&quot;alice&quot;, name=[&quot;Alice&quot;])</span>
+<span class="sd">            graph = person.to_rdf_graph(base_uri=&quot;http://example.org/people/&quot;)</span>
+<span class="sd">            # Subject becomes: &lt;http://example.org/people/alice&gt;</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        - Namespace prefixes from rdf_prefixes are automatically bound</span>
+<span class="sd">        - rdf:type triple is added if rdf_type is set</span>
+<span class="sd">        - None values and empty lists are skipped</span>
+<span class="sd">        - The subject URI is generated from the id field or a UUID</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        to_rdf : Serialize directly to a string format</span>
+<span class="sd">        from_rdf_graph : Deserialize from a Graph</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">graph</span> <span class="k">if</span> <span class="n">graph</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">Graph</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_serialise_into_graph</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">base_uri</span><span class="o">=</span><span class="n">base_uri</span><span class="p">,</span> <span class="n">rdf_uri_generator</span><span class="o">=</span><span class="n">rdf_uri_generator</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">graph</span></div>
+
+
+<div class="viewcode-block" id="RdfBaseModel.to_rdf">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.RdfBaseModel.to_rdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_rdf</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;turtle&quot;</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">base_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">rdf_uri_generator</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">BNode</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Serialize the model instance to an RDF string.</span>
+
+<span class="sd">        This is a convenience method that creates a Graph, serializes the model</span>
+<span class="sd">        into it, and then serializes the Graph to the specified format.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        format : str, optional</span>
+<span class="sd">            The RDF serialization format. Supported formats include:</span>
+<span class="sd">            - &quot;turtle&quot; (default): Turtle/Trig format</span>
+<span class="sd">            - &quot;xml&quot; or &quot;pretty-xml&quot;: RDF/XML format</span>
+<span class="sd">            - &quot;json-ld&quot;: JSON-LD format</span>
+<span class="sd">            - &quot;nt&quot; or &quot;ntriples&quot;: N-Triples format</span>
+<span class="sd">            - &quot;n3&quot;: Notation3 format</span>
+<span class="sd">            Default is &quot;turtle&quot;.</span>
+
+<span class="sd">        base_uri : str | None, optional</span>
+<span class="sd">            A base URI for generating subject URIs. Default is None.</span>
+
+<span class="sd">        rdf_uri_generator : Callable[[Any], Union[URIRef, BNode]] | None, optional</span>
+<span class="sd">            A custom function to generate subject URIs for model instances.</span>
+<span class="sd">            The function receives the model instance and should return an</span>
+<span class="sd">            rdflib URIRef or BNode. This overrides the model&#39;s own</span>
+<span class="sd">            rdf_uri_generator if provided.</span>
+
+<span class="sd">        **kwargs : Any</span>
+<span class="sd">            Additional keyword arguments passed to rdflib&#39;s serialize() method.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The serialized RDF as a string.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Turtle format (default)::</span>
+
+<span class="sd">            person = Person(name=[&quot;Alice Smith&quot;])</span>
+<span class="sd">            turtle = person.to_rdf(&quot;turtle&quot;)</span>
+<span class="sd">            print(turtle)</span>
+<span class="sd">            # @prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .</span>
+<span class="sd">            # foaf:alice a foaf:Person ;</span>
+<span class="sd">            #     foaf:name &quot;Alice Smith&quot; .</span>
+
+<span class="sd">        RDF/XML format::</span>
+
+<span class="sd">            xml = person.to_rdf(&quot;xml&quot;)</span>
+
+<span class="sd">        JSON-LD format::</span>
+
+<span class="sd">            jsonld = person.to_rdf(&quot;json-ld&quot;)</span>
+
+<span class="sd">        N-Triples format::</span>
+
+<span class="sd">            ntriples = person.to_rdf(&quot;ntriples&quot;)</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        - Turtle format is most human-readable with prefix support</span>
+<span class="sd">        - Format names are case-insensitive</span>
+<span class="sd">        - The output encoding is UTF-8</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        to_rdf_graph : Get the Graph object directly</span>
+<span class="sd">        from_rdf : Deserialize from an RDF string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_rdf_graph</span><span class="p">(</span><span class="n">base_uri</span><span class="o">=</span><span class="n">base_uri</span><span class="p">,</span> <span class="n">rdf_uri_generator</span><span class="o">=</span><span class="n">rdf_uri_generator</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">graph</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore[no-any-return]</span></div>
+
+
+<div class="viewcode-block" id="RdfBaseModel.from_rdf_graph">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.RdfBaseModel.from_rdf_graph">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_rdf_graph</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span>
+        <span class="n">graph</span><span class="p">:</span> <span class="n">Graph</span><span class="p">,</span>
+        <span class="n">subject</span><span class="p">:</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">base_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deserialize a model instance from an RDF graph.</span>
+
+<span class="sd">        This class method reconstructs a Pydantic model instance from RDF triples</span>
+<span class="sd">        in a Graph. It extracts values for all fields annotated with RdfProperty</span>
+<span class="sd">        by querying the graph for triples with the specified subject.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graph : Graph</span>
+<span class="sd">            The rdflib Graph containing the RDF data.</span>
+
+<span class="sd">        subject : URIRef | str</span>
+<span class="sd">            The subject URI of the resource to deserialize. Can be a URIRef or</span>
+<span class="sd">            a string that will be converted to a URIRef.</span>
+
+<span class="sd">        base_uri : str | None, optional</span>
+<span class="sd">            A base URI for converting the subject back to a relative identifier</span>
+<span class="sd">            for the id field. If the subject starts with this base, the remainder</span>
+<span class="sd">            is used as the id. Default is None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        RdfBaseModel</span>
+<span class="sd">            A new instance of the model class populated with data from the graph.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValidationError</span>
+<span class="sd">            If the extracted values don&#39;t pass Pydantic validation.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Basic deserialization::</span>
+
+<span class="sd">            graph = Graph()</span>
+<span class="sd">            graph.parse(data=turtle_data, format=&quot;turtle&quot;)</span>
+<span class="sd">            person = Person.from_rdf_graph(</span>
+<span class="sd">                graph,</span>
+<span class="sd">                URIRef(&quot;http://example.org/people/alice&quot;)</span>
+<span class="sd">            )</span>
+
+<span class="sd">        With base URI::</span>
+
+<span class="sd">            person = Person.from_rdf_graph(</span>
+<span class="sd">                graph,</span>
+<span class="sd">                URIRef(&quot;http://example.org/people/alice&quot;),</span>
+<span class="sd">                base_uri=&quot;http://example.org/people/&quot;</span>
+<span class="sd">            )</span>
+<span class="sd">            # person.id becomes &quot;alice&quot;</span>
+
+<span class="sd">        Nested objects::</span>
+
+<span class="sd">            # If the graph contains triples for both Person and Organization,</span>
+<span class="sd">            # nested objects are automatically reconstructed</span>
+<span class="sd">            person = Person.from_rdf_graph(graph, subject_uri)</span>
+<span class="sd">            assert isinstance(person.org[0], Organization)</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        - Multi-valued properties are always returned as lists</span>
+<span class="sd">        - Missing properties result in None values</span>
+<span class="sd">        - Nested RdfBaseModel instances are recursively deserialized</span>
+<span class="sd">        - Custom parsers in RdfProperty are applied during conversion</span>
+<span class="sd">        - Type coercion follows Pydantic&#39;s validation rules</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        from_rdf : Deserialize from an RDF string</span>
+<span class="sd">        to_rdf_graph : Serialize to a Graph</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">subject_uri</span> <span class="o">=</span> <span class="n">_ensure_uri</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">subject_uri</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Subject URI cannot be None&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">model_fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">prop</span> <span class="o">=</span> <span class="n">_get_rdf_property</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">prop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">predicate</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">predicate_uri</span><span class="p">()</span>
+            <span class="n">is_list</span><span class="p">,</span> <span class="n">inner_type</span> <span class="o">=</span> <span class="n">_field_type_info</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+            <span class="n">objects</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">subject_uri</span><span class="p">,</span> <span class="n">predicate</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">objects</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">model_type</span> <span class="o">=</span> <span class="n">_get_rdf_model_type</span><span class="p">(</span><span class="n">inner_type</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model_type</span><span class="p">:</span>
+                <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="n">URIRef</span><span class="p">,</span> <span class="n">BNode</span><span class="p">)):</span>
+                        <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model_type</span><span class="o">.</span><span class="n">from_rdf_graph</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">base_uri</span><span class="o">=</span><span class="n">base_uri</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_node_to_python</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">inner_type</span><span class="p">,</span> <span class="n">prop</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="n">_node_to_python</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">inner_type</span><span class="p">,</span> <span class="n">prop</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">]</span>
+            <span class="n">values</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">items</span> <span class="k">if</span> <span class="n">is_list</span> <span class="k">else</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">id_field</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">rdf_id_field</span>
+        <span class="k">if</span> <span class="n">id_field</span> <span class="ow">and</span> <span class="n">id_field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+            <span class="n">identifier</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_identifier_from_subject</span><span class="p">(</span><span class="n">subject_uri</span><span class="p">,</span> <span class="n">base_uri</span><span class="o">=</span><span class="n">base_uri</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">values</span><span class="p">[</span><span class="n">id_field</span><span class="p">]</span> <span class="o">=</span> <span class="n">identifier</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">values</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RdfBaseModel.from_rdf">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.RdfBaseModel.from_rdf">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_rdf</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bytes</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;turtle&quot;</span><span class="p">,</span>
+        <span class="n">subject</span><span class="p">:</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">base_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deserialize a model instance from an RDF string or bytes.</span>
+
+<span class="sd">        This class method parses RDF data and reconstructs a Pydantic model instance.</span>
+<span class="sd">        If the subject is not specified, it attempts to infer it from the graph</span>
+<span class="sd">        (using rdf:type if available, or assuming a single subject).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : str | bytes</span>
+<span class="sd">            The RDF data as a string or bytes. Can be in any format supported</span>
+<span class="sd">            by rdflib (Turtle, RDF/XML, JSON-LD, N-Triples, etc.).</span>
+
+<span class="sd">        format : str, optional</span>
+<span class="sd">            The RDF format of the input data. Common formats:</span>
+<span class="sd">            - &quot;turtle&quot;: Turtle/Trig format (default)</span>
+<span class="sd">            - &quot;xml&quot;: RDF/XML format</span>
+<span class="sd">            - &quot;json-ld&quot;: JSON-LD format</span>
+<span class="sd">            - &quot;nt&quot; or &quot;ntriples&quot;: N-Triples format</span>
+<span class="sd">            - &quot;n3&quot;: Notation3 format</span>
+<span class="sd">            Default is &quot;turtle&quot;.</span>
+
+<span class="sd">        subject : URIRef | str | None, optional</span>
+<span class="sd">            The subject URI to deserialize. If None, the subject is automatically</span>
+<span class="sd">            inferred from the graph. Use this when the graph contains multiple</span>
+<span class="sd">            resources. Default is None.</span>
+
+<span class="sd">        base_uri : str | None, optional</span>
+<span class="sd">            A base URI for generating relative identifiers. Default is None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        RdfBaseModel</span>
+<span class="sd">            A new instance of the model class populated with the RDF data.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If subject is None and the subject cannot be inferred, or if multiple</span>
+<span class="sd">            subjects are found and none is specified.</span>
+<span class="sd">        ValidationError</span>
+<span class="sd">            If the deserialized data doesn&#39;t pass Pydantic validation.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        From Turtle string::</span>
+
+<span class="sd">            turtle = &#39;&#39;&#39;</span>
+<span class="sd">            @prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .</span>
+
+<span class="sd">            foaf:alice a foaf:Person ;</span>
+<span class="sd">                foaf:name &quot;Alice Smith&quot; ;</span>
+<span class="sd">                foaf:mbox &quot;alice@example.org&quot; .</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+<span class="sd">            person = Person.from_rdf(turtle, format=&quot;turtle&quot;)</span>
+
+<span class="sd">        With explicit subject::</span>
+
+<span class="sd">            person = Person.from_rdf(</span>
+<span class="sd">                turtle_data,</span>
+<span class="sd">                format=&quot;turtle&quot;,</span>
+<span class="sd">                subject=&quot;http://example.org/people/alice&quot;</span>
+<span class="sd">            )</span>
+
+<span class="sd">        From RDF/XML::</span>
+
+<span class="sd">            person = Person.from_rdf(xml_data, format=&quot;xml&quot;)</span>
+
+<span class="sd">        From JSON-LD::</span>
+
+<span class="sd">            person = Person.from_rdf(jsonld_data, format=&quot;json-ld&quot;)</span>
+
+<span class="sd">        Round-trip example::</span>
+
+<span class="sd">            # Serialize</span>
+<span class="sd">            original = Person(name=[&quot;Alice&quot;])</span>
+<span class="sd">            turtle = original.to_rdf(&quot;turtle&quot;)</span>
+
+<span class="sd">            # Deserialize</span>
+<span class="sd">            restored = Person.from_rdf(turtle)</span>
+<span class="sd">            assert restored.name == original.name</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        - Subject inference works best with single-resource graphs</span>
+<span class="sd">        - If rdf_type is set, it&#39;s used to find the subject</span>
+<span class="sd">        - Format detection is not automatic; always specify the format</span>
+<span class="sd">        - Bytes input is decoded as UTF-8</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        from_rdf_graph : Deserialize from a Graph object</span>
+<span class="sd">        to_rdf : Serialize to an RDF string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+        <span class="n">graph</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">subject</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">subject</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_infer_subject</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">subject</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unable to determine subject for RDF document; provide the subject explicitly.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_rdf_graph</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">base_uri</span><span class="o">=</span><span class="n">base_uri</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_serialise_into_graph</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">graph</span><span class="p">:</span> <span class="n">Graph</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">base_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">rdf_uri_generator</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">BNode</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">BNode</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal method to serialize this model into an RDF graph.</span>
+
+<span class="sd">        Converts all annotated fields to RDF triples and adds them to the graph.</span>
+<span class="sd">        This method handles the core serialization logic.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graph : Graph</span>
+<span class="sd">            The rdflib Graph to add triples to.</span>
+<span class="sd">        base_uri : str | None, optional</span>
+<span class="sd">            Base URI for subject generation.</span>
+<span class="sd">        rdf_uri_generator : Callable[[Any], Union[URIRef, BNode]] | None, optional</span>
+<span class="sd">            A custom function to generate subject URIs for model instances.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        URIRef | BNode</span>
+<span class="sd">            The subject URI of the serialized resource.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">subject</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subject_uri</span><span class="p">(</span><span class="n">base_uri</span><span class="o">=</span><span class="n">base_uri</span><span class="p">,</span> <span class="n">rdf_uri_generator</span><span class="o">=</span><span class="n">rdf_uri_generator</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bind_prefixes</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+
+        <span class="n">rdf_type_uri</span> <span class="o">=</span> <span class="n">_ensure_uri</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rdf_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rdf_type_uri</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">graph</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">subject</span><span class="p">,</span> <span class="n">RDF</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">rdf_type_uri</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">model_fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">prop</span> <span class="o">=</span> <span class="n">_get_rdf_property</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">prop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">predicate</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">predicate_uri</span><span class="p">()</span>
+            <span class="n">is_list</span><span class="p">,</span> <span class="n">inner_type</span> <span class="o">=</span> <span class="n">_field_type_info</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">value</span> <span class="k">if</span> <span class="n">is_list</span> <span class="k">else</span> <span class="p">[</span><span class="n">value</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_to_node</span><span class="p">(</span>
+                    <span class="n">item</span><span class="p">,</span>
+                    <span class="n">inner_type</span><span class="p">,</span>
+                    <span class="n">prop</span><span class="p">,</span>
+                    <span class="n">graph</span><span class="p">,</span>
+                    <span class="n">base_uri</span><span class="p">,</span>
+                    <span class="n">rdf_uri_generator</span><span class="o">=</span><span class="n">rdf_uri_generator</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">graph</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">subject</span><span class="p">,</span> <span class="n">predicate</span><span class="p">,</span> <span class="n">node</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">subject</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_identifier_from_subject</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="n">URIRef</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">base_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract an identifier from a subject URI.</span>
+
+<span class="sd">        Attempts to convert a subject URI back to a short identifier by removing</span>
+<span class="sd">        the namespace or base URI prefix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        subject : URIRef</span>
+<span class="sd">            The subject URI to convert.</span>
+<span class="sd">        base_uri : str | None, optional</span>
+<span class="sd">            Base URI to strip from the subject.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str | None</span>
+<span class="sd">            The extracted identifier, or the full URI if no prefix matches.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">subject_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+        <span class="n">namespace</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_namespace_string</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">namespace</span> <span class="ow">and</span> <span class="n">subject_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">namespace</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">subject_str</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">namespace</span><span class="p">)</span> <span class="p">:]</span>
+        <span class="k">if</span> <span class="n">base_uri</span><span class="p">:</span>
+            <span class="n">normalised</span> <span class="o">=</span> <span class="n">_normalise_base</span><span class="p">(</span><span class="n">base_uri</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">subject_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">normalised</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">subject_str</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">normalised</span><span class="p">)</span> <span class="p">:]</span>
+        <span class="k">return</span> <span class="n">subject_str</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_namespace_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the namespace as a string.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str | None</span>
+<span class="sd">            The namespace URI as a string, or None if no namespace is set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">namespace</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">rdf_namespace</span>
+        <span class="k">if</span> <span class="n">namespace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">namespace</span><span class="p">,</span> <span class="n">Namespace</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">namespace</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">namespace</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_subject_uri</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">base_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">rdf_uri_generator</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">BNode</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">BNode</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the subject URI for this instance.</span>
+
+<span class="sd">        Creates a URIRef for the RDF subject based on the id field, functionality,</span>
+<span class="sd">        or generates a UUID if no identifier is available. If rdf_auto_uuid is False</span>
+<span class="sd">        and no identifier is available, returns a BNode.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        base_uri : str | None, optional</span>
+<span class="sd">            Base URI for relative identifier resolution.</span>
+<span class="sd">        rdf_uri_generator : Callable[[Any], Union[URIRef, BNode]] | None, optional</span>
+<span class="sd">            A custom function to generate subject URIs for model instances.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        URIRef | BNode</span>
+<span class="sd">            The subject URI or Blank Node for this resource.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_id_field</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_id_field</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">identifier</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">identifier</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_looks_like_uri</span><span class="p">(</span><span class="n">identifier</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+            <span class="n">namespace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_namespace_string</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">namespace</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">namespace</span> <span class="o">+</span> <span class="n">identifier</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">base_uri</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">_normalise_base</span><span class="p">(</span><span class="n">base_uri</span><span class="p">)</span> <span class="o">+</span> <span class="n">identifier</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+
+        <span class="c1"># Check for custom URI generator</span>
+        <span class="n">generator</span> <span class="o">=</span> <span class="n">rdf_uri_generator</span> <span class="k">if</span> <span class="n">rdf_uri_generator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_uri_generator</span>
+        <span class="k">if</span> <span class="n">generator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># The generator takes the model instance as argument</span>
+            <span class="n">generated</span> <span class="o">=</span> <span class="n">generator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">generated</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">generated</span>
+
+        <span class="c1"># If opted out of auto-UUIDs, return a blank node</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_auto_uuid</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">BNode</span><span class="p">()</span>
+
+        <span class="n">namespace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_namespace_string</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">namespace</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">namespace</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;urn:uuid:</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_bind_prefixes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">:</span> <span class="n">Graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Bind namespace prefixes to the graph for readable serialization.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graph : Graph</span>
+<span class="sd">            The graph to bind prefixes to.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefixes</span> <span class="o">=</span> <span class="n">_default_prefixes</span><span class="p">()</span>
+        <span class="n">prefixes</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_prefixes</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+        <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">namespace</span> <span class="ow">in</span> <span class="n">prefixes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">graph</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">namespace</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_value_to_node</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">expected_type</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">prop</span><span class="p">:</span> <span class="n">RdfProperty</span><span class="p">,</span>
+        <span class="n">graph</span><span class="p">:</span> <span class="n">Graph</span><span class="p">,</span>
+        <span class="n">base_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">rdf_uri_generator</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">BNode</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">BNode</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a Python value to an RDF node (URIRef, BNode, or Literal).</span>
+
+<span class="sd">        Handles various Python types and converts them to appropriate RDF</span>
+<span class="sd">        representations based on the field type and RdfProperty configuration.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        value : Any</span>
+<span class="sd">            The Python value to convert.</span>
+<span class="sd">        expected_type : Any</span>
+<span class="sd">            The expected type from the field annotation.</span>
+<span class="sd">        prop : RdfProperty</span>
+<span class="sd">            The RDF property metadata.</span>
+<span class="sd">        graph : Graph</span>
+<span class="sd">            The graph for nested object serialization.</span>
+<span class="sd">        base_uri : str | None</span>
+<span class="sd">            Base URI for nested objects.</span>
+<span class="sd">        rdf_uri_generator : Callable[[Any], Union[URIRef, BNode]] | None, optional</span>
+<span class="sd">            A custom function to generate subject URIs for model instances.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        URIRef | BNode | Literal</span>
+<span class="sd">            The RDF node representation of the value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">serializer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">serializer</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">RdfBaseModel</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">_serialise_into_graph</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">base_uri</span><span class="o">=</span><span class="n">base_uri</span><span class="p">,</span> <span class="n">rdf_uri_generator</span><span class="o">=</span><span class="n">rdf_uri_generator</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Literal</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
+
+            <span class="n">encoded</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="n">encoded</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">base64Binary</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">datetime</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Decimal</span><span class="p">,</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)):</span>
+            <span class="n">datatype</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">datatype_uri</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">datatype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">datatype</span> <span class="o">=</span> <span class="n">_python_datatype</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">datatype</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">datatype</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">datatype_uri</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">language</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="n">prop</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">datatype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">datatype</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="n">URIRef</span> <span class="ow">and</span> <span class="n">_looks_like_uri</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_infer_subject</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">graph</span><span class="p">:</span> <span class="n">Graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer the subject URI from a graph.</span>
+
+<span class="sd">        Attempts to determine which subject in the graph corresponds to this</span>
+<span class="sd">        model type, using rdf:type if available or assuming a single subject.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graph : Graph</span>
+<span class="sd">            The graph to analyze.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        URIRef | None</span>
+<span class="sd">            The inferred subject URI, or None if it cannot be determined.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If multiple subjects are found and cannot be disambiguated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rdf_type_uri</span> <span class="o">=</span> <span class="n">_ensure_uri</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">rdf_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rdf_type_uri</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">subjects</span> <span class="o">=</span> <span class="n">_unique</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">subjects</span><span class="p">(</span><span class="n">RDF</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">rdf_type_uri</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">subjects</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">subjects</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Multiple resources of the requested rdf:type were found; provide the subject explicitly.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">subjects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># type: ignore[no-any-return]</span>
+        <span class="n">subjects</span> <span class="o">=</span> <span class="n">_unique</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">subjects</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">subjects</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">subjects</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Multiple resources found in graph; provide the subject explicitly.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">subjects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># type: ignore[no-any-return]</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_rdf_property</span><span class="p">(</span><span class="n">field</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RdfProperty</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract RdfProperty metadata from a field&#39;s metadata or annotation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    field : Any</span>
+<span class="sd">        A Pydantic field information object.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    RdfProperty | None</span>
+<span class="sd">        The RdfProperty if found in metadata, otherwise None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="s2">&quot;metadata&quot;</span><span class="p">,</span> <span class="p">())</span> <span class="ow">or</span> <span class="p">()</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">item</span>
+    <span class="n">annotation</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="s2">&quot;annotation&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">annotation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">_annotation_metadata</span><span class="p">(</span><span class="n">annotation</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">item</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_field_type_info</span><span class="p">(</span><span class="n">field</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine if a field is a list type and extract its inner type.</span>
+
+<span class="sd">    Also handles Optional types by unwrapping Union[T, None].</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    field : Any</span>
+<span class="sd">        A Pydantic field information object.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple[bool, Any]</span>
+<span class="sd">        A tuple of (is_list, inner_type). is_list is True if the field accepts</span>
+<span class="sd">        multiple values, inner_type is the type of individual elements.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">annotation</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="s2">&quot;annotation&quot;</span><span class="p">,</span> <span class="n">Any</span><span class="p">)</span>
+    <span class="n">annotation</span> <span class="o">=</span> <span class="n">_unwrap_annotation</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
+
+    <span class="n">origin</span> <span class="o">=</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
+    <span class="c1"># Handle both Union[T, None] and T | None syntax</span>
+    <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="n">Union</span> <span class="ow">or</span> <span class="n">origin</span> <span class="ow">is</span> <span class="n">types</span><span class="o">.</span><span class="n">UnionType</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">get_args</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span> <span class="k">if</span> <span class="n">arg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">annotation</span> <span class="o">=</span> <span class="n">_unwrap_annotation</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="n">item_type</span> <span class="o">=</span> <span class="n">_unwrap_annotation</span><span class="p">(</span><span class="n">get_args</span><span class="p">(</span><span class="n">annotation</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">item_type</span>
+
+    <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">annotation</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_unwrap_annotation</span><span class="p">(</span><span class="n">annotation</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unwrap Annotated type to get the actual type.</span>
+
+<span class="sd">    Recursively unwraps until reaching a non-Annotated type.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    annotation : Any</span>
+<span class="sd">        A potentially Annotated type hint.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Any</span>
+<span class="sd">        The unwrapped type, or the original if not Annotated.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">annotation</span>
+        <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="n">Annotated</span><span class="p">:</span>
+            <span class="n">annotation</span> <span class="o">=</span> <span class="n">get_args</span><span class="p">(</span><span class="n">annotation</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">continue</span>
+        <span class="k">return</span> <span class="n">annotation</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_annotation_metadata</span><span class="p">(</span><span class="n">annotation</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract metadata from an Annotated type.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    annotation : Any</span>
+<span class="sd">        A type annotation, possibly Annotated.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple[Any, ...]</span>
+<span class="sd">        The metadata items if Annotated, otherwise empty tuple.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Annotated</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">get_args</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="k">return</span> <span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_node_to_python</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">prop</span><span class="p">:</span> <span class="n">RdfProperty</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert an RDF node to a Python value.</span>
+
+<span class="sd">    Handles deserialization of URIRef and Literal nodes to appropriate Python</span>
+<span class="sd">    types based on field type hints and RdfProperty configuration.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    node : Any</span>
+<span class="sd">        The RDF node to convert (URIRef or Literal).</span>
+<span class="sd">    expected_type : Any</span>
+<span class="sd">        The expected Python type from field annotations.</span>
+<span class="sd">    prop : RdfProperty</span>
+<span class="sd">        The RDF property metadata.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Any</span>
+<span class="sd">        The converted Python value.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        If a nested RDF model is encountered (should be handled separately).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">parser</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">prop</span><span class="o">.</span><span class="n">parser</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">_is_rdf_model</span><span class="p">(</span><span class="n">expected_type</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Nested RDF models should be handled separately.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="n">URIRef</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">node</span>
+        <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Literal</span><span class="p">):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">toPython</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="n">Any</span> <span class="ow">or</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">in</span> <span class="p">{</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">bool</span><span class="p">}:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">expected_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="n">datetime</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="n">date</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">date</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="n">time</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="n">Decimal</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ArithmeticError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+        <span class="c1"># rdflib handles base64 decoding for XSD.base64Binary</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">expected_type</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">expected_type</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">expected_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_python_datatype</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Infer XSD datatype URI from a Python value.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    value : Any</span>
+<span class="sd">        A Python value to determine the datatype for.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    URIRef | None</span>
+<span class="sd">        The XSD datatype URI, or None if no mapping exists.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">XSD</span><span class="o">.</span><span class="n">boolean</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">XSD</span><span class="o">.</span><span class="n">integer</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">XSD</span><span class="o">.</span><span class="n">double</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">XSD</span><span class="o">.</span><span class="n">dateTime</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">XSD</span><span class="o">.</span><span class="n">date</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">XSD</span><span class="o">.</span><span class="n">time</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Decimal</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">XSD</span><span class="o">.</span><span class="n">decimal</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">XSD</span><span class="o">.</span><span class="n">base64Binary</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">XSD</span><span class="o">.</span><span class="n">string</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ensure_uri</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">Namespace</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert various types to a URIRef.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    value : str | URIRef | Namespace | None</span>
+<span class="sd">        A value that might represent a URI.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    URIRef | None</span>
+<span class="sd">        The URIRef representation, or None if the value is None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Namespace</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+
+<span class="n">URI_PATTERN</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[a-zA-Z][a-zA-Z0-9+.-]*:&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_looks_like_uri</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if a string looks like a URI using a URI scheme pattern.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    value : str</span>
+<span class="sd">        A string to check.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        True if the string starts with a URI scheme (e.g., &#39;http:&#39;, &#39;urn:&#39;).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">URI_PATTERN</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_normalise_base</span><span class="p">(</span><span class="n">base_uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalize a base URI to ensure it ends with &#39;/&#39; or &#39;#&#39;.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    base_uri : str</span>
+<span class="sd">        A base URI string.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        The normalized base URI.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">base_uri</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;#&quot;</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">base_uri</span>
+    <span class="k">return</span> <span class="n">base_uri</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_unique</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return unique items from an iterable, preserving order.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    values : Iterable[Any]</span>
+<span class="sd">        An iterable of items.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list[Any]</span>
+<span class="sd">        A list with duplicates removed, in original order.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+            <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_default_prefixes</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the default namespace prefixes for RDF serialization.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict[str, str]</span>
+<span class="sd">        A dictionary mapping prefix strings to namespace URI strings.</span>
+<span class="sd">        Includes rdf and xsd by default.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;rdf&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">RDF</span><span class="p">),</span> <span class="s2">&quot;xsd&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">XSD</span><span class="p">)}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_rdf_model</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if a value is an RdfBaseModel subclass.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    value : Any</span>
+<span class="sd">        A value to check (typically a type).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        True if value is a class and a subclass of RdfBaseModel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">RdfBaseModel</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_rdf_model_type</span><span class="p">(</span><span class="n">type_hint</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">[</span><span class="n">RdfBaseModel</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the RdfBaseModel type from a type hint (possibly a Union).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    type_hint : Any</span>
+<span class="sd">        The type hint to check.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Type[RdfBaseModel] | None</span>
+<span class="sd">        The RdfBaseModel subclass if found, otherwise None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">_is_rdf_model</span><span class="p">(</span><span class="n">type_hint</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">type_hint</span>  <span class="c1"># type: ignore[no-any-return]</span>
+
+    <span class="n">origin</span> <span class="o">=</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">type_hint</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="n">Union</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">get_args</span><span class="p">(</span><span class="n">type_hint</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">_is_rdf_model</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">arg</span>  <span class="c1"># type: ignore[no-any-return]</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;RdfBaseModel&quot;</span><span class="p">,</span> <span class="s2">&quot;RdfProperty&quot;</span><span class="p">]</span>
+
+<span class="c1"># Ensure defaults are preserved when using lightweight pydantic substitutes.</span>
+<span class="n">RdfBaseModel</span><span class="o">.</span><span class="n">rdf_id_field</span> <span class="o">=</span> <span class="s2">&quot;id&quot;</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Pascal Heus.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
