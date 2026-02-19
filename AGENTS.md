@@ -4,8 +4,44 @@ Welcome, fellow AI. This file provides context and instructions for working on t
 
 ## Project Objectives
 
+This toolkit provides **type-safe RDF serialization for Python** by bridging Pydantic models with RDF graphs. The core goals are:
 
+### Primary Objectives
 
+1. **Seamless Pydantic-RDF Integration**: Enable Python developers to work with RDF data using familiar Pydantic models with full validation, type safety, and IDE support.
+
+2. **Standards Compliance**: Provide pre-built, validated Pydantic models for common RDF vocabularies (FOAF, PROV, DCTERMS, SKOS, SPDX, ODRL, VCard, XKOS) that correctly implement their specifications.
+
+3. **Bidirectional Conversion**: Support lossless round-trip conversion between Python objects and RDF graphs in multiple serialization formats (Turtle, RDF/XML, JSON-LD, N-Triples, etc.).
+
+4. **Developer Experience**: Minimize boilerplate while maximizing flexibility through declarative field annotations, automatic namespace management, and sensible defaults.
+
+### AI Agent Guidelines for This Project
+
+**When adding new features:**
+- Maintain backward compatibility with existing RdfBaseModel implementations
+- Ensure all new RDF property mappings are tested with round-trip serialization/deserialization
+- Document any new RdfProperty parameters with examples in docstrings
+- Consider how changes affect both simple literals and complex nested object graphs
+
+**When fixing bugs:**
+- Test with both `Union[T, None]` and `T | None` type annotation syntaxes (Python 3.12+ compatibility)
+- Verify fixes work with list fields, nested RdfBaseModel instances, and primitive types
+- Check that rdflib namespace handling remains compatible (especially with DefinedNamespace metaclasses)
+- Run the full test suite including nested serialization tests
+
+**When adding vocabulary models:**
+- Inherit from `RdfBaseModel` and define `rdf_type`, `rdf_namespace`, and `rdf_prefixes` as `ClassVar`
+- Use `Annotated[Type, RdfProperty(predicate)]` for all RDF-mapped fields
+- Include docstrings referencing the official vocabulary specification
+- Add comprehensive examples showing typical usage patterns
+- Test serialization produces valid RDF that conforms to the vocabulary standard
+
+**Type Checking Considerations:**
+- All `rdf_type`, `rdf_namespace`, and `rdf_prefixes` class attributes MUST use `ClassVar` annotations
+- Use `# type: ignore[...]` comments sparingly and document why (e.g., rdflib namespace metaclass limitations)
+- Mypy configuration requires `mypy_path = "src"` and `explicit_package_bases = true` in pyproject.toml
+- The package requires a `py.typed` marker file for PEP 561 compliance
 
 ## Project Stack
 
@@ -55,7 +91,7 @@ This project uses `hatch` for environment management, but `uv` is preferred for 
 ## Version Management
 
 - This project uses **dynamic versioning** via Hatch.
-- The source of truth for the version is located in: `src/dartfx/hatch_foo/__about__.py`.
+- The source of truth for the version is located in: `src/dartfx/rdf/__about__.py`.
 - To bump versions, modify that file manually or use `hatch version <segment>` (e.g., `hatch version minor`).
 - Follow [Semantic Versioning (SemVer)](https://semver.org/).
 
