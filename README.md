@@ -1,15 +1,17 @@
 # RDF Toolkit
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/DataArtifex/rdf-toolkit)
-[![PyPI - Version](https://img.shields.io/pypi/v/hatch-foo.svg)](https://pypi.org/project/hatch-foo)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hatch-foo.svg)](https://pypi.org/project/hatch-foo)
+[![Documentation](https://img.shields.io/badge/docs-v6-blue)](https://www.dataartifex.org/docs/rdf-toolkit/)
+[![Package Status](https://img.shields.io/badge/PyPI-not%20published-lightgrey)](https://github.com/DataArtifex/rdf-toolkit)
+[![CI](https://github.com/DataArtifex/rdf-toolkit/actions/workflows/test.yml/badge.svg)](https://github.com/DataArtifex/rdf-toolkit/actions/workflows/test.yml)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
-
-**This project is in its early development stages. Stability is not guaranteed, and documentation is limited. We welcome your feedback and contributions.**
+[![License](https://img.shields.io/github/license/DataArtifex/rdf-toolkit.svg)](https://github.com/DataArtifex/rdf-toolkit/blob/main/LICENSE.txt)
 
 ## Overview
 
-This core project facilitates the implementation of Python classes for various metadata standards and serialization to RDF formats.
+This toolkit provides type-safe Pydantic models for standard vocabularies and enables round-trip serialization to and from RDF formats.
 
 ## Installation
 
@@ -32,11 +34,11 @@ In the meantime, you can install the package locally by following these steps:
 
 2. **Install the Package:**
 
-   From the project's home directory, run the following command to install the package:
+    From the project's home directory, run the following command to install the package:
 
-   ```bash
-   pip install -e .
-   ```
+    ```bash
+    uv pip install -e .
+    ```
 
 ## Usage
 
@@ -132,6 +134,19 @@ The toolkit provides Pydantic models for the following vocabularies:
 - **SPDX**: Software Package Data Exchange
 - **VCARD**: vCard / Virtual Contact File
 - **XKOS**: Extended Knowledge Organization System
+
+## Testing
+
+```bash
+# Run all tests
+uv run pytest tests/ -v
+
+# Run only vocabulary tests
+uv run pytest tests/test_vocabularies_*.py -v
+
+# Run benchmarks only
+uv run pytest tests/test_benchmarks_serialization.py --benchmark-only
+```
 
 ## Roadmap
 - [x] Migrate model from Python @dataclass to Pydantic
