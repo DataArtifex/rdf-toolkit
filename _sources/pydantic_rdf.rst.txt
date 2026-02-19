@@ -119,8 +119,8 @@ Handle URIs specifically by choosing between resource identifiers or typed liter
 
 
    dataset = Dataset(
-       id="demo", 
-       title="Example", 
+       id="demo",
+       title="Example",
        created="2024-03-01",
        see_also=URIRef("https://example.org/docs"),
        download_url="https://example.org/files/data.zip"
@@ -171,4 +171,3 @@ Advanced scenarios
 
 The tests in :mod:`tests.test_pydantic_rdf` provide additional examples that
 cover nested resources, optional values, and custom datatypes.
-
