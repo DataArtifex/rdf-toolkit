@@ -1,13 +1,15 @@
 # RDF Toolkit
 
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/DataArtifex/rdf-toolkit)
+[![Development Status](https://img.shields.io/badge/status-early%20release-orange.svg)](https://github.com/DataArtifex/ddi-toolkit)
 [![Documentation](https://img.shields.io/badge/docs-v6-blue)](https://www.dataartifex.org/docs/rdf-toolkit/)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/DataArtifex/rdf-toolkit)
 [![Package Status](https://img.shields.io/badge/PyPI-not%20published-lightgrey)](https://github.com/DataArtifex/rdf-toolkit)
 [![CI](https://github.com/DataArtifex/rdf-toolkit/actions/workflows/test.yml/badge.svg)](https://github.com/DataArtifex/rdf-toolkit/actions/workflows/test.yml)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
 [![License](https://img.shields.io/github/license/DataArtifex/rdf-toolkit.svg)](https://github.com/DataArtifex/rdf-toolkit/blob/main/LICENSE.txt)
+
 
 ## Overview
 
