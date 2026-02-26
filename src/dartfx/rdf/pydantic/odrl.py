@@ -31,17 +31,29 @@ class Policy(OdrlResource):
     rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Policy)
 
     # Core policy properties
-    uid: Annotated[list[str | URIRef] | None, RdfProperty(ODRL2.uid)] = None
-    profile: Annotated[list[str | URIRef] | None, RdfProperty(ODRL2.profile)] = None
+    uid: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(ODRL2.uid)] = None
+    profile: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(ODRL2.profile)] = None
 
     # Rules
-    permission: Annotated[list[str | URIRef | Permission] | None, RdfProperty(ODRL2.permission)] = None
-    prohibition: Annotated[list[str | URIRef | Prohibition] | None, RdfProperty(ODRL2.prohibition)] = None
-    obligation: Annotated[list[str | URIRef | Duty] | None, RdfProperty(ODRL2.obligation)] = None
+    permission: Annotated[
+        Permission | URIRef | str | list[Permission | URIRef | str] | None,
+        RdfProperty(ODRL2.permission),
+    ] = None
+    prohibition: Annotated[
+        Prohibition | URIRef | str | list[Prohibition | URIRef | str] | None,
+        RdfProperty(ODRL2.prohibition),
+    ] = None
+    obligation: Annotated[Duty | URIRef | str | list[Duty | URIRef | str] | None, RdfProperty(ODRL2.obligation)] = None
 
     # Inheritance
-    inherits_from: Annotated[list[str | URIRef | Policy] | None, RdfProperty(ODRL2.inheritFrom)] = None
-    conflict: Annotated[list[str | URIRef | ConflictTerm] | None, RdfProperty(ODRL2.conflict)] = None
+    inherits_from: Annotated[
+        Policy | URIRef | str | list[Policy | URIRef | str] | None,
+        RdfProperty(ODRL2.inheritFrom),
+    ] = None
+    conflict: Annotated[
+        ConflictTerm | URIRef | str | list[ConflictTerm | URIRef | str] | None,
+        RdfProperty(ODRL2.conflict),
+    ] = None
 
 
 class Set(Policy):
@@ -66,22 +78,25 @@ class Rule(OdrlResource):
     """Base class for ODRL Rules."""
 
     # Target
-    target: Annotated[list[str | URIRef] | None, RdfProperty(ODRL2.target)] = None
+    target: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(ODRL2.target)] = None
 
     # Action
-    action: Annotated[list[str | URIRef | Action] | None, RdfProperty(ODRL2.action)] = None
+    action: Annotated[str | URIRef | Action | list[str | URIRef | Action] | None, RdfProperty(ODRL2.action)] = None
 
     # Parties
-    assigner: Annotated[list[str | URIRef | Party] | None, RdfProperty(ODRL2.assigner)] = None
-    assignee: Annotated[list[str | URIRef | Party] | None, RdfProperty(ODRL2.assignee)] = None
+    assigner: Annotated[str | URIRef | Party | list[str | URIRef | Party] | None, RdfProperty(ODRL2.assigner)] = None
+    assignee: Annotated[str | URIRef | Party | list[str | URIRef | Party] | None, RdfProperty(ODRL2.assignee)] = None
 
     # Constraints
-    constraint: Annotated[list[str | URIRef | Constraint] | None, RdfProperty(ODRL2.constraint)] = None
+    constraint: Annotated[
+        str | URIRef | Constraint | list[str | URIRef | Constraint] | None,
+        RdfProperty(ODRL2.constraint),
+    ] = None
 
     # Relations
-    relation: Annotated[list[str | URIRef] | None, RdfProperty(ODRL2.relation)] = None
-    function: Annotated[list[str | URIRef] | None, RdfProperty(ODRL2["function"])] = None
-    failure: Annotated[list[str | URIRef | Rule] | None, RdfProperty(ODRL2.failure)] = None
+    relation: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(ODRL2.relation)] = None
+    function: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(ODRL2["function"])] = None
+    failure: Annotated[str | URIRef | Rule | list[str | URIRef | Rule] | None, RdfProperty(ODRL2.failure)] = None
 
 
 class Permission(Rule):
@@ -90,7 +105,7 @@ class Permission(Rule):
     rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Permission)
 
     # Duties
-    duty: Annotated[list[str | URIRef | Duty] | None, RdfProperty(ODRL2.duty)] = None
+    duty: Annotated[str | URIRef | Duty | list[str | URIRef | Duty] | None, RdfProperty(ODRL2.duty)] = None
 
 
 class Prohibition(Rule):
@@ -99,7 +114,7 @@ class Prohibition(Rule):
     rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Prohibition)
 
     # Remedies
-    remedy: Annotated[list[str | URIRef | Duty] | None, RdfProperty(ODRL2.remedy)] = None
+    remedy: Annotated[str | URIRef | Duty | list[str | URIRef | Duty] | None, RdfProperty(ODRL2.remedy)] = None
 
 
 class Duty(Rule):
@@ -108,7 +123,10 @@ class Duty(Rule):
     rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Duty)
 
     # Consequences
-    consequence: Annotated[list[str | URIRef | Duty] | None, RdfProperty(ODRL2.consequence)] = None
+    consequence: Annotated[
+        str | URIRef | Duty | list[str | URIRef | Duty] | None,
+        RdfProperty(ODRL2.consequence),
+    ] = None
 
 
 class Action(OdrlResource):
@@ -117,8 +135,14 @@ class Action(OdrlResource):
     rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Action)
 
     # Action refinement
-    refinement: Annotated[list[str | URIRef | Constraint] | None, RdfProperty(ODRL2.refinement)] = None
-    implies: Annotated[list[str | URIRef | Action] | None, RdfProperty(ODRL2.implies)] = None
+    refinement: Annotated[
+        str | URIRef | Constraint | list[str | URIRef | Constraint] | None,
+        RdfProperty(ODRL2.refinement),
+    ] = None
+    implies: Annotated[
+        str | URIRef | Action | list[str | URIRef | Action] | None,
+        RdfProperty(ODRL2.implies),
+    ] = None
 
 
 class Constraint(OdrlResource):
@@ -127,19 +151,28 @@ class Constraint(OdrlResource):
     rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Constraint)
 
     # Constraint properties
-    left_operand: Annotated[list[str | URIRef] | None, RdfProperty(ODRL2.leftOperand)] = None
-    operator: Annotated[list[str | URIRef] | None, RdfProperty(ODRL2.operator)] = None
-    right_operand: Annotated[list[str | URIRef] | None, RdfProperty(ODRL2.rightOperand)] = None
+    left_operand: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(ODRL2.leftOperand)] = None
+    operator: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(ODRL2.operator)] = None
+    right_operand: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(ODRL2.rightOperand)] = None
 
     # Logical constraints
-    and_sequence: Annotated[list[str | URIRef | Constraint] | None, RdfProperty(ODRL2["and"])] = None
-    or_sequence: Annotated[list[str | URIRef | Constraint] | None, RdfProperty(ODRL2["or"])] = None
-    xone: Annotated[list[str | URIRef | Constraint] | None, RdfProperty(ODRL2.xone)] = None
+    and_sequence: Annotated[
+        str | URIRef | Constraint | list[str | URIRef | Constraint] | None,
+        RdfProperty(ODRL2["and"]),
+    ] = None
+    or_sequence: Annotated[
+        str | URIRef | Constraint | list[str | URIRef | Constraint] | None,
+        RdfProperty(ODRL2["or"]),
+    ] = None
+    xone: Annotated[
+        str | URIRef | Constraint | list[str | URIRef | Constraint] | None,
+        RdfProperty(ODRL2.xone),
+    ] = None
 
     # Data type
-    data_type: Annotated[list[str | URIRef] | None, RdfProperty(ODRL2.dataType)] = None
-    unit: Annotated[list[str | URIRef] | None, RdfProperty(ODRL2.unit)] = None
-    status: Annotated[list[str] | None, RdfProperty(ODRL2.status)] = None
+    data_type: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(ODRL2.dataType)] = None
+    unit: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(ODRL2.unit)] = None
+    status: Annotated[str | list[str] | None, RdfProperty(ODRL2.status)] = None
 
 
 class Party(OdrlResource):
@@ -148,12 +181,18 @@ class Party(OdrlResource):
     rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Party)
 
     # Party refinement
-    refinement: Annotated[list[str | URIRef | Constraint] | None, RdfProperty(ODRL2.refinement)] = None
+    refinement: Annotated[
+        str | URIRef | Constraint | list[str | URIRef | Constraint] | None,
+        RdfProperty(ODRL2.refinement),
+    ] = None
 
     # Party scope
-    part_of: Annotated[list[str | URIRef | PartyCollection] | None, RdfProperty(ODRL2.partOf)] = None
-    source: Annotated[list[str | URIRef] | None, RdfProperty(ODRL2.source)] = None
-    scope: Annotated[list[str | URIRef] | None, RdfProperty(ODRL2.scope)] = None
+    part_of: Annotated[
+        str | URIRef | PartyCollection | list[str | URIRef | PartyCollection] | None,
+        RdfProperty(ODRL2.partOf),
+    ] = None
+    source: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(ODRL2.source)] = None
+    scope: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(ODRL2.scope)] = None
 
 
 class PartyCollection(OdrlResource):
@@ -168,12 +207,21 @@ class Asset(OdrlResource):
     rdf_type: ClassVar[str | URIRef | None] = str(ODRL2.Asset)
 
     # Asset refinement
-    refinement: Annotated[list[str | URIRef | Constraint] | None, RdfProperty(ODRL2.refinement)] = None
+    refinement: Annotated[
+        str | URIRef | Constraint | list[str | URIRef | Constraint] | None,
+        RdfProperty(ODRL2.refinement),
+    ] = None
 
     # Asset scope
-    part_of: Annotated[list[str | URIRef | AssetCollection] | None, RdfProperty(ODRL2.partOf)] = None
-    source: Annotated[list[str | URIRef] | None, RdfProperty(ODRL2.source)] = None
-    has_policy: Annotated[list[str | URIRef | Policy] | None, RdfProperty(ODRL2.hasPolicy)] = None
+    part_of: Annotated[
+        str | URIRef | AssetCollection | list[str | URIRef | AssetCollection] | None,
+        RdfProperty(ODRL2.partOf),
+    ] = None
+    source: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(ODRL2.source)] = None
+    has_policy: Annotated[
+        str | URIRef | Policy | list[str | URIRef | Policy] | None,
+        RdfProperty(ODRL2.hasPolicy),
+    ] = None
 
 
 class AssetCollection(OdrlResource):

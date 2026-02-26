@@ -37,7 +37,7 @@ def test_benchmark_dcterms_round_trip(benchmark) -> None:
         return DublinCoreRecord.from_rdf(turtle, format="turtle", subject=subjects[0])  # type: ignore[arg-type]
 
     reloaded = benchmark(run)
-    assert reloaded.title == "Benchmark Record"
+    assert reloaded.title == ["Benchmark Record"]
 
 
 def test_benchmark_odrl_policy_round_trip(benchmark) -> None:

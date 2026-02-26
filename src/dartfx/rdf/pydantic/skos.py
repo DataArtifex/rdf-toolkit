@@ -46,27 +46,35 @@ class ConceptScheme(SkosResource):
     id: str
 
     # Lexical labels
-    pref_label: Annotated[list[str] | None, RdfProperty(SKOS.prefLabel)] = None
-    alt_label: Annotated[list[str] | None, RdfProperty(SKOS.altLabel)] = None
-    hidden_label: Annotated[list[str] | None, RdfProperty(SKOS.hiddenLabel)] = None
+    pref_label: Annotated[str | list[str] | None, RdfProperty(SKOS.prefLabel)] = None
+    alt_label: Annotated[str | list[str] | None, RdfProperty(SKOS.altLabel)] = None
+    hidden_label: Annotated[str | list[str] | None, RdfProperty(SKOS.hiddenLabel)] = None
 
     # SKOS-XL labels
-    pref_label_xl: Annotated[list[str | URIRef | Label] | None, RdfProperty(SKOSXL.prefLabel)] = None
-    alt_label_xl: Annotated[list[str | URIRef | Label] | None, RdfProperty(SKOSXL.altLabel)] = None
-    hidden_label_xl: Annotated[list[str | URIRef | Label] | None, RdfProperty(SKOSXL.hiddenLabel)] = None
+    pref_label_xl: Annotated[
+        str | URIRef | Label | list[str | URIRef | Label] | None, RdfProperty(SKOSXL.prefLabel)
+    ] = None
+    alt_label_xl: Annotated[str | URIRef | Label | list[str | URIRef | Label] | None, RdfProperty(SKOSXL.altLabel)] = (
+        None
+    )
+    hidden_label_xl: Annotated[
+        str | URIRef | Label | list[str | URIRef | Label] | None, RdfProperty(SKOSXL.hiddenLabel)
+    ] = None
 
     # Documentation properties
-    notation: Annotated[list[str] | None, RdfProperty(SKOS.notation)] = None
-    note: Annotated[list[str] | None, RdfProperty(SKOS.note)] = None
-    change_note: Annotated[list[str] | None, RdfProperty(SKOS.changeNote)] = None
-    definition: Annotated[list[str] | None, RdfProperty(SKOS.definition)] = None
-    editorial_note: Annotated[list[str] | None, RdfProperty(SKOS.editorialNote)] = None
-    example: Annotated[list[str] | None, RdfProperty(SKOS.example)] = None
-    history_note: Annotated[list[str] | None, RdfProperty(SKOS.historyNote)] = None
-    scope_note: Annotated[list[str] | None, RdfProperty(SKOS.scopeNote)] = None
+    notation: Annotated[str | list[str] | None, RdfProperty(SKOS.notation)] = None
+    note: Annotated[str | list[str] | None, RdfProperty(SKOS.note)] = None
+    change_note: Annotated[str | list[str] | None, RdfProperty(SKOS.changeNote)] = None
+    definition: Annotated[str | list[str] | None, RdfProperty(SKOS.definition)] = None
+    editorial_note: Annotated[str | list[str] | None, RdfProperty(SKOS.editorialNote)] = None
+    example: Annotated[str | list[str] | None, RdfProperty(SKOS.example)] = None
+    history_note: Annotated[str | list[str] | None, RdfProperty(SKOS.historyNote)] = None
+    scope_note: Annotated[str | list[str] | None, RdfProperty(SKOS.scopeNote)] = None
 
     # Scheme relationships
-    has_top_concept: Annotated[list[str | URIRef | Concept] | None, RdfProperty(SKOS.hasTopConcept)] = None
+    has_top_concept: Annotated[
+        str | URIRef | Concept | list[str | URIRef | Concept] | None, RdfProperty(SKOS.hasTopConcept)
+    ] = None
 
 
 class Concept(SkosResource):
@@ -77,48 +85,76 @@ class Concept(SkosResource):
     id: str
 
     # Lexical labels
-    pref_label: Annotated[list[str] | None, RdfProperty(SKOS.prefLabel)] = None
-    alt_label: Annotated[list[str] | None, RdfProperty(SKOS.altLabel)] = None
-    hidden_label: Annotated[list[str] | None, RdfProperty(SKOS.hiddenLabel)] = None
+    pref_label: Annotated[str | list[str] | None, RdfProperty(SKOS.prefLabel)] = None
+    alt_label: Annotated[str | list[str] | None, RdfProperty(SKOS.altLabel)] = None
+    hidden_label: Annotated[str | list[str] | None, RdfProperty(SKOS.hiddenLabel)] = None
 
     # SKOS-XL labels
-    pref_label_xl: Annotated[list[str | URIRef | Label] | None, RdfProperty(SKOSXL.prefLabel)] = None
-    alt_label_xl: Annotated[list[str | URIRef | Label] | None, RdfProperty(SKOSXL.altLabel)] = None
-    hidden_label_xl: Annotated[list[str | URIRef | Label] | None, RdfProperty(SKOSXL.hiddenLabel)] = None
+    pref_label_xl: Annotated[
+        str | URIRef | Label | list[str | URIRef | Label] | None, RdfProperty(SKOSXL.prefLabel)
+    ] = None
+    alt_label_xl: Annotated[str | URIRef | Label | list[str | URIRef | Label] | None, RdfProperty(SKOSXL.altLabel)] = (
+        None
+    )
+    hidden_label_xl: Annotated[
+        str | URIRef | Label | list[str | URIRef | Label] | None, RdfProperty(SKOSXL.hiddenLabel)
+    ] = None
 
     # Documentation properties
-    notation: Annotated[list[str] | None, RdfProperty(SKOS.notation)] = None
-    note: Annotated[list[str] | None, RdfProperty(SKOS.note)] = None
-    change_note: Annotated[list[str] | None, RdfProperty(SKOS.changeNote)] = None
-    definition: Annotated[list[str] | None, RdfProperty(SKOS.definition)] = None
-    editorial_note: Annotated[list[str] | None, RdfProperty(SKOS.editorialNote)] = None
-    example: Annotated[list[str] | None, RdfProperty(SKOS.example)] = None
-    history_note: Annotated[list[str] | None, RdfProperty(SKOS.historyNote)] = None
-    scope_note: Annotated[list[str] | None, RdfProperty(SKOS.scopeNote)] = None
+    notation: Annotated[str | list[str] | None, RdfProperty(SKOS.notation)] = None
+    note: Annotated[str | list[str] | None, RdfProperty(SKOS.note)] = None
+    change_note: Annotated[str | list[str] | None, RdfProperty(SKOS.changeNote)] = None
+    definition: Annotated[str | list[str] | None, RdfProperty(SKOS.definition)] = None
+    editorial_note: Annotated[str | list[str] | None, RdfProperty(SKOS.editorialNote)] = None
+    example: Annotated[str | list[str] | None, RdfProperty(SKOS.example)] = None
+    history_note: Annotated[str | list[str] | None, RdfProperty(SKOS.historyNote)] = None
+    scope_note: Annotated[str | list[str] | None, RdfProperty(SKOS.scopeNote)] = None
 
     # Scheme membership
-    in_scheme: Annotated[list[str | URIRef | ConceptScheme] | None, RdfProperty(SKOS.inScheme)] = None
-    top_concept_of: Annotated[list[str | URIRef | ConceptScheme] | None, RdfProperty(SKOS.topConceptOf)] = None
+    in_scheme: Annotated[
+        str | URIRef | ConceptScheme | list[str | URIRef | ConceptScheme] | None, RdfProperty(SKOS.inScheme)
+    ] = None
+    top_concept_of: Annotated[
+        str | URIRef | ConceptScheme | list[str | URIRef | ConceptScheme] | None, RdfProperty(SKOS.topConceptOf)
+    ] = None
 
     # Semantic relations (hierarchical)
-    broader: Annotated[list[str | URIRef | Concept] | None, RdfProperty(SKOS.broader)] = None
-    narrower: Annotated[list[str | URIRef | Concept] | None, RdfProperty(SKOS.narrower)] = None
-    broader_transitive: Annotated[list[str | URIRef | Concept] | None, RdfProperty(SKOS.broaderTransitive)] = None
-    narrower_transitive: Annotated[list[str | URIRef | Concept] | None, RdfProperty(SKOS.narrowerTransitive)] = None
+    broader: Annotated[str | URIRef | Concept | list[str | URIRef | Concept] | None, RdfProperty(SKOS.broader)] = None
+    narrower: Annotated[str | URIRef | Concept | list[str | URIRef | Concept] | None, RdfProperty(SKOS.narrower)] = None
+    broader_transitive: Annotated[
+        str | URIRef | Concept | list[str | URIRef | Concept] | None, RdfProperty(SKOS.broaderTransitive)
+    ] = None
+    narrower_transitive: Annotated[
+        str | URIRef | Concept | list[str | URIRef | Concept] | None, RdfProperty(SKOS.narrowerTransitive)
+    ] = None
 
     # Semantic relations (associative)
-    related: Annotated[list[str | URIRef | Concept] | None, RdfProperty(SKOS.related)] = None
+    related: Annotated[str | URIRef | Concept | list[str | URIRef | Concept] | None, RdfProperty(SKOS.related)] = None
 
     # Mapping properties
-    close_match: Annotated[list[str | URIRef | Concept] | None, RdfProperty(SKOS.closeMatch)] = None
-    exact_match: Annotated[list[str | URIRef | Concept] | None, RdfProperty(SKOS.exactMatch)] = None
-    broad_match: Annotated[list[str | URIRef | Concept] | None, RdfProperty(SKOS.broadMatch)] = None
-    narrow_match: Annotated[list[str | URIRef | Concept] | None, RdfProperty(SKOS.narrowMatch)] = None
-    related_match: Annotated[list[str | URIRef | Concept] | None, RdfProperty(SKOS.relatedMatch)] = None
+    close_match: Annotated[
+        str | URIRef | Concept | list[str | URIRef | Concept] | None, RdfProperty(SKOS.closeMatch)
+    ] = None
+    exact_match: Annotated[
+        str | URIRef | Concept | list[str | URIRef | Concept] | None, RdfProperty(SKOS.exactMatch)
+    ] = None
+    broad_match: Annotated[
+        str | URIRef | Concept | list[str | URIRef | Concept] | None, RdfProperty(SKOS.broadMatch)
+    ] = None
+    narrow_match: Annotated[
+        str | URIRef | Concept | list[str | URIRef | Concept] | None, RdfProperty(SKOS.narrowMatch)
+    ] = None
+    related_match: Annotated[
+        str | URIRef | Concept | list[str | URIRef | Concept] | None, RdfProperty(SKOS.relatedMatch)
+    ] = None
 
     # Super-properties
-    semantic_relation: Annotated[list[str | URIRef | Concept] | None, RdfProperty(SKOS.semanticRelation)] = None
-    mapping_relation: Annotated[list[str | URIRef | Concept] | None, RdfProperty(SKOS.mappingRelation)] = None
+    semantic_relation: Annotated[
+        str | URIRef | Concept | list[str | URIRef | Concept] | None, RdfProperty(SKOS.semanticRelation)
+    ] = None
+    mapping_relation: Annotated[
+        str | URIRef | Concept | list[str | URIRef | Concept] | None, RdfProperty(SKOS.mappingRelation)
+    ] = None
 
 
 class Collection(SkosResource):
@@ -129,16 +165,19 @@ class Collection(SkosResource):
     id: str
 
     # Lexical labels
-    pref_label: Annotated[list[str] | None, RdfProperty(SKOS.prefLabel)] = None
-    alt_label: Annotated[list[str] | None, RdfProperty(SKOS.altLabel)] = None
-    hidden_label: Annotated[list[str] | None, RdfProperty(SKOS.hiddenLabel)] = None
+    pref_label: Annotated[str | list[str] | None, RdfProperty(SKOS.prefLabel)] = None
+    alt_label: Annotated[str | list[str] | None, RdfProperty(SKOS.altLabel)] = None
+    hidden_label: Annotated[str | list[str] | None, RdfProperty(SKOS.hiddenLabel)] = None
 
     # Documentation properties
-    notation: Annotated[list[str] | None, RdfProperty(SKOS.notation)] = None
-    note: Annotated[list[str] | None, RdfProperty(SKOS.note)] = None
+    notation: Annotated[str | list[str] | None, RdfProperty(SKOS.notation)] = None
+    note: Annotated[str | list[str] | None, RdfProperty(SKOS.note)] = None
 
     # Collection membership
-    member: Annotated[list[str | URIRef | Concept | Collection] | None, RdfProperty(SKOS.member)] = None
+    member: Annotated[
+        str | URIRef | Concept | Collection | list[str | URIRef | Concept | Collection] | None,
+        RdfProperty(SKOS.member),
+    ] = None
 
 
 class OrderedCollection(SkosResource):
@@ -149,16 +188,18 @@ class OrderedCollection(SkosResource):
     id: str
 
     # Lexical labels
-    pref_label: Annotated[list[str] | None, RdfProperty(SKOS.prefLabel)] = None
-    alt_label: Annotated[list[str] | None, RdfProperty(SKOS.altLabel)] = None
-    hidden_label: Annotated[list[str] | None, RdfProperty(SKOS.hiddenLabel)] = None
+    pref_label: Annotated[str | list[str] | None, RdfProperty(SKOS.prefLabel)] = None
+    alt_label: Annotated[str | list[str] | None, RdfProperty(SKOS.altLabel)] = None
+    hidden_label: Annotated[str | list[str] | None, RdfProperty(SKOS.hiddenLabel)] = None
 
     # Documentation properties
-    notation: Annotated[list[str] | None, RdfProperty(SKOS.notation)] = None
-    note: Annotated[list[str] | None, RdfProperty(SKOS.note)] = None
+    notation: Annotated[str | list[str] | None, RdfProperty(SKOS.notation)] = None
+    note: Annotated[str | list[str] | None, RdfProperty(SKOS.note)] = None
 
     # Ordered collection membership
-    member_list: Annotated[list[str | URIRef | Concept] | None, RdfProperty(SKOS.memberList)] = None
+    member_list: Annotated[
+        str | URIRef | Concept | list[str | URIRef | Concept] | None, RdfProperty(SKOS.memberList)
+    ] = None
 
 
 __all__ = [

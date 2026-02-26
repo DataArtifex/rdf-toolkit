@@ -35,7 +35,7 @@ def test_multivocab_graph_round_trip() -> None:
     reloaded_policy = Policy.from_rdf_graph(graph, policy_subjects[0])  # type: ignore[arg-type]
 
     assert reloaded_person.name == ["Alice"]
-    assert reloaded_record.title == "Integrated Record"
+    assert reloaded_record.title == ["Integrated Record"]
     assert reloaded_policy.uid == ["policy-1"]
 
 

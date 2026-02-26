@@ -34,65 +34,73 @@ class VCard(VcardResource):
     rdf_type: ClassVar[str | URIRef | None] = str(VCARD.VCard)
 
     # Identification
-    fn: Annotated[list[str] | None, RdfProperty(VCARD.fn)] = None  # Formatted name
-    n: Annotated[list[str | URIRef | Name] | None, RdfProperty(VCARD.n)] = None  # Name
-    nickname: Annotated[list[str] | None, RdfProperty(VCARD.nickname)] = None
+    fn: Annotated[str | list[str] | None, RdfProperty(VCARD.fn)] = None  # Formatted name
+    n: Annotated[str | URIRef | Name | list[str | URIRef | Name] | None, RdfProperty(VCARD.n)] = None  # Name
+    nickname: Annotated[str | list[str] | None, RdfProperty(VCARD.nickname)] = None
 
     # Delivery address
-    adr: Annotated[list[str | URIRef | Address] | None, RdfProperty(VCARD.adr)] = None
+    adr: Annotated[str | URIRef | Address | list[str | URIRef | Address] | None, RdfProperty(VCARD.adr)] = None
 
     # Telecommunications
-    tel: Annotated[list[str | URIRef | Telephone] | None, RdfProperty(VCARD.tel)] = None
-    email: Annotated[list[str | URIRef | Email] | None, RdfProperty(VCARD.email)] = None
+    tel: Annotated[str | URIRef | Telephone | list[str | URIRef | Telephone] | None, RdfProperty(VCARD.tel)] = None
+    email: Annotated[str | URIRef | Email | list[str | URIRef | Email] | None, RdfProperty(VCARD.email)] = None
 
     # Organization
-    org: Annotated[list[str | URIRef | Organization] | None, RdfProperty(VCARD.org)] = None
-    organization_name: Annotated[list[str] | None, RdfProperty(VCARD["organization-name"])] = None
-    organization_unit: Annotated[list[str] | None, RdfProperty(VCARD["organization-unit"])] = None
+    org: Annotated[str | URIRef | Organization | list[str | URIRef | Organization] | None, RdfProperty(VCARD.org)] = (
+        None
+    )
+    organization_name: Annotated[str | list[str] | None, RdfProperty(VCARD["organization-name"])] = None
+    organization_unit: Annotated[str | list[str] | None, RdfProperty(VCARD["organization-unit"])] = None
 
     # Title and role
-    title: Annotated[list[str] | None, RdfProperty(VCARD.title)] = None
-    role: Annotated[list[str] | None, RdfProperty(VCARD.role)] = None
+    title: Annotated[str | list[str] | None, RdfProperty(VCARD.title)] = None
+    role: Annotated[str | list[str] | None, RdfProperty(VCARD.role)] = None
 
     # Online presence
-    url: Annotated[list[str | URIRef] | None, RdfProperty(VCARD.url)] = None
+    url: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(VCARD.url)] = None
 
     # Birthday
-    bday: Annotated[list[str] | None, RdfProperty(VCARD.bday)] = None
+    bday: Annotated[str | list[str] | None, RdfProperty(VCARD.bday)] = None
 
     # Photo
-    photo: Annotated[list[str | URIRef] | None, RdfProperty(VCARD.photo)] = None
-    logo: Annotated[list[str | URIRef] | None, RdfProperty(VCARD.logo)] = None
+    photo: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(VCARD.photo)] = None
+    logo: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(VCARD.logo)] = None
 
     # Categories
-    category: Annotated[list[str] | None, RdfProperty(VCARD.category)] = None
+    category: Annotated[str | list[str] | None, RdfProperty(VCARD.category)] = None
 
     # Notes
-    note: Annotated[list[str] | None, RdfProperty(VCARD.note)] = None
+    note: Annotated[str | list[str] | None, RdfProperty(VCARD.note)] = None
 
     # Revision
-    rev: Annotated[list[str] | None, RdfProperty(VCARD.rev)] = None
+    rev: Annotated[str | list[str] | None, RdfProperty(VCARD.rev)] = None
 
     # UID
-    uid: Annotated[list[str | URIRef] | None, RdfProperty(VCARD.uid)] = None
+    uid: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(VCARD.uid)] = None
 
     # Language
-    language: Annotated[list[str] | None, RdfProperty(VCARD.language)] = None
+    language: Annotated[str | list[str] | None, RdfProperty(VCARD.language)] = None
 
     # New properties
-    has_gender: Annotated[list[str | URIRef | Gender] | None, RdfProperty(VCARD.hasGender)] = None
-    has_related: Annotated[list[str | URIRef | Related] | None, RdfProperty(VCARD.hasRelated)] = None
-    has_geo: Annotated[list[str | URIRef | Location] | None, RdfProperty(VCARD.hasGeo)] = None
-    has_sound: Annotated[list[str | URIRef] | None, RdfProperty(VCARD.hasSound)] = None
-    has_key: Annotated[list[str | URIRef] | None, RdfProperty(VCARD.hasKey)] = None
-    has_logo: Annotated[list[str | URIRef] | None, RdfProperty(VCARD.hasLogo)] = None
-    has_photo: Annotated[list[str | URIRef] | None, RdfProperty(VCARD.hasPhoto)] = None
-    has_url: Annotated[list[str | URIRef] | None, RdfProperty(VCARD.hasUrl)] = None
-    has_email: Annotated[list[str | URIRef | Email] | None, RdfProperty(VCARD.hasEmail)] = None
-    has_telephone: Annotated[list[str | URIRef | Telephone] | None, RdfProperty(VCARD.hasTelephone)] = None
-    has_note: Annotated[list[str] | None, RdfProperty(VCARD.hasNote)] = None
-    has_uid: Annotated[list[str | URIRef] | None, RdfProperty(VCARD.hasUID)] = None
-    has_language: Annotated[list[str] | None, RdfProperty(VCARD.hasLanguage)] = None
+    has_gender: Annotated[str | URIRef | Gender | list[str | URIRef | Gender] | None, RdfProperty(VCARD.hasGender)] = (
+        None
+    )
+    has_related: Annotated[
+        str | URIRef | Related | list[str | URIRef | Related] | None, RdfProperty(VCARD.hasRelated)
+    ] = None
+    has_geo: Annotated[str | URIRef | Location | list[str | URIRef | Location] | None, RdfProperty(VCARD.hasGeo)] = None
+    has_sound: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(VCARD.hasSound)] = None
+    has_key: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(VCARD.hasKey)] = None
+    has_logo: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(VCARD.hasLogo)] = None
+    has_photo: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(VCARD.hasPhoto)] = None
+    has_url: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(VCARD.hasUrl)] = None
+    has_email: Annotated[str | URIRef | Email | list[str | URIRef | Email] | None, RdfProperty(VCARD.hasEmail)] = None
+    has_telephone: Annotated[
+        str | URIRef | Telephone | list[str | URIRef | Telephone] | None, RdfProperty(VCARD.hasTelephone)
+    ] = None
+    has_note: Annotated[str | list[str] | None, RdfProperty(VCARD.hasNote)] = None
+    has_uid: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(VCARD.hasUID)] = None
+    has_language: Annotated[str | list[str] | None, RdfProperty(VCARD.hasLanguage)] = None
 
 
 class Individual(VCard):
@@ -106,7 +114,7 @@ class Group(VCard):
 
     rdf_type: ClassVar[str | URIRef | None] = str(VCARD.Group)
 
-    has_member: Annotated[list[str | URIRef | VCard] | None, RdfProperty(VCARD.hasMember)] = None
+    has_member: Annotated[str | URIRef | VCard | list[str | URIRef | VCard] | None, RdfProperty(VCARD.hasMember)] = None
 
 
 class Organization(VCard):
@@ -126,11 +134,11 @@ class Name(VcardResource):
 
     rdf_type: ClassVar[str | URIRef | None] = str(VCARD.Name)
 
-    family_name: Annotated[list[str] | None, RdfProperty(VCARD["family-name"])] = None
-    given_name: Annotated[list[str] | None, RdfProperty(VCARD["given-name"])] = None
-    additional_name: Annotated[list[str] | None, RdfProperty(VCARD["additional-name"])] = None
-    honorific_prefix: Annotated[list[str] | None, RdfProperty(VCARD["honorific-prefix"])] = None
-    honorific_suffix: Annotated[list[str] | None, RdfProperty(VCARD["honorific-suffix"])] = None
+    family_name: Annotated[str | list[str] | None, RdfProperty(VCARD["family-name"])] = None
+    given_name: Annotated[str | list[str] | None, RdfProperty(VCARD["given-name"])] = None
+    additional_name: Annotated[str | list[str] | None, RdfProperty(VCARD["additional-name"])] = None
+    honorific_prefix: Annotated[str | list[str] | None, RdfProperty(VCARD["honorific-prefix"])] = None
+    honorific_suffix: Annotated[str | list[str] | None, RdfProperty(VCARD["honorific-suffix"])] = None
 
 
 class Address(VcardResource):
@@ -138,13 +146,13 @@ class Address(VcardResource):
 
     rdf_type: ClassVar[str | URIRef | None] = str(VCARD.Address)
 
-    street_address: Annotated[list[str] | None, RdfProperty(VCARD["street-address"])] = None
-    locality: Annotated[list[str] | None, RdfProperty(VCARD.locality)] = None
-    region: Annotated[list[str] | None, RdfProperty(VCARD.region)] = None
-    postal_code: Annotated[list[str] | None, RdfProperty(VCARD["postal-code"])] = None
-    country_name: Annotated[list[str] | None, RdfProperty(VCARD["country-name"])] = None
-    post_office_box: Annotated[list[str] | None, RdfProperty(VCARD["post-office-box"])] = None
-    extended_address: Annotated[list[str] | None, RdfProperty(VCARD["extended-address"])] = None
+    street_address: Annotated[str | list[str] | None, RdfProperty(VCARD["street-address"])] = None
+    locality: Annotated[str | list[str] | None, RdfProperty(VCARD.locality)] = None
+    region: Annotated[str | list[str] | None, RdfProperty(VCARD.region)] = None
+    postal_code: Annotated[str | list[str] | None, RdfProperty(VCARD["postal-code"])] = None
+    country_name: Annotated[str | list[str] | None, RdfProperty(VCARD["country-name"])] = None
+    post_office_box: Annotated[str | list[str] | None, RdfProperty(VCARD["post-office-box"])] = None
+    extended_address: Annotated[str | list[str] | None, RdfProperty(VCARD["extended-address"])] = None
 
 
 class Telephone(VcardResource):
@@ -152,7 +160,7 @@ class Telephone(VcardResource):
 
     rdf_type: ClassVar[str | URIRef | None] = str(VCARD.Telephone)
 
-    has_value: Annotated[list[str | URIRef] | None, RdfProperty(VCARD.hasValue)] = None
+    has_value: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(VCARD.hasValue)] = None
 
 
 class Email(VcardResource):
@@ -160,7 +168,7 @@ class Email(VcardResource):
 
     rdf_type: ClassVar[str | URIRef | None] = str(VCARD.Email)
 
-    has_value: Annotated[list[str | URIRef] | None, RdfProperty(VCARD.hasValue)] = None
+    has_value: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(VCARD.hasValue)] = None
 
 
 __all__ = [
@@ -220,8 +228,8 @@ class Gender(VcardResource):
 
     rdf_type: ClassVar[str | URIRef | None] = str(VCARD.Gender)
 
-    sex: Annotated[list[str] | None, RdfProperty(VCARD.sex)] = None
-    identity: Annotated[list[str] | None, RdfProperty(VCARD.identity)] = None
+    sex: Annotated[str | list[str] | None, RdfProperty(VCARD.sex)] = None
+    identity: Annotated[str | list[str] | None, RdfProperty(VCARD.identity)] = None
 
 
 class Related(VcardResource):
@@ -229,7 +237,7 @@ class Related(VcardResource):
 
     rdf_type: ClassVar[str | URIRef | None] = str(VCARD.Related)
 
-    has_value: Annotated[list[str | URIRef | VCard] | None, RdfProperty(VCARD.hasValue)] = None
+    has_value: Annotated[str | URIRef | VCard | list[str | URIRef | VCard] | None, RdfProperty(VCARD.hasValue)] = None
 
 
 class Acquaintance(Related):

@@ -32,33 +32,78 @@ class Entity(ProvResource):
     rdf_type: ClassVar[str | URIRef | None] = str(PROV.Entity)
 
     # Generation and invalidation
-    was_generated_by: Annotated[list[str | URIRef | Activity] | None, RdfProperty(PROV.wasGeneratedBy)] = None
-    was_invalidated_by: Annotated[list[str | URIRef | Activity] | None, RdfProperty(PROV.wasInvalidatedBy)] = None
-    generated_at_time: Annotated[list[str | datetime] | None, RdfProperty(PROV.generatedAtTime)] = None
-    invalidated_at_time: Annotated[list[str | datetime] | None, RdfProperty(PROV.invalidatedAtTime)] = None
+    was_generated_by: Annotated[
+        str | URIRef | Activity | list[str | URIRef | Activity] | None,
+        RdfProperty(PROV.wasGeneratedBy),
+    ] = None
+    was_invalidated_by: Annotated[
+        str | URIRef | Activity | list[str | URIRef | Activity] | None,
+        RdfProperty(PROV.wasInvalidatedBy),
+    ] = None
+    generated_at_time: Annotated[
+        str | datetime | list[str | datetime] | None,
+        RdfProperty(PROV.generatedAtTime),
+    ] = None
+    invalidated_at_time: Annotated[
+        str | datetime | list[str | datetime] | None,
+        RdfProperty(PROV.invalidatedAtTime),
+    ] = None
 
     # Derivation
-    was_derived_from: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.wasDerivedFrom)] = None
-    was_revision_of: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.wasRevisionOf)] = None
-    was_quoted_from: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.wasQuotedFrom)] = None
-    had_primary_source: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.hadPrimarySource)] = None
+    was_derived_from: Annotated[
+        str | URIRef | Entity | list[str | URIRef | Entity] | None,
+        RdfProperty(PROV.wasDerivedFrom),
+    ] = None
+    was_revision_of: Annotated[
+        str | URIRef | Entity | list[str | URIRef | Entity] | None,
+        RdfProperty(PROV.wasRevisionOf),
+    ] = None
+    was_quoted_from: Annotated[
+        str | URIRef | Entity | list[str | URIRef | Entity] | None,
+        RdfProperty(PROV.wasQuotedFrom),
+    ] = None
+    had_primary_source: Annotated[
+        str | URIRef | Entity | list[str | URIRef | Entity] | None,
+        RdfProperty(PROV.hadPrimarySource),
+    ] = None
 
     # Attribution
-    was_attributed_to: Annotated[list[str | URIRef | Agent] | None, RdfProperty(PROV.wasAttributedTo)] = None
+    was_attributed_to: Annotated[
+        str | URIRef | Agent | list[str | URIRef | Agent] | None,
+        RdfProperty(PROV.wasAttributedTo),
+    ] = None
 
     # Alternates and specialization
-    alternate_of: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.alternateOf)] = None
-    specialization_of: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.specializationOf)] = None
+    alternate_of: Annotated[
+        str | URIRef | Entity | list[str | URIRef | Entity] | None,
+        RdfProperty(PROV.alternateOf),
+    ] = None
+    specialization_of: Annotated[
+        str | URIRef | Entity | list[str | URIRef | Entity] | None,
+        RdfProperty(PROV.specializationOf),
+    ] = None
 
     # Location
-    at_location: Annotated[list[str | URIRef | Location] | None, RdfProperty(PROV.atLocation)] = None
+    at_location: Annotated[
+        str | URIRef | Location | list[str | URIRef | Location] | None,
+        RdfProperty(PROV.atLocation),
+    ] = None
 
     # Value
-    value: Annotated[list[str] | None, RdfProperty(PROV.value)] = None
+    value: Annotated[str | list[str] | None, RdfProperty(PROV.value)] = None
 
     # Influence
     was_influenced_by: Annotated[
-        list[str | URIRef | Agent | Entity | Activity | Influence] | None,
+        (
+            str
+            | URIRef
+            | Agent
+            | Entity
+            | Activity
+            | Influence
+            | list[str | URIRef | Agent | Entity | Activity | Influence]
+            | None
+        ),
         RdfProperty(PROV.wasInfluencedBy),
     ] = None
 
@@ -69,33 +114,73 @@ class Activity(ProvResource):
     rdf_type: ClassVar[str | URIRef | None] = str(PROV.Activity)
 
     # Timing
-    started_at_time: Annotated[list[str | datetime] | None, RdfProperty(PROV.startedAtTime)] = None
-    ended_at_time: Annotated[list[str | datetime] | None, RdfProperty(PROV.endedAtTime)] = None
+    started_at_time: Annotated[
+        str | datetime | list[str | datetime] | None,
+        RdfProperty(PROV.startedAtTime),
+    ] = None
+    ended_at_time: Annotated[
+        str | datetime | list[str | datetime] | None,
+        RdfProperty(PROV.endedAtTime),
+    ] = None
 
     # Usage and generation
-    used: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.used)] = None
-    generated: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.generated)] = None
-    invalidated: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.invalidated)] = None
+    used: Annotated[
+        str | URIRef | Entity | list[str | URIRef | Entity] | None,
+        RdfProperty(PROV.used),
+    ] = None
+    generated: Annotated[
+        str | URIRef | Entity | list[str | URIRef | Entity] | None,
+        RdfProperty(PROV.generated),
+    ] = None
+    invalidated: Annotated[
+        str | URIRef | Entity | list[str | URIRef | Entity] | None,
+        RdfProperty(PROV.invalidated),
+    ] = None
 
     # Association
-    was_associated_with: Annotated[list[str | URIRef | Agent] | None, RdfProperty(PROV.wasAssociatedWith)] = None
+    was_associated_with: Annotated[
+        str | URIRef | Agent | list[str | URIRef | Agent] | None,
+        RdfProperty(PROV.wasAssociatedWith),
+    ] = None
     qualified_association: Annotated[
-        list[str | URIRef | Association] | None, RdfProperty(PROV.qualifiedAssociation)
+        str | URIRef | Association | list[str | URIRef | Association] | None,
+        RdfProperty(PROV.qualifiedAssociation),
     ] = None
 
     # Communication
-    was_informed_by: Annotated[list[str | URIRef | Activity] | None, RdfProperty(PROV.wasInformedBy)] = None
+    was_informed_by: Annotated[
+        str | URIRef | Activity | list[str | URIRef | Activity] | None,
+        RdfProperty(PROV.wasInformedBy),
+    ] = None
 
     # Start and end
-    was_started_by: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.wasStartedBy)] = None
-    was_ended_by: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.wasEndedBy)] = None
+    was_started_by: Annotated[
+        str | URIRef | Entity | list[str | URIRef | Entity] | None,
+        RdfProperty(PROV.wasStartedBy),
+    ] = None
+    was_ended_by: Annotated[
+        str | URIRef | Entity | list[str | URIRef | Entity] | None,
+        RdfProperty(PROV.wasEndedBy),
+    ] = None
 
     # Location
-    at_location: Annotated[list[str | URIRef | Location] | None, RdfProperty(PROV.atLocation)] = None
+    at_location: Annotated[
+        str | URIRef | Location | list[str | URIRef | Location] | None,
+        RdfProperty(PROV.atLocation),
+    ] = None
 
     # Influence
     was_influenced_by: Annotated[
-        list[str | URIRef | Agent | Entity | Activity | Influence] | None,
+        (
+            str
+            | URIRef
+            | Agent
+            | Entity
+            | Activity
+            | Influence
+            | list[str | URIRef | Agent | Entity | Activity | Influence]
+            | None
+        ),
         RdfProperty(PROV.wasInfluencedBy),
     ] = None
 
@@ -106,17 +191,33 @@ class Agent(ProvResource):
     rdf_type: ClassVar[str | URIRef | None] = str(PROV.Agent)
 
     # Agency relationships
-    acted_on_behalf_of: Annotated[list[str | URIRef | Agent] | None, RdfProperty(PROV.actedOnBehalfOf)] = None
-    qualified_delegation: Annotated[list[str | URIRef | Delegation] | None, RdfProperty(PROV.qualifiedDelegation)] = (
-        None
-    )
+    acted_on_behalf_of: Annotated[
+        str | URIRef | Agent | list[str | URIRef | Agent] | None,
+        RdfProperty(PROV.actedOnBehalfOf),
+    ] = None
+    qualified_delegation: Annotated[
+        str | URIRef | Delegation | list[str | URIRef | Delegation] | None,
+        RdfProperty(PROV.qualifiedDelegation),
+    ] = None
 
     # Location
-    at_location: Annotated[list[str | URIRef | Location] | None, RdfProperty(PROV.atLocation)] = None
+    at_location: Annotated[
+        str | URIRef | Location | list[str | URIRef | Location] | None,
+        RdfProperty(PROV.atLocation),
+    ] = None
 
     # Influence
     was_influenced_by: Annotated[
-        list[str | URIRef | Agent | Entity | Activity | Influence] | None,
+        (
+            str
+            | URIRef
+            | Agent
+            | Entity
+            | Activity
+            | Influence
+            | list[str | URIRef | Agent | Entity | Activity | Influence]
+            | None
+        ),
         RdfProperty(PROV.wasInfluencedBy),
     ] = None
 
@@ -150,7 +251,10 @@ class Collection(Entity):
 
     rdf_type: ClassVar[str | URIRef | None] = str(PROV.Collection)
 
-    had_member: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.hadMember)] = None
+    had_member: Annotated[
+        str | URIRef | Entity | list[str | URIRef | Entity] | None,
+        RdfProperty(PROV.hadMember),
+    ] = None
 
 
 class Plan(Entity):
@@ -164,9 +268,18 @@ class Association(ProvResource):
 
     rdf_type: ClassVar[str | URIRef | None] = str(PROV.Association)
 
-    agent: Annotated[list[str | URIRef | Agent] | None, RdfProperty(PROV.agent)] = None
-    had_plan: Annotated[list[str | URIRef | Plan] | None, RdfProperty(PROV.hadPlan)] = None
-    had_role: Annotated[list[str | URIRef | Role] | None, RdfProperty(PROV.hadRole)] = None
+    agent: Annotated[
+        str | URIRef | Agent | list[str | URIRef | Agent] | None,
+        RdfProperty(PROV.agent),
+    ] = None
+    had_plan: Annotated[
+        str | URIRef | Plan | list[str | URIRef | Plan] | None,
+        RdfProperty(PROV.hadPlan),
+    ] = None
+    had_role: Annotated[
+        str | URIRef | Role | list[str | URIRef | Role] | None,
+        RdfProperty(PROV.hadRole),
+    ] = None
 
 
 class Delegation(ProvResource):
@@ -174,9 +287,18 @@ class Delegation(ProvResource):
 
     rdf_type: ClassVar[str | URIRef | None] = str(PROV.Delegation)
 
-    agent: Annotated[list[str | URIRef | Agent] | None, RdfProperty(PROV.agent)] = None
-    had_activity: Annotated[list[str | URIRef | Activity] | None, RdfProperty(PROV.hadActivity)] = None
-    had_role: Annotated[list[str | URIRef | Role] | None, RdfProperty(PROV.hadRole)] = None
+    agent: Annotated[
+        str | URIRef | Agent | list[str | URIRef | Agent] | None,
+        RdfProperty(PROV.agent),
+    ] = None
+    had_activity: Annotated[
+        str | URIRef | Activity | list[str | URIRef | Activity] | None,
+        RdfProperty(PROV.hadActivity),
+    ] = None
+    had_role: Annotated[
+        str | URIRef | Role | list[str | URIRef | Role] | None,
+        RdfProperty(PROV.hadRole),
+    ] = None
 
 
 class Usage(ProvResource):
@@ -184,9 +306,18 @@ class Usage(ProvResource):
 
     rdf_type: ClassVar[str | URIRef | None] = str(PROV.Usage)
 
-    entity: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.entity)] = None
-    had_role: Annotated[list[str | URIRef | Role] | None, RdfProperty(PROV.hadRole)] = None
-    at_time: Annotated[list[str | datetime] | None, RdfProperty(PROV.atTime)] = None
+    entity: Annotated[
+        str | URIRef | Entity | list[str | URIRef | Entity] | None,
+        RdfProperty(PROV.entity),
+    ] = None
+    had_role: Annotated[
+        str | URIRef | Role | list[str | URIRef | Role] | None,
+        RdfProperty(PROV.hadRole),
+    ] = None
+    at_time: Annotated[
+        str | datetime | list[str | datetime] | None,
+        RdfProperty(PROV.atTime),
+    ] = None
 
 
 class Generation(ProvResource):
@@ -194,10 +325,22 @@ class Generation(ProvResource):
 
     rdf_type: ClassVar[str | URIRef | None] = str(PROV.Generation)
 
-    entity: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.entity)] = None
-    activity: Annotated[list[str | URIRef | Activity] | None, RdfProperty(PROV.activity)] = None
-    had_role: Annotated[list[str | URIRef | Role] | None, RdfProperty(PROV.hadRole)] = None
-    at_time: Annotated[list[str | datetime] | None, RdfProperty(PROV.atTime)] = None
+    entity: Annotated[
+        str | URIRef | Entity | list[str | URIRef | Entity] | None,
+        RdfProperty(PROV.entity),
+    ] = None
+    activity: Annotated[
+        str | URIRef | Activity | list[str | URIRef | Activity] | None,
+        RdfProperty(PROV.activity),
+    ] = None
+    had_role: Annotated[
+        str | URIRef | Role | list[str | URIRef | Role] | None,
+        RdfProperty(PROV.hadRole),
+    ] = None
+    at_time: Annotated[
+        str | datetime | list[str | datetime] | None,
+        RdfProperty(PROV.atTime),
+    ] = None
 
 
 class Derivation(ProvResource):
@@ -205,10 +348,22 @@ class Derivation(ProvResource):
 
     rdf_type: ClassVar[str | URIRef | None] = str(PROV.Derivation)
 
-    entity: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.entity)] = None
-    had_generation: Annotated[list[str | URIRef | Generation] | None, RdfProperty(PROV.hadGeneration)] = None
-    had_usage: Annotated[list[str | URIRef | Usage] | None, RdfProperty(PROV.hadUsage)] = None
-    had_activity: Annotated[list[str | URIRef | Activity] | None, RdfProperty(PROV.hadActivity)] = None
+    entity: Annotated[
+        str | URIRef | Entity | list[str | URIRef | Entity] | None,
+        RdfProperty(PROV.entity),
+    ] = None
+    had_generation: Annotated[
+        str | URIRef | Generation | list[str | URIRef | Generation] | None,
+        RdfProperty(PROV.hadGeneration),
+    ] = None
+    had_usage: Annotated[
+        str | URIRef | Usage | list[str | URIRef | Usage] | None,
+        RdfProperty(PROV.hadUsage),
+    ] = None
+    had_activity: Annotated[
+        str | URIRef | Activity | list[str | URIRef | Activity] | None,
+        RdfProperty(PROV.hadActivity),
+    ] = None
 
 
 class Role(ProvResource):
@@ -223,14 +378,29 @@ class Influence(ProvResource):
     rdf_type: ClassVar[str | URIRef | None] = str(PROV.Influence)
 
     influencer: Annotated[
-        list[str | URIRef | Agent | Entity | Activity] | None,
+        (str | URIRef | Agent | Entity | Activity | list[str | URIRef | Agent | Entity | Activity] | None),
         RdfProperty(PROV.influencer),
     ] = None
-    had_role: Annotated[list[str | URIRef | Role] | None, RdfProperty(PROV.hadRole)] = None
-    had_activity: Annotated[list[str | URIRef | Activity] | None, RdfProperty(PROV.hadActivity)] = None
-    had_plan: Annotated[list[str | URIRef | Plan] | None, RdfProperty(PROV.hadPlan)] = None
-    had_usage: Annotated[list[str | URIRef | Usage] | None, RdfProperty(PROV.hadUsage)] = None
-    had_generation: Annotated[list[str | URIRef | Generation] | None, RdfProperty(PROV.hadGeneration)] = None
+    had_role: Annotated[
+        str | URIRef | Role | list[str | URIRef | Role] | None,
+        RdfProperty(PROV.hadRole),
+    ] = None
+    had_activity: Annotated[
+        str | URIRef | Activity | list[str | URIRef | Activity] | None,
+        RdfProperty(PROV.hadActivity),
+    ] = None
+    had_plan: Annotated[
+        str | URIRef | Plan | list[str | URIRef | Plan] | None,
+        RdfProperty(PROV.hadPlan),
+    ] = None
+    had_usage: Annotated[
+        str | URIRef | Usage | list[str | URIRef | Usage] | None,
+        RdfProperty(PROV.hadUsage),
+    ] = None
+    had_generation: Annotated[
+        str | URIRef | Generation | list[str | URIRef | Generation] | None,
+        RdfProperty(PROV.hadGeneration),
+    ] = None
 
 
 class InstantaneousEvent(ProvResource):
@@ -238,9 +408,18 @@ class InstantaneousEvent(ProvResource):
 
     rdf_type: ClassVar[str | URIRef | None] = str(PROV.InstantaneousEvent)
 
-    at_time: Annotated[list[str | datetime] | None, RdfProperty(PROV.atTime)] = None
-    had_role: Annotated[list[str | URIRef | Role] | None, RdfProperty(PROV.hadRole)] = None
-    at_location: Annotated[list[str | URIRef | Location] | None, RdfProperty(PROV.atLocation)] = None
+    at_time: Annotated[
+        str | datetime | list[str | datetime] | None,
+        RdfProperty(PROV.atTime),
+    ] = None
+    had_role: Annotated[
+        str | URIRef | Role | list[str | URIRef | Role] | None,
+        RdfProperty(PROV.hadRole),
+    ] = None
+    at_location: Annotated[
+        str | URIRef | Location | list[str | URIRef | Location] | None,
+        RdfProperty(PROV.atLocation),
+    ] = None
 
 
 class Location(ProvResource):
@@ -254,8 +433,14 @@ class End(InstantaneousEvent, Influence):
 
     rdf_type: ClassVar[str | URIRef | None] = str(PROV.End)
 
-    had_activity: Annotated[list[str | URIRef | Activity] | None, RdfProperty(PROV.hadActivity)] = None
-    entity: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.entity)] = None
+    had_activity: Annotated[
+        str | URIRef | Activity | list[str | URIRef | Activity] | None,
+        RdfProperty(PROV.hadActivity),
+    ] = None
+    entity: Annotated[
+        str | URIRef | Entity | list[str | URIRef | Entity] | None,
+        RdfProperty(PROV.entity),
+    ] = None
 
 
 class Start(InstantaneousEvent, Influence):
@@ -263,8 +448,14 @@ class Start(InstantaneousEvent, Influence):
 
     rdf_type: ClassVar[str | URIRef | None] = str(PROV.Start)
 
-    had_activity: Annotated[list[str | URIRef | Activity] | None, RdfProperty(PROV.hadActivity)] = None
-    entity: Annotated[list[str | URIRef | Entity] | None, RdfProperty(PROV.entity)] = None
+    had_activity: Annotated[
+        str | URIRef | Activity | list[str | URIRef | Activity] | None,
+        RdfProperty(PROV.hadActivity),
+    ] = None
+    entity: Annotated[
+        str | URIRef | Entity | list[str | URIRef | Entity] | None,
+        RdfProperty(PROV.entity),
+    ] = None
 
 
 class EmptyCollection(Collection):

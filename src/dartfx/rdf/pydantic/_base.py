@@ -702,6 +702,7 @@ class RdfBaseModel(BaseModel):
                         items.append(_node_to_python(obj, inner_type, prop))
             else:
                 items = [_node_to_python(obj, inner_type, prop) for obj in objects]
+
             values[name] = items if is_list else items[0]
 
         id_field = cls.rdf_id_field
@@ -865,7 +866,11 @@ class RdfBaseModel(BaseModel):
                 continue
             predicate = prop.predicate_uri()
             is_list, inner_type = _field_type_info(field)
-            values = value if is_list else [value]
+            # Support both single values and lists for fields that allow both
+            if is_list:
+                values = value if isinstance(value, list) else [value]
+            else:
+                values = [value]
             for item in values:
                 if item is None:
                     continue
@@ -1057,7 +1062,16 @@ class RdfBaseModel(BaseModel):
                 return Literal(value, lang=prop.language)
             if datatype is not None:
                 return Literal(value, datatype=datatype)
-            if expected_type is URIRef and _looks_like_uri(value):
+
+            # Check if URIRef is an expected type
+            origin = get_origin(expected_type)
+            is_union = origin is Union or (hasattr(types, "UnionType") and origin is types.UnionType)
+            if is_union:
+                allowed_types = get_args(expected_type)
+            else:
+                allowed_types = (expected_type,)
+
+            if URIRef in allowed_types and _looks_like_uri(value):
                 return URIRef(value)
             return Literal(value)
         return Literal(value)
@@ -1147,11 +1161,21 @@ def _field_type_info(field: Any) -> tuple[bool, Any]:
     annotation = _unwrap_annotation(annotation)
 
     origin = get_origin(annotation)
-    # Handle both Union[T, None] and T | None syntax
+    # Handle both Union[T, None], T | None syntax and Union with list
     if origin is Union or origin is types.UnionType:
-        args = [arg for arg in get_args(annotation) if arg is not type(None)]
-        if len(args) == 1:
-            annotation = _unwrap_annotation(args[0])
+        args = get_args(annotation)
+        # Check if any arg is a list to support Union[str, list[str]]
+        for arg in args:
+            arg_unwrapped = _unwrap_annotation(arg)
+            if get_origin(arg_unwrapped) is list:
+                list_args = get_args(arg_unwrapped)
+                item_type = _unwrap_annotation(list_args[0]) if list_args else Any
+                return True, item_type
+
+        # Existing logic for unwrapping Optional[T]
+        non_none_args = [arg for arg in args if arg is not type(None)]
+        if len(non_none_args) == 1:
+            annotation = _unwrap_annotation(non_none_args[0])
             origin = get_origin(annotation)
 
     if origin is list:
@@ -1468,7 +1492,7 @@ def _get_rdf_model_type(type_hint: Any) -> type[RdfBaseModel] | None:
         return type_hint  # type: ignore[no-any-return]
 
     origin = get_origin(type_hint)
-    if origin is Union:
+    if origin is Union or (hasattr(types, "UnionType") and origin is types.UnionType):
         for arg in get_args(type_hint):
             if _is_rdf_model(arg):
                 return arg  # type: ignore[no-any-return]
