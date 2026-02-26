@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2026-02-26]
+## [0.1.1]
 
 ### Added
 - Flexible property types (`T | list[T]`) across all vocabulary models.
