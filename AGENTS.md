@@ -90,6 +90,7 @@ This project uses `hatch` for environment management, but `uv` is preferred for 
 - Documentation is located in the `docs/source` directory.
 - Main documentation is in `.rst` or `.md` (via MyST).
 - Keep `README.md` up to date with core installation and usage instructions.
+- Maintain `CHANGELOG.md` with every significant change, ensuring the latest version is always at the top using ISO date format (e.g., `## [2026-01-01]`). Use short concise bullet points.
 
 ## Version Management
 
