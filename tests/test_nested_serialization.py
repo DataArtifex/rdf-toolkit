@@ -33,7 +33,7 @@ class NestedAddress(Address):
 class NestedPerson(Person):
     rdf_auto_uuid: bool = False
     # Use NestedAddress for the address field
-    address: Annotated[NestedAddress | None, RdfProperty(EX.address)] = None
+    address: Annotated[NestedAddress | None, RdfProperty(EX.address)] = None  # type: ignore[assignment]
 
 
 def test_default_behavior():

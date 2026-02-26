@@ -48,6 +48,7 @@ def test_foaf_flexible_input() -> None:
     assert (subject, FOAF.name, None) in graph
     assert (subject, FOAF.mbox, None) in graph
 
+    assert isinstance(subject, URIRef)
     reloaded = Person.from_rdf_graph(graph, subject)
     assert reloaded.name == "John Doe"
     assert reloaded.mbox == "mailto:john@example.com"
@@ -117,4 +118,5 @@ def test_mixed_input() -> None:
 
     reloaded = Concept.from_rdf_graph(graph, URIRef("http://example.org/mixed"))
     assert reloaded.pref_label == "Single"
+    assert isinstance(reloaded.alt_label, list)
     assert len(reloaded.alt_label) == 2
