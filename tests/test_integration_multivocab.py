@@ -34,9 +34,9 @@ def test_multivocab_graph_round_trip() -> None:
     reloaded_record = DublinCoreRecord.from_rdf_graph(graph, record_subjects[0])  # type: ignore[arg-type]
     reloaded_policy = Policy.from_rdf_graph(graph, policy_subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded_person.name == ["Alice"]
-    assert reloaded_record.title == ["Integrated Record"]
-    assert reloaded_policy.uid == ["policy-1"]
+    assert reloaded_person.name == "Alice"
+    assert reloaded_record.title == "Integrated Record"
+    assert reloaded_policy.uid == "policy-1"
 
 
 def test_skos_xkos_shared_graph() -> None:
@@ -62,5 +62,5 @@ def test_skos_xkos_shared_graph() -> None:
     reloaded_concept = StatisticalConcept.from_rdf_graph(graph, concept_subjects[0])  # type: ignore[arg-type]
     reloaded_scheme = StatisticalClassification.from_rdf_graph(graph, scheme_subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded_concept.pref_label == ["Population"]
-    assert reloaded_scheme.pref_label == ["Demo Classification"]
+    assert reloaded_concept.pref_label == "Population"
+    assert reloaded_scheme.pref_label == "Demo Classification"

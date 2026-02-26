@@ -21,7 +21,7 @@ def test_package_basic() -> None:
     subjects = list(graph.subjects(RDF.type, SPDX.Package))
     assert len(subjects) > 0
     reloaded = Package.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
-    assert reloaded.name == ["Test Package"]
+    assert reloaded.name == "Test Package"
 
 
 def test_spdx_document_basic() -> None:
@@ -50,14 +50,14 @@ def test_package_with_properties() -> None:
     assert len(subjects) > 0
     reloaded = Package.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.name == ["Complex Package"]
+    assert reloaded.name == "Complex Package"
 
 
 def test_spdx_round_trip() -> None:
     """Test round-trip serialization with SPDX models."""
     package = Package(
-        name=["Test"],
-        download_location=["https://example.org/test"],
+        name="Test",
+        download_location="https://example.org/test",
     )
 
     turtle = package.to_rdf("turtle")

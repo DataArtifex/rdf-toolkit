@@ -24,8 +24,8 @@ def test_dublin_core_record_basic() -> None:
     assert len(subjects) > 0
     reloaded = DublinCoreRecord.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.title == ["Test Record"]
-    assert reloaded.description == ["A simple description"]
+    assert reloaded.title == "Test Record"
+    assert reloaded.description == "A simple description"
 
 
 def test_dublin_core_record_with_dates() -> None:
@@ -43,8 +43,8 @@ def test_dublin_core_record_with_dates() -> None:
     assert len(subjects) > 0
     reloaded = DublinCoreRecord.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.created == [created_at]
-    assert reloaded.accrual_periodicity == [DcmiFrequency.ANNUAL]
+    assert reloaded.created == created_at
+    assert str(reloaded.accrual_periodicity) == DcmiFrequency.ANNUAL
 
 
 def test_dublin_core_record_with_contributors() -> None:
@@ -76,14 +76,14 @@ def test_agent_basic() -> None:
     assert len(subjects) > 0
     reloaded = Agent.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.name == ["Alice"]
+    assert reloaded.name == "Alice"
 
 
 def test_dcterms_round_trip() -> None:
     """Test round-trip serialization with DCTERMS models."""
     record = DublinCoreRecord(
         id="record-rt",
-        title=["Round Trip"],
+        title="Round Trip",
         subject=["Metadata", "RDF"],
     )
 

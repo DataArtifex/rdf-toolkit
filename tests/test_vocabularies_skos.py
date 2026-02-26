@@ -21,7 +21,7 @@ def test_concept_scheme_basic() -> None:
     subjects = list(graph.subjects(RDF.type, SKOS.ConceptScheme))
     assert len(subjects) > 0
     reloaded = ConceptScheme.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
-    assert reloaded.pref_label == ["Test Scheme"]
+    assert reloaded.pref_label == "Test Scheme"
 
 
 def test_concept_basic() -> None:
@@ -37,8 +37,8 @@ def test_concept_basic() -> None:
     assert len(subjects) > 0
     reloaded = Concept.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.pref_label == ["Concept Label"]
-    assert reloaded.definition == ["A test concept"]
+    assert reloaded.pref_label == "Concept Label"
+    assert reloaded.definition == "A test concept"
 
 
 def test_concept_with_alt_labels() -> None:
@@ -54,7 +54,7 @@ def test_concept_with_alt_labels() -> None:
     assert len(subjects) > 0
     reloaded = Concept.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.pref_label == ["Primary Label"]
+    assert reloaded.pref_label == "Primary Label"
     assert reloaded.alt_label == ["Alternative 1", "Alternative 2"]
 
 
@@ -74,8 +74,8 @@ def test_skos_round_trip() -> None:
     """Test round-trip serialization with SKOS models."""
     concept = Concept(
         id="test",
-        pref_label=["Test"],
-        definition=["A test definition"],
+        pref_label="Test",
+        definition="A test definition",
     )
 
     turtle = concept.to_rdf("turtle")
@@ -101,5 +101,5 @@ def test_concept_with_scope_note() -> None:
     assert len(subjects) > 0
     reloaded = Concept.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.pref_label == ["Complex Concept"]
-    assert reloaded.scope_note == ["This concept refers to..."]
+    assert reloaded.pref_label == "Complex Concept"
+    assert reloaded.scope_note == "This concept refers to..."

@@ -20,7 +20,7 @@ def test_document_basic() -> None:
     subjects = list(graph.subjects(RDF.type, FOAF.Document))
     assert len(subjects) > 0
     reloaded = Document.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
-    assert reloaded.topic == ["Technology"]
+    assert reloaded.topic == "Technology"
 
 
 def test_person_basic() -> None:
@@ -36,7 +36,7 @@ def test_person_basic() -> None:
     subjects = list(graph.subjects(RDF.type, FOAF.Person))
     assert len(subjects) > 0
     reloaded = Person.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
-    assert reloaded.name == ["John Doe"]
+    assert reloaded.name == "John Doe"
 
 
 def test_organization_basic() -> None:
@@ -52,7 +52,7 @@ def test_organization_basic() -> None:
     subjects = list(graph.subjects(RDF.type, FOAF.Organization))
     assert len(subjects) > 0
     reloaded = Organization.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
-    assert reloaded.name == ["ACME Corp"]
+    assert reloaded.name == "ACME Corp"
 
 
 def test_agent_basic() -> None:
@@ -73,7 +73,7 @@ def test_foaf_round_trip() -> None:
     """Test round-trip serialization with FOAF models."""
     from rdflib import Graph
 
-    person = Person(name=["Jane Doe"])
+    person = Person(name="Jane Doe")
 
     turtle = person.to_rdf("turtle")
     g = Graph()

@@ -18,7 +18,7 @@ def test_policy_basic() -> None:
     assert len(subjects) > 0
     reloaded = Policy.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.uid == ["policy-1"]
+    assert reloaded.uid == "policy-1"
 
 
 def test_permission_with_action() -> None:
@@ -36,7 +36,7 @@ def test_permission_with_action() -> None:
     reloaded = Policy.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
     assert reloaded.permission is not None
-    assert len(reloaded.permission) == 1
+    assert isinstance(reloaded.permission, Permission)
 
 
 def test_prohibition_with_remedy() -> None:
@@ -50,7 +50,7 @@ def test_prohibition_with_remedy() -> None:
     reloaded = Prohibition.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
     assert reloaded.remedy is not None
-    assert len(reloaded.remedy) == 1
+    assert isinstance(reloaded.remedy, Duty)
 
 
 def test_constraint_basic() -> None:
@@ -66,8 +66,8 @@ def test_constraint_basic() -> None:
     assert len(subjects) > 0
     reloaded = Constraint.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.left_operand == ["count"]
-    assert reloaded.right_operand == ["5"]
+    assert reloaded.left_operand == "count"
+    assert reloaded.right_operand == "5"
 
 
 def test_odrl_round_trip() -> None:
@@ -85,5 +85,5 @@ def test_odrl_round_trip() -> None:
     assert len(subjects) > 0
     reloaded = Policy.from_rdf(turtle, format="turtle", subject=subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.uid == ["policy-rt"]
+    assert reloaded.uid == "policy-rt"
     assert reloaded.obligation is not None

@@ -22,7 +22,7 @@ def test_individual_basic() -> None:
     subject = subjects[0]
 
     reloaded = Individual.from_rdf_graph(graph, subject)  # type: ignore[arg-type]
-    assert reloaded.fn == ["John Doe"]
+    assert reloaded.fn == "John Doe"
 
 
 def test_organization_serialization() -> None:
@@ -36,7 +36,7 @@ def test_organization_serialization() -> None:
     assert len(subjects) > 0
     reloaded = Organization.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.fn == ["ACME Corporation"]
+    assert reloaded.fn == "ACME Corporation"
 
 
 def test_individual_with_nickname() -> None:
@@ -51,7 +51,7 @@ def test_individual_with_nickname() -> None:
     assert len(subjects) > 0
     reloaded = Individual.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.nickname == ["JD"]
+    assert reloaded.nickname == "JD"
 
 
 def test_individual_with_url() -> None:
@@ -66,13 +66,13 @@ def test_individual_with_url() -> None:
     assert len(subjects) > 0
     reloaded = Individual.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.url == ["https://example.org/john"]
+    assert reloaded.url == "https://example.org/john"
 
 
 def test_vcard_round_trip() -> None:
     """Test round-trip serialization with VCard models."""
     individual = Individual(
-        fn=["Jane Doe"],
+        fn="Jane Doe",
     )
 
     turtle = individual.to_rdf("turtle")
@@ -97,4 +97,4 @@ def test_individual_with_note() -> None:
     assert len(subjects) > 0
     reloaded = Individual.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.note == ["Important contact"]
+    assert reloaded.note == "Important contact"

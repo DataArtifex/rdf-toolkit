@@ -37,7 +37,7 @@ def test_benchmark_dcterms_round_trip(benchmark) -> None:
         return DublinCoreRecord.from_rdf(turtle, format="turtle", subject=subjects[0])  # type: ignore[arg-type]
 
     reloaded = benchmark(run)
-    assert reloaded.title == ["Benchmark Record"]
+    assert reloaded.title == "Benchmark Record"
 
 
 def test_benchmark_odrl_policy_round_trip(benchmark) -> None:
@@ -56,7 +56,7 @@ def test_benchmark_odrl_policy_round_trip(benchmark) -> None:
         return Policy.from_rdf(turtle, format="turtle", subject=subjects[0])  # type: ignore[arg-type]
 
     reloaded = benchmark(run)
-    assert reloaded.uid == ["policy-bench"]
+    assert reloaded.uid == "policy-bench"
 
 
 def test_benchmark_foaf_from_rdf_graph(benchmark) -> None:
@@ -69,4 +69,4 @@ def test_benchmark_foaf_from_rdf_graph(benchmark) -> None:
         return Person.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
     reloaded = benchmark(run)
-    assert reloaded.name == ["Benchmark Deserialize"]
+    assert reloaded.name == "Benchmark Deserialize"

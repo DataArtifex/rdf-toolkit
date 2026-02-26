@@ -688,7 +688,7 @@ class RdfBaseModel(BaseModel):
             if prop is None:
                 continue
             predicate = prop.predicate_uri()
-            is_list, inner_type = _field_type_info(field)
+            is_list, accepts_scalar, inner_type = _field_type_info(field)
             objects = list(graph.objects(subject_uri, predicate))
             if not objects:
                 continue
@@ -703,7 +703,15 @@ class RdfBaseModel(BaseModel):
             else:
                 items = [_node_to_python(obj, inner_type, prop) for obj in objects]
 
-            values[name] = items if is_list else items[0]
+            if is_list:
+                # Return scalar when the field accepts both scalar and list
+                # and exactly one value was found in the graph.
+                if accepts_scalar and len(items) == 1:
+                    values[name] = items[0]
+                else:
+                    values[name] = items
+            else:
+                values[name] = items[0]
 
         id_field = cls.rdf_id_field
         if id_field and id_field not in values:
@@ -865,7 +873,7 @@ class RdfBaseModel(BaseModel):
             if value is None:
                 continue
             predicate = prop.predicate_uri()
-            is_list, inner_type = _field_type_info(field)
+            is_list, _accepts_scalar, inner_type = _field_type_info(field)
             # Support both single values and lists for fields that allow both
             if is_list:
                 values = value if isinstance(value, list) else [value]
@@ -1141,7 +1149,7 @@ def _get_rdf_property(field: Any) -> RdfProperty | None:
     return None
 
 
-def _field_type_info(field: Any) -> tuple[bool, Any]:
+def _field_type_info(field: Any) -> tuple[bool, bool, Any]:
     """Determine if a field is a list type and extract its inner type.
 
     Also handles Optional types by unwrapping Union[T, None].
@@ -1153,9 +1161,12 @@ def _field_type_info(field: Any) -> tuple[bool, Any]:
 
     Returns
     -------
-    tuple[bool, Any]
-        A tuple of (is_list, inner_type). is_list is True if the field accepts
-        multiple values, inner_type is the type of individual elements.
+    tuple[bool, bool, Any]
+        A tuple of (is_list, accepts_scalar, inner_type).
+        - is_list is True if the field accepts list values.
+        - accepts_scalar is True if the field also accepts a single
+          (non-list) value, e.g. ``str | list[str] | None``.
+        - inner_type is the type of individual elements.
     """
     annotation = getattr(field, "annotation", Any)
     annotation = _unwrap_annotation(annotation)
@@ -1165,12 +1176,23 @@ def _field_type_info(field: Any) -> tuple[bool, Any]:
     if origin is Union or origin is types.UnionType:
         args = get_args(annotation)
         # Check if any arg is a list to support Union[str, list[str]]
+        has_list = False
+        list_item_type: Any = Any
+        non_none_non_list_args: list[Any] = []
         for arg in args:
             arg_unwrapped = _unwrap_annotation(arg)
             if get_origin(arg_unwrapped) is list:
+                has_list = True
                 list_args = get_args(arg_unwrapped)
-                item_type = _unwrap_annotation(list_args[0]) if list_args else Any
-                return True, item_type
+                list_item_type = _unwrap_annotation(list_args[0]) if list_args else Any
+            elif arg is not type(None):
+                non_none_non_list_args.append(arg)
+
+        if has_list:
+            # The field has a list variant. If it also has non-None scalar
+            # type args, it accepts scalars too (e.g. str | list[str] | None).
+            accepts_scalar = len(non_none_non_list_args) > 0
+            return True, accepts_scalar, list_item_type
 
         # Existing logic for unwrapping Optional[T]
         non_none_args = [arg for arg in args if arg is not type(None)]
@@ -1180,9 +1202,9 @@ def _field_type_info(field: Any) -> tuple[bool, Any]:
 
     if origin is list:
         item_type = _unwrap_annotation(get_args(annotation)[0])
-        return True, item_type
+        return True, False, item_type
 
-    return False, annotation
+    return False, False, annotation
 
 
 def _unwrap_annotation(annotation: Any) -> Any:

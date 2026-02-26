@@ -28,8 +28,8 @@ def test_classification_level_basic() -> None:
     assert len(subjects) > 0
     reloaded = ClassificationLevel.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.depth == [1]
-    assert reloaded.pref_label == ["Level 1"]
+    assert reloaded.depth == 1
+    assert reloaded.pref_label == "Level 1"
 
 
 def test_statistical_concept_basic() -> None:
@@ -44,7 +44,7 @@ def test_statistical_concept_basic() -> None:
     assert len(subjects) > 0
     reloaded = StatisticalConcept.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.pref_label == ["Age"]
+    assert reloaded.pref_label == "Age"
 
 
 def test_statistical_classification_with_top_concept() -> None:
@@ -62,7 +62,7 @@ def test_statistical_classification_with_top_concept() -> None:
     reloaded = StatisticalClassification.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
     assert reloaded.has_top_concept is not None
-    assert len(reloaded.has_top_concept) == 1
+    assert isinstance(reloaded.has_top_concept, StatisticalConcept)
 
 
 def test_correspondence_with_association() -> None:
@@ -82,13 +82,13 @@ def test_correspondence_with_association() -> None:
     reloaded = Correspondence.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
     assert reloaded.made_of is not None
-    assert len(reloaded.made_of) == 1
+    assert isinstance(reloaded.made_of, ConceptAssociation)
 
 
 def test_xkos_round_trip() -> None:
     """Test round-trip serialization with XKOS models."""
     concept = StatisticalConcept(
-        pref_label=["Round Trip"],
+        pref_label="Round Trip",
     )
 
     turtle = concept.to_rdf("turtle")

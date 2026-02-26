@@ -28,9 +28,9 @@ def test_skos_flexible_input() -> None:
     # Test Round-trip
     # Note: reloaded items will currently be in list form because RDF is inherently multi-valued
     reloaded = Concept.from_rdf_graph(graph, URIRef("http://example.org/c1"))
-    assert reloaded.pref_label == ["Main Label"]
-    assert reloaded.definition == ["A single string definition"]
-    assert reloaded.notation == ["N1"]
+    assert reloaded.pref_label == "Main Label"
+    assert reloaded.definition == "A single string definition"
+    assert reloaded.notation == "N1"
 
 
 def test_foaf_flexible_input() -> None:
@@ -49,8 +49,8 @@ def test_foaf_flexible_input() -> None:
     assert (subject, FOAF.mbox, None) in graph
 
     reloaded = Person.from_rdf_graph(graph, subject)
-    assert reloaded.name == ["John Doe"]
-    assert reloaded.mbox == ["mailto:john@example.com"]
+    assert reloaded.name == "John Doe"
+    assert reloaded.mbox == "mailto:john@example.com"
 
 
 def test_dcterms_flexible_input() -> None:
@@ -66,8 +66,8 @@ def test_dcterms_flexible_input() -> None:
     assert (subject, DCTERMS.title, None) in graph
 
     reloaded = DublinCoreRecord.from_rdf_graph(graph, subject)
-    assert reloaded.title == ["My Document"]
-    assert reloaded.creator == ["Author Name"]
+    assert reloaded.title == "My Document"
+    assert reloaded.creator == "Author Name"
 
 
 def test_prov_flexible_input() -> None:
@@ -116,5 +116,5 @@ def test_mixed_input() -> None:
     assert len(list(graph.objects(URIRef("http://example.org/mixed"), SKOS.altLabel))) == 2
 
     reloaded = Concept.from_rdf_graph(graph, URIRef("http://example.org/mixed"))
-    assert reloaded.pref_label == ["Single"]
+    assert reloaded.pref_label == "Single"
     assert len(reloaded.alt_label) == 2

@@ -20,7 +20,7 @@ def test_entity_basic_serialization() -> None:
     subjects = list(graph.subjects(RDF.type, PROV.Entity))
     assert len(subjects) > 0
     reloaded = Entity.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
-    assert reloaded.value == ["Test Entity"]
+    assert reloaded.value == "Test Entity"
 
 
 def test_activity_basic_serialization() -> None:
@@ -70,9 +70,9 @@ def test_entity_derivation() -> None:
     assert subject is not None
     reloaded = Entity.from_rdf_graph(graph, subject)  # type: ignore[arg-type]
 
-    assert reloaded.value == ["Derived"]
+    assert reloaded.value == "Derived"
     assert reloaded.was_derived_from is not None
-    assert len(reloaded.was_derived_from) == 1
+    assert isinstance(reloaded.was_derived_from, Entity)
 
 
 def test_activity_with_entity_usage() -> None:
@@ -86,12 +86,12 @@ def test_activity_with_entity_usage() -> None:
     reloaded = Activity.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
     assert reloaded.used is not None
-    assert len(reloaded.used) == 1
+    assert isinstance(reloaded.used, Entity)
 
 
 def test_prov_round_trip() -> None:
     """Test round-trip serialization with PROV models."""
-    entity = Entity(value=["Test"])
+    entity = Entity(value="Test")
 
     turtle = entity.to_rdf("turtle")
     g = Graph()
@@ -117,4 +117,4 @@ def test_entity_with_attribution() -> None:
     reloaded = Entity.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
     assert reloaded.was_attributed_to is not None
-    assert len(reloaded.was_attributed_to) == 1
+    assert isinstance(reloaded.was_attributed_to, Agent)
