@@ -1456,7 +1456,9 @@ RDF formats (Turtle, RDF/XML, JSON-LD, etc.) and deserialized back to Python obj
 <dl class="simple">
 <dt>rdf_type<span class="classifier">str | URIRef | None</span></dt><dd><p>The RDF type (rdf:type) for instances of this class. Typically set to a
 vocabulary class URI like <cite>FOAF.Person</cite> or <cite>SKOS.Concept</cite>. If None, no
-rdf:type triple is added to the graph.</p>
+rdf:type triple is added to the graph. Note: <cite>None</cite> is valid only for
+base or abstract models; concrete vocabulary classes should explicitly
+define an <cite>rdf_type</cite>.</p>
 </dd>
 <dt>rdf_namespace<span class="classifier">str | Namespace | None</span></dt><dd><p>The default namespace for generating subject URIs. Used when an instance
 has an <cite>id</cite> but not a full URI. For example, with namespace <cite>FOAF</cite> and
