@@ -959,9 +959,9 @@ class RdfBaseModel(BaseModel):
                     for lang, val in item.items():
                         if isinstance(val, list):
                             for v in val:
-                                graph.add((subject, predicate, Literal(v, lang=lang)))
+                                graph.add((subject, predicate, Literal(v, lang=lang or None)))
                         else:
-                            graph.add((subject, predicate, Literal(val, lang=lang)))
+                            graph.add((subject, predicate, Literal(val, lang=lang or None)))
                     continue
 
                 node = self._value_to_node(
