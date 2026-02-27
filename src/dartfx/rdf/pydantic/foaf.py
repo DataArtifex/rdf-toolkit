@@ -14,7 +14,7 @@ from typing import Annotated, ClassVar
 
 from rdflib import FOAF, URIRef
 
-from ._base import RdfBaseModel, RdfProperty
+from ._base import LocalizedStr, RdfBaseModel, RdfProperty
 
 
 class FoafResource(RdfBaseModel):
@@ -30,9 +30,18 @@ class Agent(FoafResource):
     rdf_type: ClassVar[str | URIRef | None] = str(FOAF.Agent)
 
     # Naming properties
-    name: Annotated[str | list[str] | None, RdfProperty(FOAF.name)] = None
-    nick: Annotated[str | list[str] | None, RdfProperty(FOAF.nick)] = None
-    title: Annotated[str | list[str] | None, RdfProperty(FOAF.title)] = None
+    name: Annotated[
+        LocalizedStr | None,
+        RdfProperty(FOAF.name),
+    ] = None
+    nick: Annotated[
+        LocalizedStr | None,
+        RdfProperty(FOAF.nick),
+    ] = None
+    title: Annotated[
+        LocalizedStr | None,
+        RdfProperty(FOAF.title),
+    ] = None
 
     # Contact properties
     mbox: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(FOAF.mbox)] = None
@@ -59,7 +68,10 @@ class Agent(FoafResource):
 
     # Other
     tipjar: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(FOAF.tipjar)] = None
-    status: Annotated[str | list[str] | None, RdfProperty(FOAF.status)] = None
+    status: Annotated[
+        LocalizedStr | None,
+        RdfProperty(FOAF.status),
+    ] = None
 
 
 class Person(Agent):
@@ -68,13 +80,28 @@ class Person(Agent):
     rdf_type: ClassVar[str | URIRef | None] = str(FOAF.Person)
 
     # Personal info
-    given_name: Annotated[str | list[str] | None, RdfProperty(FOAF.givenName)] = None
-    family_name: Annotated[str | list[str] | None, RdfProperty(FOAF.familyName)] = None
-    first_name: Annotated[str | list[str] | None, RdfProperty(FOAF.firstName)] = None
-    surname: Annotated[str | list[str] | None, RdfProperty(FOAF.surname)] = None
+    given_name: Annotated[
+        LocalizedStr | None,
+        RdfProperty(FOAF.givenName),
+    ] = None
+    family_name: Annotated[
+        LocalizedStr | None,
+        RdfProperty(FOAF.familyName),
+    ] = None
+    first_name: Annotated[
+        LocalizedStr | None,
+        RdfProperty(FOAF.firstName),
+    ] = None
+    surname: Annotated[
+        LocalizedStr | None,
+        RdfProperty(FOAF.surname),
+    ] = None
 
     # Demographics
-    gender: Annotated[str | list[str] | None, RdfProperty(FOAF.gender)] = None
+    gender: Annotated[
+        LocalizedStr | None,
+        RdfProperty(FOAF.gender),
+    ] = None
     birthday: Annotated[str | list[str] | None, RdfProperty(FOAF.birthday)] = None
     age: Annotated[str | list[str] | None, RdfProperty(FOAF.age)] = None
 
@@ -93,7 +120,10 @@ class Person(Agent):
     # Extended properties
     geekcode: Annotated[str | list[str] | None, RdfProperty(FOAF.geekcode)] = None
     myers_briggs: Annotated[str | list[str] | None, RdfProperty(FOAF.myersBriggs)] = None
-    plan: Annotated[str | list[str] | None, RdfProperty(FOAF.plan)] = None
+    plan: Annotated[
+        LocalizedStr | None,
+        RdfProperty(FOAF.plan),
+    ] = None
     dna_checksum: Annotated[str | list[str] | None, RdfProperty(FOAF.dnaChecksum)] = None
     workplace_homepage: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(FOAF.workplaceHomepage)] = None
     work_info_homepage: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(FOAF.workInfoHomepage)] = None
@@ -103,7 +133,10 @@ class Person(Agent):
         RdfProperty(FOAF.interest),
     ] = None
     topic_interest: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(FOAF.topic_interest)] = None
-    last_name: Annotated[str | list[str] | None, RdfProperty(FOAF.lastName)] = None
+    last_name: Annotated[
+        LocalizedStr | None,
+        RdfProperty(FOAF.lastName),
+    ] = None
 
 
 class Organization(Agent):
@@ -183,7 +216,10 @@ class Project(FoafResource):
 
     rdf_type: ClassVar[str | URIRef | None] = str(FOAF.Project)
 
-    name: Annotated[str | list[str] | None, RdfProperty(FOAF.name)] = None
+    name: Annotated[
+        LocalizedStr | None,
+        RdfProperty(FOAF.name),
+    ] = None
     homepage: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(FOAF.homepage)] = None
     logo: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(FOAF.logo)] = None
     funded_by: Annotated[str | URIRef | Agent | list[str | URIRef | Agent] | None, RdfProperty(FOAF.fundedBy)] = None

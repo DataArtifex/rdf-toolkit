@@ -15,7 +15,7 @@ from typing import Annotated, cast
 
 from rdflib import SKOS, Namespace, URIRef
 
-from ._base import RdfBaseModel, RdfProperty
+from ._base import LocalizedStr, RdfBaseModel, RdfProperty
 
 
 class SkosResource(RdfBaseModel):
@@ -46,9 +46,18 @@ class ConceptScheme(SkosResource):
     id: str
 
     # Lexical labels
-    pref_label: Annotated[str | list[str] | None, RdfProperty(SKOS.prefLabel)] = None
-    alt_label: Annotated[str | list[str] | None, RdfProperty(SKOS.altLabel)] = None
-    hidden_label: Annotated[str | list[str] | None, RdfProperty(SKOS.hiddenLabel)] = None
+    pref_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.prefLabel),
+    ] = None
+    alt_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.altLabel),
+    ] = None
+    hidden_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.hiddenLabel),
+    ] = None
 
     # SKOS-XL labels
     pref_label_xl: Annotated[
@@ -63,13 +72,34 @@ class ConceptScheme(SkosResource):
 
     # Documentation properties
     notation: Annotated[str | list[str] | None, RdfProperty(SKOS.notation)] = None
-    note: Annotated[str | list[str] | None, RdfProperty(SKOS.note)] = None
-    change_note: Annotated[str | list[str] | None, RdfProperty(SKOS.changeNote)] = None
-    definition: Annotated[str | list[str] | None, RdfProperty(SKOS.definition)] = None
-    editorial_note: Annotated[str | list[str] | None, RdfProperty(SKOS.editorialNote)] = None
-    example: Annotated[str | list[str] | None, RdfProperty(SKOS.example)] = None
-    history_note: Annotated[str | list[str] | None, RdfProperty(SKOS.historyNote)] = None
-    scope_note: Annotated[str | list[str] | None, RdfProperty(SKOS.scopeNote)] = None
+    note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.note),
+    ] = None
+    change_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.changeNote),
+    ] = None
+    definition: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.definition),
+    ] = None
+    editorial_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.editorialNote),
+    ] = None
+    example: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.example),
+    ] = None
+    history_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.historyNote),
+    ] = None
+    scope_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.scopeNote),
+    ] = None
 
     # Scheme relationships
     has_top_concept: Annotated[
@@ -85,9 +115,18 @@ class Concept(SkosResource):
     id: str
 
     # Lexical labels
-    pref_label: Annotated[str | list[str] | None, RdfProperty(SKOS.prefLabel)] = None
-    alt_label: Annotated[str | list[str] | None, RdfProperty(SKOS.altLabel)] = None
-    hidden_label: Annotated[str | list[str] | None, RdfProperty(SKOS.hiddenLabel)] = None
+    pref_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.prefLabel),
+    ] = None
+    alt_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.altLabel),
+    ] = None
+    hidden_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.hiddenLabel),
+    ] = None
 
     # SKOS-XL labels
     pref_label_xl: Annotated[
@@ -102,13 +141,34 @@ class Concept(SkosResource):
 
     # Documentation properties
     notation: Annotated[str | list[str] | None, RdfProperty(SKOS.notation)] = None
-    note: Annotated[str | list[str] | None, RdfProperty(SKOS.note)] = None
-    change_note: Annotated[str | list[str] | None, RdfProperty(SKOS.changeNote)] = None
-    definition: Annotated[str | list[str] | None, RdfProperty(SKOS.definition)] = None
-    editorial_note: Annotated[str | list[str] | None, RdfProperty(SKOS.editorialNote)] = None
-    example: Annotated[str | list[str] | None, RdfProperty(SKOS.example)] = None
-    history_note: Annotated[str | list[str] | None, RdfProperty(SKOS.historyNote)] = None
-    scope_note: Annotated[str | list[str] | None, RdfProperty(SKOS.scopeNote)] = None
+    note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.note),
+    ] = None
+    change_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.changeNote),
+    ] = None
+    definition: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.definition),
+    ] = None
+    editorial_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.editorialNote),
+    ] = None
+    example: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.example),
+    ] = None
+    history_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.historyNote),
+    ] = None
+    scope_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.scopeNote),
+    ] = None
 
     # Scheme membership
     in_scheme: Annotated[
@@ -165,13 +225,25 @@ class Collection(SkosResource):
     id: str
 
     # Lexical labels
-    pref_label: Annotated[str | list[str] | None, RdfProperty(SKOS.prefLabel)] = None
-    alt_label: Annotated[str | list[str] | None, RdfProperty(SKOS.altLabel)] = None
-    hidden_label: Annotated[str | list[str] | None, RdfProperty(SKOS.hiddenLabel)] = None
+    pref_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.prefLabel),
+    ] = None
+    alt_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.altLabel),
+    ] = None
+    hidden_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.hiddenLabel),
+    ] = None
 
     # Documentation properties
     notation: Annotated[str | list[str] | None, RdfProperty(SKOS.notation)] = None
-    note: Annotated[str | list[str] | None, RdfProperty(SKOS.note)] = None
+    note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.note),
+    ] = None
 
     # Collection membership
     member: Annotated[
@@ -188,13 +260,25 @@ class OrderedCollection(SkosResource):
     id: str
 
     # Lexical labels
-    pref_label: Annotated[str | list[str] | None, RdfProperty(SKOS.prefLabel)] = None
-    alt_label: Annotated[str | list[str] | None, RdfProperty(SKOS.altLabel)] = None
-    hidden_label: Annotated[str | list[str] | None, RdfProperty(SKOS.hiddenLabel)] = None
+    pref_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.prefLabel),
+    ] = None
+    alt_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.altLabel),
+    ] = None
+    hidden_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.hiddenLabel),
+    ] = None
 
     # Documentation properties
     notation: Annotated[str | list[str] | None, RdfProperty(SKOS.notation)] = None
-    note: Annotated[str | list[str] | None, RdfProperty(SKOS.note)] = None
+    note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.note),
+    ] = None
 
     # Ordered collection membership
     member_list: Annotated[

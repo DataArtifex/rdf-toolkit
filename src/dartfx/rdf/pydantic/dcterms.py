@@ -15,7 +15,7 @@ from typing import Annotated
 
 from rdflib import Namespace, URIRef
 
-from ._base import RdfBaseModel, RdfProperty
+from ._base import LocalizedStr, RdfBaseModel, RdfProperty
 
 DCTERMS = Namespace("http://purl.org/dc/terms/")
 FREQ = Namespace("http://purl.org/cld/freq/")
@@ -54,7 +54,10 @@ class Agent(DctermsResource):
 
     rdf_type = DCTERMS.Agent
     id: str
-    name: Annotated[str | list[str] | None, RdfProperty(DCTERMS.name)] = None
+    name: Annotated[
+        LocalizedStr | None,
+        RdfProperty(DCTERMS.name),
+    ] = None
 
     valid: Annotated[datetime | list[datetime] | None, RdfProperty(DCTERMS.valid)] = None
 
@@ -187,10 +190,19 @@ class DublinCoreRecord(DctermsResource):
     """A resource with Dublin Core metadata properties."""
 
     id: str
-    title: Annotated[str | list[str] | None, RdfProperty(DCTERMS.title, language="en")] = None
-    description: Annotated[str | list[str] | None, RdfProperty(DCTERMS.description, language="en")] = None
+    title: Annotated[
+        LocalizedStr | None,
+        RdfProperty(DCTERMS.title),
+    ] = None
+    description: Annotated[
+        LocalizedStr | None,
+        RdfProperty(DCTERMS.description),
+    ] = None
     creator: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(DCTERMS.creator)] = None
-    subject: Annotated[str | list[str] | None, RdfProperty(DCTERMS.subject)] = None
+    subject: Annotated[
+        LocalizedStr | None,
+        RdfProperty(DCTERMS.subject),
+    ] = None
     publisher: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(DCTERMS.publisher)] = None
     contributor: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(DCTERMS.contributor)] = None
     date: Annotated[datetime | list[datetime] | None, RdfProperty(DCTERMS.date)] = None
@@ -204,7 +216,10 @@ class DublinCoreRecord(DctermsResource):
     language: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(DCTERMS.language)] = None
     relation: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(DCTERMS.relation)] = None
     coverage: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(DCTERMS.coverage)] = None
-    rights: Annotated[str | list[str] | None, RdfProperty(DCTERMS.rights)] = None
+    rights: Annotated[
+        LocalizedStr | None,
+        RdfProperty(DCTERMS.rights),
+    ] = None
     license: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(DCTERMS.license)] = None
     accrual_periodicity: Annotated[
         str | DcmiFrequency | list[str | DcmiFrequency] | None,
@@ -212,18 +227,27 @@ class DublinCoreRecord(DctermsResource):
     ] = None
 
     # New properties
-    abstract: Annotated[str | list[str] | None, RdfProperty(DCTERMS.abstract)] = None
+    abstract: Annotated[
+        LocalizedStr | None,
+        RdfProperty(DCTERMS.abstract),
+    ] = None
     access_rights: Annotated[
         str | URIRef | RightsStatement | list[str | URIRef | RightsStatement] | None,
         RdfProperty(DCTERMS.accessRights),
     ] = None
-    alternative: Annotated[str | list[str] | None, RdfProperty(DCTERMS.alternative)] = None
+    alternative: Annotated[
+        LocalizedStr | None,
+        RdfProperty(DCTERMS.alternative),
+    ] = None
     audience: Annotated[
         str | URIRef | Agent | list[str | URIRef | Agent] | None,
         RdfProperty(DCTERMS.audience),
     ] = None
     available: Annotated[datetime | list[datetime] | None, RdfProperty(DCTERMS.available)] = None
-    bibliographic_citation: Annotated[str | list[str] | None, RdfProperty(DCTERMS.bibliographicCitation)] = None
+    bibliographic_citation: Annotated[
+        LocalizedStr | None,
+        RdfProperty(DCTERMS.bibliographicCitation),
+    ] = None
     conforms_to: Annotated[
         str | URIRef | Standard | list[str | URIRef | Standard] | None,
         RdfProperty(DCTERMS.conformsTo),
@@ -261,7 +285,10 @@ class DublinCoreRecord(DctermsResource):
         str | URIRef | Location | list[str | URIRef | Location] | None,
         RdfProperty(DCTERMS.spatial),
     ] = None
-    table_of_contents: Annotated[str | list[str] | None, RdfProperty(DCTERMS.tableOfContents)] = None
+    table_of_contents: Annotated[
+        LocalizedStr | None,
+        RdfProperty(DCTERMS.tableOfContents),
+    ] = None
     temporal: Annotated[
         str | URIRef | PeriodOfTime | list[str | URIRef | PeriodOfTime] | None,
         RdfProperty(DCTERMS.temporal),

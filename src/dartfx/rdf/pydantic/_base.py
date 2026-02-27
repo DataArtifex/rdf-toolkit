@@ -163,6 +163,31 @@ from rdflib import RDF, XSD, BNode, Graph, Literal, Namespace, URIRef
 T = TypeVar("T", bound="RdfBaseModel")
 
 
+class LangString(BaseModel):
+    """A string with an optional language tag.
+
+    This class is used to represent RDF language-tagged literals in Pydantic
+    models. It provides a structured way to handle localized strings while
+    maintaining compatibility with Pydantic validation.
+
+    Attributes
+    ----------
+    value : str
+        The string content of the literal.
+    lang : str | None, optional
+        The language tag (e.g., "en", "fr", "de"). Default is None.
+    """
+
+    value: str
+    lang: str | None = None
+
+    def __str__(self) -> str:
+        return self.value
+
+
+LocalizedStr = str | LangString | list[str | LangString] | dict[str, str | list[str]]
+
+
 @dataclass(frozen=True)
 class RdfProperty:
     """Metadata descriptor for mapping Pydantic fields to RDF predicates.
@@ -689,17 +714,63 @@ class RdfBaseModel(BaseModel):
                 continue
             predicate = prop.predicate_uri()
             is_list, accepts_scalar, inner_type = _field_type_info(field)
+
+            # Check if the field supports dict aggregation (language maps)
+            supports_dict = False
+            annotation = _unwrap_annotation(field.annotation)
+            origin = get_origin(annotation)
+            if origin is Union or origin is types.UnionType:
+                for arg in get_args(annotation):
+                    arg_unwrapped = _unwrap_annotation(arg)
+                    if get_origin(arg_unwrapped) is dict:
+                        supports_dict = True
+                        break
+
             objects = list(graph.objects(subject_uri, predicate))
             if not objects:
                 continue
             model_type = _get_rdf_model_type(inner_type)
             if model_type:
-                items = []
+                items: list[Any] = []
                 for obj in objects:
                     if isinstance(obj, (URIRef, BNode)):
                         items.append(model_type.from_rdf_graph(graph, obj, base_uri=base_uri))
                     else:
                         items.append(_node_to_python(obj, inner_type, prop))
+            elif get_origin(inner_type) is dict or (supports_dict and all(isinstance(obj, Literal) for obj in objects)):
+                # Aggregate language-tagged literals into a dict
+                res_dict: dict[str, Any] = {}
+
+                for obj in objects:
+                    if isinstance(obj, Literal):
+                        lang = obj.language or ""
+                        val: Any = obj.toPython()
+                    else:
+                        lang = ""
+                        val = str(obj)
+
+                    if lang in res_dict:
+                        if not isinstance(res_dict[lang], list):
+                            res_dict[lang] = [res_dict[lang]]
+                        res_dict[lang].append(val)
+                    else:
+                        res_dict[lang] = val
+
+                # If we aggregated into a dict but only have one key which is "" (untagged)
+                # and the field supports a scalar (str or LangString), and we are in
+                # a Union where we were "guessing" this should be a dict...
+                if supports_dict and len(res_dict) == 1 and "" in res_dict:
+                    # If the field also supports a list/scalar of strings, maybe we should unwrap
+                    # But let's be careful: if the user explicitly typed it as a dict, they want a dict.
+                    # LocalizedStr supports both.
+                    # Heuristic: if it's a single untagged value, return the value directly
+                    # so Pydantic uses the 'str' variant of the Union instead of 'dict'.
+                    items = [res_dict[""]]
+                    is_list = isinstance(res_dict[""], list)
+                else:
+                    items = [res_dict]
+                    # For dicts, we treat it as a single item even if it has entries for multiple langs
+                    is_list = False
             else:
                 items = [_node_to_python(obj, inner_type, prop) for obj in objects]
 
@@ -882,6 +953,17 @@ class RdfBaseModel(BaseModel):
             for item in values:
                 if item is None:
                     continue
+                if isinstance(item, dict):
+                    # Special handling for language maps in dicts
+                    # We expect dict[str, str | list[str]]
+                    for lang, val in item.items():
+                        if isinstance(val, list):
+                            for v in val:
+                                graph.add((subject, predicate, Literal(v, lang=lang)))
+                        else:
+                            graph.add((subject, predicate, Literal(val, lang=lang)))
+                    continue
+
                 node = self._value_to_node(
                     item,
                     inner_type,
@@ -1059,6 +1141,9 @@ class RdfBaseModel(BaseModel):
 
             encoded = base64.b64encode(value).decode("ascii")
             return Literal(encoded, datatype=XSD.base64Binary)
+        if isinstance(value, LangString):
+            return Literal(value.value, lang=value.lang)
+
         if isinstance(value, (datetime, date, time, int, float, bool, Decimal, uuid.UUID)):
             datatype = prop.datatype_uri()
             if datatype is None:
@@ -1278,6 +1363,11 @@ def _node_to_python(node: Any, expected_type: Any, prop: RdfProperty) -> Any:
     """
     if prop.parser is not None:
         return prop.parser(node)
+
+    if expected_type is LangString or (isinstance(expected_type, type) and issubclass(expected_type, LangString)):
+        if isinstance(node, Literal):
+            return LangString(value=str(node), lang=node.language)
+        return LangString(value=str(node))
 
     if _is_rdf_model(expected_type):
         raise TypeError("Nested RDF models should be handled separately.")
@@ -1521,7 +1611,7 @@ def _get_rdf_model_type(type_hint: Any) -> type[RdfBaseModel] | None:
     return None
 
 
-__all__ = ["RdfBaseModel", "RdfProperty"]
+__all__ = ["RdfBaseModel", "RdfProperty", "LangString", "LocalizedStr"]
 
 # Ensure defaults are preserved when using lightweight pydantic substitutes.
 RdfBaseModel.rdf_id_field = "id"

@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.2]
+
+### Added
+- Comprehensive language support for strings across all vocabulary models.
+- New `LangString` Pydantic model for representing language-tagged RDF literals.
+- New `LocalizedStr` type alias supporting `str`, `LangString`, `list`, and `dict` language maps.
+- Automatic aggregation of language-tagged literals into dictionaries during deserialization in `from_rdf_graph`.
+- Support for multi-valued language tags via `dict[str, list[str]]`.
+
+### Changed
+- Refactored SKOS, DCTERMS, FOAF, ODRL, PROV, SPDX, VCARD, and XKOS to use `LocalizedStr` for all textual properties.
+- Enhanced `_value_to_node` to handle `LangString` and dictionary-based language maps.
+
 ## [0.1.1]
 
 ### Added

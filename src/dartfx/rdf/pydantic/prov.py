@@ -16,7 +16,7 @@ from typing import Annotated, ClassVar
 
 from rdflib import PROV, URIRef
 
-from ._base import RdfBaseModel, RdfProperty
+from ._base import LocalizedStr, RdfBaseModel, RdfProperty
 
 
 class ProvResource(RdfBaseModel):
@@ -90,7 +90,10 @@ class Entity(ProvResource):
     ] = None
 
     # Value
-    value: Annotated[str | list[str] | None, RdfProperty(PROV.value)] = None
+    value: Annotated[
+        LocalizedStr | None,
+        RdfProperty(PROV.value),
+    ] = None
 
     # Influence
     was_influenced_by: Annotated[

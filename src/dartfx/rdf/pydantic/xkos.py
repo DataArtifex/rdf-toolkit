@@ -15,7 +15,7 @@ from typing import Annotated, ClassVar
 
 from rdflib import SKOS, Namespace, URIRef
 
-from ._base import RdfBaseModel, RdfProperty
+from ._base import LocalizedStr, RdfBaseModel, RdfProperty
 
 # XKOS namespace
 XKOS = Namespace("http://rdf-vocabulary.ddialliance.org/xkos#")
@@ -51,11 +51,20 @@ class ClassificationLevel(XkosResource):
     max_length: Annotated[int | list[int] | None, RdfProperty(XKOS.maxLength)] = None
 
     # Labels (from SKOS)
-    pref_label: Annotated[str | list[str] | None, RdfProperty(SKOS.prefLabel)] = None
-    alt_label: Annotated[str | list[str] | None, RdfProperty(SKOS.altLabel)] = None
+    pref_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.prefLabel),
+    ] = None
+    alt_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.altLabel),
+    ] = None
 
     # Notes
-    note: Annotated[str | list[str] | None, RdfProperty(SKOS.note)] = None
+    note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.note),
+    ] = None
 
 
 class ConceptAssociation(XkosResource):
@@ -77,11 +86,20 @@ class Correspondence(XkosResource):
     compares: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(XKOS.compares)] = None
 
     # Labels
-    pref_label: Annotated[str | list[str] | None, RdfProperty(SKOS.prefLabel)] = None
-    alt_label: Annotated[str | list[str] | None, RdfProperty(SKOS.altLabel)] = None
+    pref_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.prefLabel),
+    ] = None
+    alt_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.altLabel),
+    ] = None
 
     # Definition
-    definition: Annotated[str | list[str] | None, RdfProperty(SKOS.definition)] = None
+    definition: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.definition),
+    ] = None
 
     # Associations
     made_of: Annotated[
@@ -95,7 +113,10 @@ class ExplanatoryNote(XkosResource):
     rdf_type: ClassVar[str | URIRef | None] = str(XKOS.ExplanatoryNote)
 
     # Descriptive text
-    plain_text: Annotated[str | list[str] | None, RdfProperty(XKOS.plainText)] = None
+    plain_text: Annotated[
+        LocalizedStr | None,
+        RdfProperty(XKOS.plainText),
+    ] = None
 
 
 # Extended SKOS Concept for statistical classifications
@@ -105,11 +126,23 @@ class StatisticalConcept(XkosResource):
     rdf_type: ClassVar[str | URIRef | None] = str(SKOS.Concept)
 
     # SKOS properties
-    pref_label: Annotated[str | list[str] | None, RdfProperty(SKOS.prefLabel)] = None
-    alt_label: Annotated[str | list[str] | None, RdfProperty(SKOS.altLabel)] = None
-    hidden_label: Annotated[str | list[str] | None, RdfProperty(SKOS.hiddenLabel)] = None
+    pref_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.prefLabel),
+    ] = None
+    alt_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.altLabel),
+    ] = None
+    hidden_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.hiddenLabel),
+    ] = None
     notation: Annotated[str | list[str] | None, RdfProperty(SKOS.notation)] = None
-    definition: Annotated[str | list[str] | None, RdfProperty(SKOS.definition)] = None
+    definition: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.definition),
+    ] = None
 
     # SKOS semantic relations
     broader: Annotated[
@@ -127,10 +160,22 @@ class StatisticalConcept(XkosResource):
     top_concept_of: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(SKOS.topConceptOf)] = None
 
     # XKOS extensions
-    core_content_note: Annotated[str | list[str] | None, RdfProperty(XKOS.coreContentNote)] = None
-    additional_content_note: Annotated[str | list[str] | None, RdfProperty(XKOS.additionalContentNote)] = None
-    exclusion_note: Annotated[str | list[str] | None, RdfProperty(XKOS.exclusionNote)] = None
-    inclusion_note: Annotated[str | list[str] | None, RdfProperty(XKOS.inclusionNote)] = None
+    core_content_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(XKOS.coreContentNote),
+    ] = None
+    additional_content_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(XKOS.additionalContentNote),
+    ] = None
+    exclusion_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(XKOS.exclusionNote),
+    ] = None
+    inclusion_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(XKOS.inclusionNote),
+    ] = None
 
     # Causal relationships
     causal: Annotated[
@@ -211,9 +256,18 @@ class StatisticalConcept(XkosResource):
     ] = None
 
     # Notes
-    introduction: Annotated[str | list[str] | None, RdfProperty(XKOS.introduction)] = None
-    editorial_note: Annotated[str | list[str] | None, RdfProperty(XKOS.editorialNote)] = None
-    change_note: Annotated[str | list[str] | None, RdfProperty(XKOS.changeNote)] = None
+    introduction: Annotated[
+        LocalizedStr | None,
+        RdfProperty(XKOS.introduction),
+    ] = None
+    editorial_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(XKOS.editorialNote),
+    ] = None
+    change_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(XKOS.changeNote),
+    ] = None
 
 
 class StatisticalClassification(XkosResource):
@@ -222,12 +276,24 @@ class StatisticalClassification(XkosResource):
     rdf_type: ClassVar[str | URIRef | None] = str(SKOS.ConceptScheme)
 
     # Labels
-    pref_label: Annotated[str | list[str] | None, RdfProperty(SKOS.prefLabel)] = None
-    alt_label: Annotated[str | list[str] | None, RdfProperty(SKOS.altLabel)] = None
+    pref_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.prefLabel),
+    ] = None
+    alt_label: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.altLabel),
+    ] = None
 
     # Definition and scope
-    definition: Annotated[str | list[str] | None, RdfProperty(SKOS.definition)] = None
-    scope_note: Annotated[str | list[str] | None, RdfProperty(SKOS.scopeNote)] = None
+    definition: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.definition),
+    ] = None
+    scope_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SKOS.scopeNote),
+    ] = None
 
     # Top concepts
     has_top_concept: Annotated[
@@ -269,6 +335,15 @@ class StatisticalClassification(XkosResource):
     ] = None
 
     # Notes
-    introduction: Annotated[str | list[str] | None, RdfProperty(XKOS.introduction)] = None
-    editorial_note: Annotated[str | list[str] | None, RdfProperty(XKOS.editorialNote)] = None
-    change_note: Annotated[str | list[str] | None, RdfProperty(XKOS.changeNote)] = None
+    introduction: Annotated[
+        LocalizedStr | None,
+        RdfProperty(XKOS.introduction),
+    ] = None
+    editorial_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(XKOS.editorialNote),
+    ] = None
+    change_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(XKOS.changeNote),
+    ] = None

@@ -15,7 +15,7 @@ from typing import Annotated, ClassVar
 
 from rdflib import Namespace, URIRef
 
-from ._base import RdfBaseModel, RdfProperty
+from ._base import LocalizedStr, RdfBaseModel, RdfProperty
 
 # VCARD namespace (not built-in to rdflib)
 VCARD = Namespace("http://www.w3.org/2006/vcard/ns#")
@@ -34,9 +34,15 @@ class VCard(VcardResource):
     rdf_type: ClassVar[str | URIRef | None] = str(VCARD.VCard)
 
     # Identification
-    fn: Annotated[str | list[str] | None, RdfProperty(VCARD.fn)] = None  # Formatted name
+    fn: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD.fn),
+    ] = None  # Formatted name
     n: Annotated[str | URIRef | Name | list[str | URIRef | Name] | None, RdfProperty(VCARD.n)] = None  # Name
-    nickname: Annotated[str | list[str] | None, RdfProperty(VCARD.nickname)] = None
+    nickname: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD.nickname),
+    ] = None
 
     # Delivery address
     adr: Annotated[str | URIRef | Address | list[str | URIRef | Address] | None, RdfProperty(VCARD.adr)] = None
@@ -49,12 +55,24 @@ class VCard(VcardResource):
     org: Annotated[str | URIRef | Organization | list[str | URIRef | Organization] | None, RdfProperty(VCARD.org)] = (
         None
     )
-    organization_name: Annotated[str | list[str] | None, RdfProperty(VCARD["organization-name"])] = None
-    organization_unit: Annotated[str | list[str] | None, RdfProperty(VCARD["organization-unit"])] = None
+    organization_name: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD["organization-name"]),
+    ] = None
+    organization_unit: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD["organization-unit"]),
+    ] = None
 
     # Title and role
-    title: Annotated[str | list[str] | None, RdfProperty(VCARD.title)] = None
-    role: Annotated[str | list[str] | None, RdfProperty(VCARD.role)] = None
+    title: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD.title),
+    ] = None
+    role: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD.role),
+    ] = None
 
     # Online presence
     url: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(VCARD.url)] = None
@@ -67,10 +85,16 @@ class VCard(VcardResource):
     logo: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(VCARD.logo)] = None
 
     # Categories
-    category: Annotated[str | list[str] | None, RdfProperty(VCARD.category)] = None
+    category: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD.category),
+    ] = None
 
     # Notes
-    note: Annotated[str | list[str] | None, RdfProperty(VCARD.note)] = None
+    note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD.note),
+    ] = None
 
     # Revision
     rev: Annotated[str | list[str] | None, RdfProperty(VCARD.rev)] = None
@@ -98,7 +122,10 @@ class VCard(VcardResource):
     has_telephone: Annotated[
         str | URIRef | Telephone | list[str | URIRef | Telephone] | None, RdfProperty(VCARD.hasTelephone)
     ] = None
-    has_note: Annotated[str | list[str] | None, RdfProperty(VCARD.hasNote)] = None
+    has_note: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD.hasNote),
+    ] = None
     has_uid: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(VCARD.hasUID)] = None
     has_language: Annotated[str | list[str] | None, RdfProperty(VCARD.hasLanguage)] = None
 
@@ -134,11 +161,26 @@ class Name(VcardResource):
 
     rdf_type: ClassVar[str | URIRef | None] = str(VCARD.Name)
 
-    family_name: Annotated[str | list[str] | None, RdfProperty(VCARD["family-name"])] = None
-    given_name: Annotated[str | list[str] | None, RdfProperty(VCARD["given-name"])] = None
-    additional_name: Annotated[str | list[str] | None, RdfProperty(VCARD["additional-name"])] = None
-    honorific_prefix: Annotated[str | list[str] | None, RdfProperty(VCARD["honorific-prefix"])] = None
-    honorific_suffix: Annotated[str | list[str] | None, RdfProperty(VCARD["honorific-suffix"])] = None
+    family_name: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD["family-name"]),
+    ] = None
+    given_name: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD["given-name"]),
+    ] = None
+    additional_name: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD["additional-name"]),
+    ] = None
+    honorific_prefix: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD["honorific-prefix"]),
+    ] = None
+    honorific_suffix: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD["honorific-suffix"]),
+    ] = None
 
 
 class Address(VcardResource):
@@ -146,13 +188,28 @@ class Address(VcardResource):
 
     rdf_type: ClassVar[str | URIRef | None] = str(VCARD.Address)
 
-    street_address: Annotated[str | list[str] | None, RdfProperty(VCARD["street-address"])] = None
-    locality: Annotated[str | list[str] | None, RdfProperty(VCARD.locality)] = None
-    region: Annotated[str | list[str] | None, RdfProperty(VCARD.region)] = None
+    street_address: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD["street-address"]),
+    ] = None
+    locality: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD.locality),
+    ] = None
+    region: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD.region),
+    ] = None
     postal_code: Annotated[str | list[str] | None, RdfProperty(VCARD["postal-code"])] = None
-    country_name: Annotated[str | list[str] | None, RdfProperty(VCARD["country-name"])] = None
+    country_name: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD["country-name"]),
+    ] = None
     post_office_box: Annotated[str | list[str] | None, RdfProperty(VCARD["post-office-box"])] = None
-    extended_address: Annotated[str | list[str] | None, RdfProperty(VCARD["extended-address"])] = None
+    extended_address: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD["extended-address"]),
+    ] = None
 
 
 class Telephone(VcardResource):
@@ -228,8 +285,14 @@ class Gender(VcardResource):
 
     rdf_type: ClassVar[str | URIRef | None] = str(VCARD.Gender)
 
-    sex: Annotated[str | list[str] | None, RdfProperty(VCARD.sex)] = None
-    identity: Annotated[str | list[str] | None, RdfProperty(VCARD.identity)] = None
+    sex: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD.sex),
+    ] = None
+    identity: Annotated[
+        LocalizedStr | None,
+        RdfProperty(VCARD.identity),
+    ] = None
 
 
 class Related(VcardResource):

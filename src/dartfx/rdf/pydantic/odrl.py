@@ -15,7 +15,7 @@ from typing import Annotated, ClassVar
 
 from rdflib import ODRL2, URIRef
 
-from ._base import RdfBaseModel, RdfProperty
+from ._base import LocalizedStr, RdfBaseModel, RdfProperty
 
 
 class OdrlResource(RdfBaseModel):
@@ -172,7 +172,10 @@ class Constraint(OdrlResource):
     # Data type
     data_type: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(ODRL2.dataType)] = None
     unit: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(ODRL2.unit)] = None
-    status: Annotated[str | list[str] | None, RdfProperty(ODRL2.status)] = None
+    status: Annotated[
+        LocalizedStr | None,
+        RdfProperty(ODRL2.status),
+    ] = None
 
 
 class Party(OdrlResource):

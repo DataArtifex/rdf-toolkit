@@ -16,7 +16,7 @@ from typing import Annotated, ClassVar
 
 from rdflib import Namespace, URIRef
 
-from ._base import RdfBaseModel, RdfProperty
+from ._base import LocalizedStr, RdfBaseModel, RdfProperty
 
 # SPDX namespace (not built-in to rdflib)
 SPDX = Namespace("http://spdx.org/rdf/terms#")
@@ -37,7 +37,10 @@ class SpdxDocument(SpdxResource):
     # Document properties
     spdx_version: Annotated[str | list[str] | None, RdfProperty(SPDX.spdxVersion)] = None
     data_license: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(SPDX.dataLicense)] = None
-    name: Annotated[str | list[str] | None, RdfProperty(SPDX.name)] = None
+    name: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.name),
+    ] = None
     document_namespace: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(SPDX.documentNamespace)] = None
 
     # Creation info
@@ -67,7 +70,10 @@ class SpdxDocument(SpdxResource):
     ] = None
 
     # Comment
-    comment: Annotated[str | list[str] | None, RdfProperty(SPDX.comment)] = None
+    comment: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.comment),
+    ] = None
 
 
 class CreationInfo(SpdxResource):
@@ -78,7 +84,10 @@ class CreationInfo(SpdxResource):
     created: Annotated[str | datetime | list[str | datetime] | None, RdfProperty(SPDX.created)] = None
     creator: Annotated[str | list[str] | None, RdfProperty(SPDX.creator)] = None
     license_list_version: Annotated[str | list[str] | None, RdfProperty(SPDX.licenseListVersion)] = None
-    comment: Annotated[str | list[str] | None, RdfProperty(SPDX.comment)] = None
+    comment: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.comment),
+    ] = None
 
 
 class Package(SpdxResource):
@@ -87,7 +96,10 @@ class Package(SpdxResource):
     rdf_type: ClassVar[str | URIRef | None] = str(SPDX.Package)
 
     # Basic info
-    name: Annotated[str | list[str] | None, RdfProperty(SPDX.name)] = None
+    name: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.name),
+    ] = None
     version_info: Annotated[str | list[str] | None, RdfProperty(SPDX.versionInfo)] = None
     package_file_name: Annotated[str | list[str] | None, RdfProperty(SPDX.packageFileName)] = None
     supplier: Annotated[str | list[str] | None, RdfProperty(SPDX.supplier)] = None
@@ -107,7 +119,10 @@ class Package(SpdxResource):
     homepage: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(SPDX.homepage)] = None
 
     # Source info
-    source_info: Annotated[str | list[str] | None, RdfProperty(SPDX.sourceInfo)] = None
+    source_info: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.sourceInfo),
+    ] = None
 
     # License info
     license_concluded: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(SPDX.licenseConcluded)] = None
@@ -115,13 +130,28 @@ class Package(SpdxResource):
         str | URIRef | list[str | URIRef] | None, RdfProperty(SPDX.licenseInfoFromFiles)
     ] = None
     license_declared: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(SPDX.licenseDeclared)] = None
-    license_comments: Annotated[str | list[str] | None, RdfProperty(SPDX.licenseComments)] = None
-    copyright_text: Annotated[str | list[str] | None, RdfProperty(SPDX.copyrightText)] = None
+    license_comments: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.licenseComments),
+    ] = None
+    copyright_text: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.copyrightText),
+    ] = None
 
     # Summary and description
-    summary: Annotated[str | list[str] | None, RdfProperty(SPDX.summary)] = None
-    description: Annotated[str | list[str] | None, RdfProperty(SPDX.description)] = None
-    comment: Annotated[str | list[str] | None, RdfProperty(SPDX.comment)] = None
+    summary: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.summary),
+    ] = None
+    description: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.description),
+    ] = None
+    comment: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.comment),
+    ] = None
 
     # External references
     external_ref: Annotated[
@@ -132,7 +162,10 @@ class Package(SpdxResource):
     has_file: Annotated[str | URIRef | File | list[str | URIRef | File] | None, RdfProperty(SPDX.hasFile)] = None
 
     # Attribution
-    attribution_text: Annotated[str | list[str] | None, RdfProperty(SPDX.attributionText)] = None
+    attribution_text: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.attributionText),
+    ] = None
 
     # Other
     primary_package_purpose: Annotated[
@@ -159,15 +192,30 @@ class File(SpdxResource):
     license_info_in_file: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(SPDX.licenseInfoInFile)] = (
         None
     )
-    license_comments: Annotated[str | list[str] | None, RdfProperty(SPDX.licenseComments)] = None
-    copyright_text: Annotated[str | list[str] | None, RdfProperty(SPDX.copyrightText)] = None
+    license_comments: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.licenseComments),
+    ] = None
+    copyright_text: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.copyrightText),
+    ] = None
 
     # Notices
-    notice_text: Annotated[str | list[str] | None, RdfProperty(SPDX.noticeText)] = None
-    comment: Annotated[str | list[str] | None, RdfProperty(SPDX.comment)] = None
+    notice_text: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.noticeText),
+    ] = None
+    comment: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.comment),
+    ] = None
 
     # Attribution
-    attribution_text: Annotated[str | list[str] | None, RdfProperty(SPDX.attributionText)] = None
+    attribution_text: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.attributionText),
+    ] = None
 
     # Contributors
     file_contributor: Annotated[str | list[str] | None, RdfProperty(SPDX.fileContributor)] = None
@@ -210,7 +258,10 @@ class Relationship(SpdxResource):
     related_spdx_element: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(SPDX.relatedSpdxElement)] = (
         None
     )
-    comment: Annotated[str | list[str] | None, RdfProperty(SPDX.comment)] = None
+    comment: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.comment),
+    ] = None
 
 
 class Annotation(SpdxResource):
@@ -221,7 +272,10 @@ class Annotation(SpdxResource):
     annotator: Annotated[str | list[str] | None, RdfProperty(SPDX.annotator)] = None
     annotation_date: Annotated[str | datetime | list[str | datetime] | None, RdfProperty(SPDX.annotationDate)] = None
     annotation_type: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(SPDX.annotationType)] = None
-    comment: Annotated[str | list[str] | None, RdfProperty(SPDX.comment)] = None
+    comment: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.comment),
+    ] = None
 
 
 class ExternalRef(SpdxResource):
@@ -232,7 +286,10 @@ class ExternalRef(SpdxResource):
     reference_category: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(SPDX.referenceCategory)] = None
     reference_type: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(SPDX.referenceType)] = None
     reference_locator: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(SPDX.referenceLocator)] = None
-    comment: Annotated[str | list[str] | None, RdfProperty(SPDX.comment)] = None
+    comment: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.comment),
+    ] = None
 
 
 class ExternalDocumentRef(SpdxResource):
@@ -251,10 +308,19 @@ class License(SpdxResource):
     """Base class for SPDX Licenses."""
 
     license_id: Annotated[str | list[str] | None, RdfProperty(SPDX.licenseId)] = None
-    name: Annotated[str | list[str] | None, RdfProperty(SPDX.name)] = None
-    license_text: Annotated[str | list[str] | None, RdfProperty(SPDX.licenseText)] = None
+    name: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.name),
+    ] = None
+    license_text: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.licenseText),
+    ] = None
     see_also: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(SPDX.seeAlso)] = None
-    comment: Annotated[str | list[str] | None, RdfProperty(SPDX.comment)] = None
+    comment: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.comment),
+    ] = None
 
 
 class ExtractedLicensingInfo(License):
@@ -277,9 +343,18 @@ class Snippet(SpdxResource):
         str | URIRef | list[str | URIRef] | None, RdfProperty(SPDX.licenseInfoInSnippet)
     ] = None
     license_concluded: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(SPDX.licenseConcluded)] = None
-    copyright_text: Annotated[str | list[str] | None, RdfProperty(SPDX.copyrightText)] = None
-    comment: Annotated[str | list[str] | None, RdfProperty(SPDX.comment)] = None
-    name: Annotated[str | list[str] | None, RdfProperty(SPDX.name)] = None
+    copyright_text: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.copyrightText),
+    ] = None
+    comment: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.comment),
+    ] = None
+    name: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.name),
+    ] = None
 
 
 class Review(SpdxResource):
@@ -289,7 +364,10 @@ class Review(SpdxResource):
 
     reviewer: Annotated[str | list[str] | None, RdfProperty(SPDX.reviewer)] = None
     review_date: Annotated[str | datetime | list[str | datetime] | None, RdfProperty(SPDX.reviewDate)] = None
-    comment: Annotated[str | list[str] | None, RdfProperty(SPDX.comment)] = None
+    comment: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.comment),
+    ] = None
 
 
 class LicenseException(SpdxResource):
@@ -298,11 +376,23 @@ class LicenseException(SpdxResource):
     rdf_type: ClassVar[str | URIRef | None] = str(SPDX.LicenseException)
 
     license_exception_id: Annotated[str | list[str] | None, RdfProperty(SPDX.licenseExceptionId)] = None
-    name: Annotated[str | list[str] | None, RdfProperty(SPDX.name)] = None
-    license_exception_text: Annotated[str | list[str] | None, RdfProperty(SPDX.licenseExceptionText)] = None
-    license_exception_template: Annotated[str | list[str] | None, RdfProperty(SPDX.licenseExceptionTemplate)] = None
+    name: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.name),
+    ] = None
+    license_exception_text: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.licenseExceptionText),
+    ] = None
+    license_exception_template: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.licenseExceptionTemplate),
+    ] = None
     see_also: Annotated[str | URIRef | list[str | URIRef] | None, RdfProperty(SPDX.seeAlso)] = None
-    comment: Annotated[str | list[str] | None, RdfProperty(SPDX.comment)] = None
+    comment: Annotated[
+        LocalizedStr | None,
+        RdfProperty(SPDX.comment),
+    ] = None
 
 
 class SimpleLicensingInfo(License):

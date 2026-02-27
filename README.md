@@ -104,6 +104,7 @@ The toolkit provides several ways to handle URIs and specific XSD datatypes:
 
 - **Resource Identifiers**: Use `rdflib.URIRef` as a type hint for fields that should be serialized as RDF resources.
 - **XSD Datatypes**: Specify the `datatype` in `RdfProperty` to force a literal value to a specific XSD type (e.g., `XSD.anyURI`, `XSD.integer`).
+- **Localized Strings**: Use `LocalizedStr` for automatic handling of language tags and dictionary-based language maps.
 - **Validation**: Combine with Pydantic's built-in types like `AnyUrl` for strict input validation.
 
 ```python
