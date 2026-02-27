@@ -145,5 +145,27 @@ def test_localized_str_multiple_tags_deserialization():
     assert m.label["es"] == "Mundo"
 
 
+def test_lang_string_behavior():
+    """Verify string-like behavior for LangString."""
+    ls = LangString(value="Hello", lang="en")
+
+    # String conversion
+    assert str(ls) == "Hello"
+
+    # Representation (RDF style)
+    assert repr(ls) == '"Hello"@en'
+    assert repr(LangString(value="Hello")) == '"Hello"'
+
+    # Equality with strings
+    assert ls == "Hello"
+    assert "Hello" == ls  # __eq__ handles both ways
+    assert ls != "World"
+
+    # Hashability (for sets/dict keys)
+    s = {ls, "Hello"}
+    assert len(s) == 2  # They are different types but can coexist in a set
+    assert LangString(value="Hello", lang="en") in s
+
+
 if __name__ == "__main__":
     pytest.main([__file__])

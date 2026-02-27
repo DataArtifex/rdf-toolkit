@@ -184,6 +184,21 @@ class LangString(BaseModel):
     def __str__(self) -> str:
         return self.value
 
+    def __repr__(self) -> str:
+        if self.lang:
+            return f'"{self.value}"@{self.lang}'
+        return f'"{self.value}"'
+
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, str):
+            return self.value == other
+        if isinstance(other, LangString):
+            return self.value == other.value and self.lang == other.lang
+        return super().__eq__(other)
+
+    def __hash__(self) -> int:
+        return hash((self.value, self.lang))
+
 
 LocalizedStr = str | LangString | list[str | LangString] | dict[str, str | list[str]]
 
