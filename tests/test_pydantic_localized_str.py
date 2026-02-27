@@ -156,10 +156,15 @@ def test_lang_string_behavior():
     assert repr(ls) == '"Hello"@en'
     assert repr(LangString(value="Hello")) == '"Hello"'
 
-    # Equality with strings
-    assert ls == "Hello"
-    assert "Hello" == ls  # __eq__ handles both ways
+    # Equality with strings (removed, check value directly)
+    assert ls.value == "Hello"
+    assert ls != "Hello"  # Because they are different types now
     assert ls != "World"
+
+    # Equality with other LangStrings
+    assert ls == LangString(value="Hello", lang="en")
+    assert ls != LangString(value="Hello", lang="fr")
+    assert ls != LangString(value="World", lang="en")
 
     # Hashability (for sets/dict keys)
     s = {ls, "Hello"}

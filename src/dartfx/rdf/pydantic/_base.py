@@ -190,8 +190,6 @@ class LangString(BaseModel):
         return f'"{self.value}"'
 
     def __eq__(self, other: Any) -> bool:
-        if isinstance(other, str):
-            return self.value == other
         if isinstance(other, LangString):
             return self.value == other.value and self.lang == other.lang
         return super().__eq__(other)
