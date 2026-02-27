@@ -365,7 +365,9 @@ class RdfBaseModel(BaseModel):
     rdf_type : str | URIRef | None
         The RDF type (rdf:type) for instances of this class. Typically set to a
         vocabulary class URI like `FOAF.Person` or `SKOS.Concept`. If None, no
-        rdf:type triple is added to the graph.
+        rdf:type triple is added to the graph. Note: `None` is valid only for
+        base or abstract models; concrete vocabulary classes should explicitly
+        define an `rdf_type`.
 
     rdf_namespace : str | Namespace | None
         The default namespace for generating subject URIs. Used when an instance

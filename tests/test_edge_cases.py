@@ -30,7 +30,9 @@ def test_null_and_empty_values_skipped() -> None:
     item = EdgeThing(id="edge-1", label=None, tags=[], related=None)
 
     graph = item.to_rdf_graph()
-    subject = URIRef(str(EX) + item.id)
+    subjects = list(graph.subjects(RDF.type, SCHEMA.Thing))
+    assert len(subjects) > 0
+    subject = subjects[0]
 
     assert len(list(graph.triples((subject, None, None)))) == 1
     assert list(graph.objects(subject, SCHEMA.name)) == []

@@ -94,3 +94,22 @@ def test_top_level_bnode():
     subjects = list(graph.subjects(predicate=EX.city, object=None))
     assert len(subjects) == 1
     assert isinstance(subjects[0], BNode)
+
+
+def test_union_type_nested_model_round_trip():
+    """Ensure T | None union types work for nested models round-trip deserialization."""
+    addr = Address(id="addr-1", city="Berlin", street="Champs")
+    person = Person(id="david", name="David", address=addr)
+
+    graph = person.to_rdf_graph()
+
+    person_uri = URIRef(str(EX) + "david")
+    reloaded = Person.from_rdf_graph(graph, person_uri)
+
+    assert reloaded.id == "david"
+    assert reloaded.name == "David"
+    assert reloaded.address is not None
+    assert isinstance(reloaded.address, Address)
+    assert reloaded.address.id == "addr-1"
+    assert reloaded.address.city == "Berlin"
+    assert reloaded.address.street == "Champs"
