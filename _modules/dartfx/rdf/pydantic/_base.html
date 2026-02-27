@@ -246,6 +246,34 @@
 <span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">&quot;RdfBaseModel&quot;</span><span class="p">)</span>
 
 
+<div class="viewcode-block" id="LangString">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.LangString">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LangString</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A string with an optional language tag.</span>
+
+<span class="sd">    This class is used to represent RDF language-tagged literals in Pydantic</span>
+<span class="sd">    models. It provides a structured way to handle localized strings while</span>
+<span class="sd">    maintaining compatibility with Pydantic validation.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    value : str</span>
+<span class="sd">        The string content of the literal.</span>
+<span class="sd">    lang : str | None, optional</span>
+<span class="sd">        The language tag (e.g., &quot;en&quot;, &quot;fr&quot;, &quot;de&quot;). Default is None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span></div>
+
+
+
+<span class="n">LocalizedStr</span> <span class="o">=</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">LangString</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">LangString</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+
+
 <div class="viewcode-block" id="RdfProperty">
 <a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.RdfProperty">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -791,17 +819,63 @@
                 <span class="k">continue</span>
             <span class="n">predicate</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">predicate_uri</span><span class="p">()</span>
             <span class="n">is_list</span><span class="p">,</span> <span class="n">accepts_scalar</span><span class="p">,</span> <span class="n">inner_type</span> <span class="o">=</span> <span class="n">_field_type_info</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+            <span class="c1"># Check if the field supports dict aggregation (language maps)</span>
+            <span class="n">supports_dict</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">annotation</span> <span class="o">=</span> <span class="n">_unwrap_annotation</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">annotation</span><span class="p">)</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="n">Union</span> <span class="ow">or</span> <span class="n">origin</span> <span class="ow">is</span> <span class="n">types</span><span class="o">.</span><span class="n">UnionType</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">get_args</span><span class="p">(</span><span class="n">annotation</span><span class="p">):</span>
+                    <span class="n">arg_unwrapped</span> <span class="o">=</span> <span class="n">_unwrap_annotation</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">arg_unwrapped</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
+                        <span class="n">supports_dict</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+
             <span class="n">objects</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">subject_uri</span><span class="p">,</span> <span class="n">predicate</span><span class="p">))</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">objects</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="n">model_type</span> <span class="o">=</span> <span class="n">_get_rdf_model_type</span><span class="p">(</span><span class="n">inner_type</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">model_type</span><span class="p">:</span>
-                <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="n">URIRef</span><span class="p">,</span> <span class="n">BNode</span><span class="p">)):</span>
                         <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model_type</span><span class="o">.</span><span class="n">from_rdf_graph</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">base_uri</span><span class="o">=</span><span class="n">base_uri</span><span class="p">))</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_node_to_python</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">inner_type</span><span class="p">,</span> <span class="n">prop</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">inner_type</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span> <span class="ow">or</span> <span class="p">(</span><span class="n">supports_dict</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Literal</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">)):</span>
+                <span class="c1"># Aggregate language-tagged literals into a dict</span>
+                <span class="n">res_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+                <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Literal</span><span class="p">):</span>
+                        <span class="n">lang</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">language</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+                        <span class="n">val</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">toPython</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">lang</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                        <span class="n">val</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">lang</span> <span class="ow">in</span> <span class="n">res_dict</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">res_dict</span><span class="p">[</span><span class="n">lang</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+                            <span class="n">res_dict</span><span class="p">[</span><span class="n">lang</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">res_dict</span><span class="p">[</span><span class="n">lang</span><span class="p">]]</span>
+                        <span class="n">res_dict</span><span class="p">[</span><span class="n">lang</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">res_dict</span><span class="p">[</span><span class="n">lang</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+                <span class="c1"># If we aggregated into a dict but only have one key which is &quot;&quot; (untagged)</span>
+                <span class="c1"># and the field supports a scalar (str or LangString), and we are in</span>
+                <span class="c1"># a Union where we were &quot;guessing&quot; this should be a dict...</span>
+                <span class="k">if</span> <span class="n">supports_dict</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">res_dict</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="s2">&quot;&quot;</span> <span class="ow">in</span> <span class="n">res_dict</span><span class="p">:</span>
+                    <span class="c1"># If the field also supports a list/scalar of strings, maybe we should unwrap</span>
+                    <span class="c1"># But let&#39;s be careful: if the user explicitly typed it as a dict, they want a dict.</span>
+                    <span class="c1"># LocalizedStr supports both.</span>
+                    <span class="c1"># Heuristic: if it&#39;s a single untagged value, return the value directly</span>
+                    <span class="c1"># so Pydantic uses the &#39;str&#39; variant of the Union instead of &#39;dict&#39;.</span>
+                    <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="n">res_dict</span><span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]]</span>
+                    <span class="n">is_list</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">res_dict</span><span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">],</span> <span class="nb">list</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="n">res_dict</span><span class="p">]</span>
+                    <span class="c1"># For dicts, we treat it as a single item even if it has entries for multiple langs</span>
+                    <span class="n">is_list</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="n">_node_to_python</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">inner_type</span><span class="p">,</span> <span class="n">prop</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">]</span>
 
@@ -988,6 +1062,17 @@
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">continue</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="c1"># Special handling for language maps in dicts</span>
+                    <span class="c1"># We expect dict[str, str | list[str]]</span>
+                    <span class="k">for</span> <span class="n">lang</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>
+                                <span class="n">graph</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">subject</span><span class="p">,</span> <span class="n">predicate</span><span class="p">,</span> <span class="n">Literal</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="n">lang</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">)))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">graph</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">subject</span><span class="p">,</span> <span class="n">predicate</span><span class="p">,</span> <span class="n">Literal</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="n">lang</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">)))</span>
+                    <span class="k">continue</span>
+
                 <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_to_node</span><span class="p">(</span>
                     <span class="n">item</span><span class="p">,</span>
                     <span class="n">inner_type</span><span class="p">,</span>
@@ -1165,6 +1250,9 @@
 
             <span class="n">encoded</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="n">encoded</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">base64Binary</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">LangString</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">lang</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">datetime</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Decimal</span><span class="p">,</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)):</span>
             <span class="n">datatype</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">datatype_uri</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">datatype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1385,6 +1473,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">parser</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">prop</span><span class="o">.</span><span class="n">parser</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="n">LangString</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">expected_type</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">expected_type</span><span class="p">,</span> <span class="n">LangString</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Literal</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="p">),</span> <span class="n">lang</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">_is_rdf_model</span><span class="p">(</span><span class="n">expected_type</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Nested RDF models should be handled separately.&quot;</span><span class="p">)</span>
@@ -1628,7 +1721,7 @@
     <span class="k">return</span> <span class="kc">None</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;RdfBaseModel&quot;</span><span class="p">,</span> <span class="s2">&quot;RdfProperty&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;RdfBaseModel&quot;</span><span class="p">,</span> <span class="s2">&quot;RdfProperty&quot;</span><span class="p">,</span> <span class="s2">&quot;LangString&quot;</span><span class="p">,</span> <span class="s2">&quot;LocalizedStr&quot;</span><span class="p">]</span>
 
 <span class="c1"># Ensure defaults are preserved when using lightweight pydantic substitutes.</span>
 <span class="n">RdfBaseModel</span><span class="o">.</span><span class="n">rdf_id_field</span> <span class="o">=</span> <span class="s2">&quot;id&quot;</span>

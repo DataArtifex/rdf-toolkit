@@ -98,7 +98,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">SKOS</span><span class="p">,</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">URIRef</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">._base</span><span class="w"> </span><span class="kn">import</span> <span class="n">RdfBaseModel</span><span class="p">,</span> <span class="n">RdfProperty</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._base</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocalizedStr</span><span class="p">,</span> <span class="n">RdfBaseModel</span><span class="p">,</span> <span class="n">RdfProperty</span>
 
 <span class="c1"># XKOS namespace</span>
 <span class="n">XKOS</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">(</span><span class="s2">&quot;http://rdf-vocabulary.ddialliance.org/xkos#&quot;</span><span class="p">)</span>
@@ -139,11 +139,20 @@
     <span class="n">max_length</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">maxLength</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Labels (from SKOS)</span>
-    <span class="n">pref_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">prefLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">alt_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">altLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">pref_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">prefLabel</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">alt_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">altLabel</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Notes</span>
-    <span class="n">note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">note</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+    <span class="n">note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">note</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 
@@ -171,11 +180,20 @@
     <span class="n">compares</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">compares</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Labels</span>
-    <span class="n">pref_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">prefLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">alt_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">altLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">pref_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">prefLabel</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">alt_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">altLabel</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Definition</span>
-    <span class="n">definition</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">definition</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">definition</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">definition</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Associations</span>
     <span class="n">made_of</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
@@ -192,7 +210,10 @@
     <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">ExplanatoryNote</span><span class="p">)</span>
 
     <span class="c1"># Descriptive text</span>
-    <span class="n">plain_text</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">plainText</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+    <span class="n">plain_text</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">plainText</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 
@@ -205,11 +226,23 @@
     <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">Concept</span><span class="p">)</span>
 
     <span class="c1"># SKOS properties</span>
-    <span class="n">pref_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">prefLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">alt_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">altLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">hidden_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">hiddenLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">pref_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">prefLabel</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">alt_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">altLabel</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">hidden_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">hiddenLabel</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">notation</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">notation</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">definition</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">definition</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">definition</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">definition</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># SKOS semantic relations</span>
     <span class="n">broader</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
@@ -227,10 +260,22 @@
     <span class="n">top_concept_of</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">topConceptOf</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># XKOS extensions</span>
-    <span class="n">core_content_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">coreContentNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">additional_content_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">additionalContentNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">exclusion_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">exclusionNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">inclusion_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">inclusionNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">core_content_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">coreContentNote</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">additional_content_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">additionalContentNote</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">exclusion_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">exclusionNote</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">inclusion_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">inclusionNote</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Causal relationships</span>
     <span class="n">causal</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
@@ -311,9 +356,18 @@
     <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Notes</span>
-    <span class="n">introduction</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">introduction</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">editorial_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">editorialNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">change_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">changeNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+    <span class="n">introduction</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">introduction</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">editorial_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">editorialNote</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">change_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">changeNote</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 
@@ -325,12 +379,24 @@
     <span class="n">rdf_type</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">ConceptScheme</span><span class="p">)</span>
 
     <span class="c1"># Labels</span>
-    <span class="n">pref_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">prefLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">alt_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">altLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">pref_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">prefLabel</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">alt_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">altLabel</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Definition and scope</span>
-    <span class="n">definition</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">definition</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">scope_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">scopeNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">definition</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">definition</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">scope_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">scopeNote</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Top concepts</span>
     <span class="n">has_top_concept</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
@@ -372,9 +438,18 @@
     <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Notes</span>
-    <span class="n">introduction</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">introduction</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">editorial_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">editorialNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">change_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">changeNote</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+    <span class="n">introduction</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">introduction</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">editorial_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">editorialNote</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">change_note</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">XKOS</span><span class="o">.</span><span class="n">changeNote</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 </pre></div>
 

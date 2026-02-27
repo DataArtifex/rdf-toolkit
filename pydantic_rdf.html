@@ -51,7 +51,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick start</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#mapping-rules">Mapping rules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#reading-data-back">Reading data back</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#language-tags-and-datatypes">Language tags and datatypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#language-tags-and-localized-strings">Language tags and localized strings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#aggregation-and-deserialisation">Aggregation and Deserialisation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-datatypes">Custom Datatypes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#custom-serialisation-hooks">Custom serialisation hooks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#advanced-scenarios">Advanced scenarios</a></li>
 </ul>
@@ -138,7 +142,7 @@ emitted in the resulting graph.</p></li>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">RdfBaseModel</span></code> takes care of creating a subject identifier, emitting RDF
 triples for every annotated field, and binding the default prefixes. The graph
-returned by <a class="reference internal" href="modules.html#id3" title="dartfx.rdf.pydantic.RdfBaseModel.to_rdf_graph"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_rdf_graph()</span></code></a> can be
+returned by <a class="reference internal" href="modules.html#id5" title="dartfx.rdf.pydantic.RdfBaseModel.to_rdf_graph"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_rdf_graph()</span></code></a> can be
 serialised in any format supported by <cite>rdflib</cite>.</p>
 </section>
 <section id="mapping-rules">
@@ -170,14 +174,76 @@ serialisation.</p>
 in the graph. Otherwise it expects the graph to contain exactly one subject and
 raises an error if there are multiple candidates. You can always bypass the
 heuristics by passing the <code class="docutils literal notranslate"><span class="pre">subject</span></code> keyword argument to
-<a class="reference internal" href="modules.html#id1" title="dartfx.rdf.pydantic.RdfBaseModel.from_rdf_graph"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_rdf_graph()</span></code></a> or
-<a class="reference internal" href="modules.html#id0" title="dartfx.rdf.pydantic.RdfBaseModel.from_rdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_rdf()</span></code></a>.</p>
+<a class="reference internal" href="modules.html#id3" title="dartfx.rdf.pydantic.RdfBaseModel.from_rdf_graph"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_rdf_graph()</span></code></a> or
+<a class="reference internal" href="modules.html#id2" title="dartfx.rdf.pydantic.RdfBaseModel.from_rdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_rdf()</span></code></a>.</p>
 </section>
-<section id="language-tags-and-datatypes">
-<h2>Language tags and datatypes<a class="headerlink" href="#language-tags-and-datatypes" title="Link to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">RdfProperty</span></code> accepts optional <code class="docutils literal notranslate"><span class="pre">datatype</span></code> and <code class="docutils literal notranslate"><span class="pre">language</span></code> parameters to
-fine-tune literal serialisation. Datatypes may be defined as strings, namespace
-terms, or full <code class="docutils literal notranslate"><span class="pre">URIRef</span></code> instances.</p>
+<section id="language-tags-and-localized-strings">
+<h2>Language tags and localized strings<a class="headerlink" href="#language-tags-and-localized-strings" title="Link to this heading"></a></h2>
+<p>The toolkit provides first-class support for RDF language-tagged literals. The
+recommended way to handle localized properties is via the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">LocalizedStr</span></code> type alias.</p>
+<p><code class="docutils literal notranslate"><span class="pre">LocalizedStr</span></code> is a flexible union that accepts:</p>
+<ul class="simple">
+<li><p><strong>Plain strings</strong>: Serialised as literals without a language tag.</p></li>
+<li><p><strong>LangString objects</strong>: Explicitly tagged values using the internal
+<a class="reference internal" href="modules.html#dartfx.rdf.pydantic.LangString" title="dartfx.rdf.pydantic.LangString"><code class="xref py py-class docutils literal notranslate"><span class="pre">LangString</span></code></a> model.</p></li>
+<li><p><strong>Dictionaries</strong>: A mapping of language tags to strings (or lists of strings).</p></li>
+<li><p><strong>Lists</strong>: A collection of the above types.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">SKOS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dartfx.rdf.pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">RdfBaseModel</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">,</span> <span class="n">LocalizedStr</span><span class="p">,</span> <span class="n">LangString</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Concept</span><span class="p">(</span><span class="n">RdfBaseModel</span><span class="p">):</span>
+    <span class="n">rdf_type</span> <span class="o">=</span> <span class="n">SKOS</span><span class="o">.</span><span class="n">Concept</span>
+    <span class="n">rdf_namespace</span> <span class="o">=</span> <span class="n">EX</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">pref_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">prefLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="c1"># 1. Using a dictionary (Recommended for multi-language)</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="n">Concept</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;c1&quot;</span><span class="p">,</span> <span class="n">pref_label</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;en&quot;</span><span class="p">:</span> <span class="s2">&quot;World&quot;</span><span class="p">,</span> <span class="s2">&quot;es&quot;</span><span class="p">:</span> <span class="s2">&quot;Mundo&quot;</span><span class="p">})</span>
+
+<span class="c1"># 2. Using explicit LangString</span>
+<span class="n">c2</span> <span class="o">=</span> <span class="n">Concept</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;c2&quot;</span><span class="p">,</span> <span class="n">pref_label</span><span class="o">=</span><span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">))</span>
+
+<span class="c1"># 3. Using plain strings</span>
+<span class="n">c3</span> <span class="o">=</span> <span class="n">Concept</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;c3&quot;</span><span class="p">,</span> <span class="n">pref_label</span><span class="o">=</span><span class="s2">&quot;Plain text&quot;</span><span class="p">)</span>
+
+<span class="c1"># 4. Handling multiple values per language</span>
+<span class="n">c4</span> <span class="o">=</span> <span class="n">Concept</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;c4&quot;</span><span class="p">,</span> <span class="n">pref_label</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;en&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Earth&quot;</span><span class="p">,</span> <span class="s2">&quot;World&quot;</span><span class="p">]})</span>
+
+<span class="c1"># 5. Using a list of mixed types</span>
+<span class="n">c5</span> <span class="o">=</span> <span class="n">Concept</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;c5&quot;</span><span class="p">,</span> <span class="n">pref_label</span><span class="o">=</span><span class="p">[</span>
+    <span class="s2">&quot;Plain string&quot;</span><span class="p">,</span>
+    <span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">),</span>
+    <span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Bonjour&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;fr&quot;</span><span class="p">)</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+<section id="aggregation-and-deserialisation">
+<h3>Aggregation and Deserialisation<a class="headerlink" href="#aggregation-and-deserialisation" title="Link to this heading"></a></h3>
+<p>When reading data back from RDF, the toolkit intelligently aggregates
+language-tagged literals. If a field’s annotation includes <code class="docutils literal notranslate"><span class="pre">dict</span></code> (as
+<code class="docutils literal notranslate"><span class="pre">LocalizedStr</span></code> does), <a class="reference internal" href="modules.html#id3" title="dartfx.rdf.pydantic.RdfBaseModel.from_rdf_graph"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_rdf_graph()</span></code></a>
+will group all literals for that predicate into a language map.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Restores to: {&quot;en&quot;: [&quot;Earth&quot;, &quot;World&quot;], &quot;es&quot;: &quot;Mundo&quot;}</span>
+<span class="n">restored</span> <span class="o">=</span> <span class="n">Concept</span><span class="o">.</span><span class="n">from_rdf_graph</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">subject_uri</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the graph contains only a single untagged literal for a <code class="docutils literal notranslate"><span class="pre">LocalizedStr</span></code>
+field, the toolkit will return it as a plain scalar (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;Plain</span> <span class="pre">text&quot;</span></code>)
+instead of a dictionary. This ensures that properties that are only
+occasionally localized remain easy to work with.</p>
+</div>
+</section>
+</section>
+<section id="custom-datatypes">
+<h2>Custom Datatypes<a class="headerlink" href="#custom-datatypes" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">RdfProperty</span></code> accepts an optional <code class="docutils literal notranslate"><span class="pre">datatype</span></code> parameter to fine-tune literal
+serialisation. Datatypes may be defined as strings, namespace terms, or full
+<code class="docutils literal notranslate"><span class="pre">URIRef</span></code> instances.</p>
 <p>Handle URIs specifically by choosing between resource identifiers or typed literals:</p>
 <ul class="simple">
 <li><p><strong>Resource identifiers</strong>: Use <code class="docutils literal notranslate"><span class="pre">rdflib.URIRef</span></code> as the field type. The toolkit
@@ -194,12 +260,11 @@ will ensure these are emitted as URI nodes in the graph.</p></li>
     <span class="n">rdf_namespace</span> <span class="o">=</span> <span class="n">EX</span>
 
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">title</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">EX</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">)]</span>
     <span class="n">created</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">EX</span><span class="o">.</span><span class="n">created</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">date</span><span class="p">)]</span>
     <span class="c1"># Serialized as a URI Resource</span>
-    <span class="n">see_also</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">URIRef</span><span class="p">],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SCHEMA</span><span class="o">.</span><span class="n">seeAlso</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">see_also</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">URIRef</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SCHEMA</span><span class="o">.</span><span class="n">seeAlso</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1"># Serialized as &quot;...&quot;^^xsd:anyURI</span>
-    <span class="n">download_url</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">AnyUrl</span><span class="p">],</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SCHEMA</span><span class="o">.</span><span class="n">downloadUrl</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">anyURI</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">download_url</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">AnyUrl</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SCHEMA</span><span class="o">.</span><span class="n">downloadUrl</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">XSD</span><span class="o">.</span><span class="n">anyURI</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <span class="n">dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span>

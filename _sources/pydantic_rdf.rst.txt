@@ -85,12 +85,77 @@ heuristics by passing the ``subject`` keyword argument to
 :meth:`~dartfx.rdf.pydantic.RdfBaseModel.from_rdf_graph` or
 :meth:`~dartfx.rdf.pydantic.RdfBaseModel.from_rdf`.
 
-Language tags and datatypes
----------------------------
+Language tags and localized strings
+-----------------------------------
 
-``RdfProperty`` accepts optional ``datatype`` and ``language`` parameters to
-fine-tune literal serialisation. Datatypes may be defined as strings, namespace
-terms, or full ``URIRef`` instances.
+The toolkit provides first-class support for RDF language-tagged literals. The
+recommended way to handle localized properties is via the
+:class:`~dartfx.rdf.pydantic.LocalizedStr` type alias.
+
+``LocalizedStr`` is a flexible union that accepts:
+
+* **Plain strings**: Serialised as literals without a language tag.
+* **LangString objects**: Explicitly tagged values using the internal
+  :class:`~dartfx.rdf.pydantic.LangString` model.
+* **Dictionaries**: A mapping of language tags to strings (or lists of strings).
+* **Lists**: A collection of the above types.
+
+.. code-block:: python
+
+   from rdflib import SKOS
+   from dartfx.rdf.pydantic import RdfBaseModel, RdfProperty, LocalizedStr, LangString
+
+   class Concept(RdfBaseModel):
+       rdf_type = SKOS.Concept
+       rdf_namespace = EX
+
+       id: str
+       pref_label: Annotated[LocalizedStr | None, RdfProperty(SKOS.prefLabel)] = None
+
+   # 1. Using a dictionary (Recommended for multi-language)
+   c1 = Concept(id="c1", pref_label={"en": "World", "es": "Mundo"})
+
+   # 2. Using explicit LangString
+   c2 = Concept(id="c2", pref_label=LangString(value="Hello", lang="en"))
+
+   # 3. Using plain strings
+   c3 = Concept(id="c3", pref_label="Plain text")
+
+   # 4. Handling multiple values per language
+   c4 = Concept(id="c4", pref_label={"en": ["Earth", "World"]})
+
+   # 5. Using a list of mixed types
+   c5 = Concept(id="c5", pref_label=[
+       "Plain string",
+       LangString(value="Hello", lang="en"),
+       LangString(value="Bonjour", lang="fr")
+   ])
+
+Aggregation and Deserialisation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When reading data back from RDF, the toolkit intelligently aggregates
+language-tagged literals. If a field's annotation includes ``dict`` (as
+``LocalizedStr`` does), :meth:`~dartfx.rdf.pydantic.RdfBaseModel.from_rdf_graph`
+will group all literals for that predicate into a language map.
+
+.. code-block:: python
+
+   # Restores to: {"en": ["Earth", "World"], "es": "Mundo"}
+   restored = Concept.from_rdf_graph(graph, subject_uri)
+
+.. note::
+   If the graph contains only a single untagged literal for a ``LocalizedStr``
+   field, the toolkit will return it as a plain scalar (e.g., ``"Plain text"``)
+   instead of a dictionary. This ensures that properties that are only
+   occasionally localized remain easy to work with.
+
+Custom Datatypes
+----------------
+
+``RdfProperty`` accepts an optional ``datatype`` parameter to fine-tune literal
+serialisation. Datatypes may be defined as strings, namespace terms, or full
+``URIRef`` instances.
 
 Handle URIs specifically by choosing between resource identifiers or typed literals:
 
@@ -110,12 +175,11 @@ Handle URIs specifically by choosing between resource identifiers or typed liter
        rdf_namespace = EX
 
        id: str
-       title: Annotated[str, RdfProperty(EX.title, language="en")]
        created: Annotated[str, RdfProperty(EX.created, datatype=XSD.date)]
        # Serialized as a URI Resource
-       see_also: Annotated[Optional[URIRef], RdfProperty(SCHEMA.seeAlso)] = None
+       see_also: Annotated[URIRef | None, RdfProperty(SCHEMA.seeAlso)] = None
        # Serialized as "..."^^xsd:anyURI
-       download_url: Annotated[Optional[AnyUrl], RdfProperty(SCHEMA.downloadUrl, datatype=XSD.anyURI)] = None
+       download_url: Annotated[AnyUrl | None, RdfProperty(SCHEMA.downloadUrl, datatype=XSD.anyURI)] = None
 
 
    dataset = Dataset(

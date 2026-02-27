@@ -98,7 +98,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">ODRL2</span><span class="p">,</span> <span class="n">URIRef</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">._base</span><span class="w"> </span><span class="kn">import</span> <span class="n">RdfBaseModel</span><span class="p">,</span> <span class="n">RdfProperty</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._base</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocalizedStr</span><span class="p">,</span> <span class="n">RdfBaseModel</span><span class="p">,</span> <span class="n">RdfProperty</span>
 
 
 <div class="viewcode-block" id="OdrlResource">
@@ -287,7 +287,10 @@
     <span class="c1"># Data type</span>
     <span class="n">data_type</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">dataType</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">unit</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">unit</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">status</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">status</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span></div>
+    <span class="n">status</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">RdfProperty</span><span class="p">(</span><span class="n">ODRL2</span><span class="o">.</span><span class="n">status</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 
