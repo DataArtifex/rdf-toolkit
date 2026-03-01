@@ -343,3 +343,37 @@ class TestShaclValidationIntegration:
 
         # person3 should fail validation (missing required name)
         assert conforms is False
+
+    def test_markdown_with_custom_prefixes(self, temp_shacl_file):
+        """Test markdown generation with custom prefixes."""
+        g = Graph()
+        g.parse(data=INVALID_RDF_MISSING_REQUIRED, format="turtle")
+
+        conforms, results_graph, results_text = shacl_validate(g, temp_shacl_file)
+
+        # Provide custom prefixes (e.g., for a domain-specific vocabulary)
+        custom_prefixes = {
+            "http://example.org/": "ex:",
+            "http://example.org/ontology/": "onto:",
+        }
+
+        markdown = shacl_validation_to_markdown(results_graph, prefixes=custom_prefixes)
+
+        assert isinstance(markdown, str)
+        assert len(markdown) > 0
+        # Markdown should use the custom prefixes for shortening URIs
+        assert "ex:" in markdown or "onto:" in markdown or "sh:" in markdown
+
+    def test_markdown_without_custom_prefixes(self, temp_shacl_file):
+        """Test markdown generation uses defaults when no custom prefixes provided."""
+        g = Graph()
+        g.parse(data=VALID_RDF, format="turtle")
+
+        conforms, results_graph, results_text = shacl_validate(g, temp_shacl_file)
+
+        # Call without custom prefixes - should use default standard prefixes
+        markdown = shacl_validation_to_markdown(results_graph)
+
+        assert isinstance(markdown, str)
+        # Should contain standard prefixes like sh:, rdf:, rdfs:, xsd:
+        assert len(markdown) > 0

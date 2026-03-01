@@ -2,7 +2,6 @@ import logging
 import os
 from typing import Any, cast
 
-import pyshacl
 from rdflib import RDF, Graph, Namespace
 
 
@@ -11,7 +10,7 @@ def shacl_validate(data: Graph | str | Any, shacl_path: str | os.PathLike[str]) 
     Validates an RDF graph against a SHACL shapes file.
 
     Args:
-        data: The RDF graph to validate (rdflib.Graph, path to file, or dictionary of resources).
+        data: The RDF graph to validate (rdflib.Graph or path to file).
         shacl_path: Path to the SHACL shapes file (.ttl) used for validation.
 
     Returns:
@@ -20,6 +19,12 @@ def shacl_validate(data: Graph | str | Any, shacl_path: str | os.PathLike[str]) 
         - results_graph (rdflib.Graph): The validation report graph.
         - results_text (str): The validation report as text.
     """
+    try:
+        import pyshacl
+    except ImportError as e:
+        raise ImportError(
+            "pyshacl is required for SHACL validation. Please install it with 'pip install pyshacl'."
+        ) from e
 
     if isinstance(data, str):
         g = Graph()
@@ -27,7 +32,7 @@ def shacl_validate(data: Graph | str | Any, shacl_path: str | os.PathLike[str]) 
     elif isinstance(data, Graph):
         g = data
     else:
-        raise ValueError("Unsupported data type for validation. Expected Graph, file path, or resources dict.")
+        raise ValueError("Unsupported data type for validation. Expected Graph or file path.")
 
     logging.info(f"Validating graph against SHACL shapes: {shacl_path}")
 
@@ -41,22 +46,37 @@ def shacl_validate(data: Graph | str | Any, shacl_path: str | os.PathLike[str]) 
     return cast(bool, conforms), cast(Graph, results_graph), cast(str, results_text)
 
 
-def shacl_validation_to_markdown(results_graph: Graph) -> str:
+def shacl_validation_to_markdown(
+    results_graph: Graph, prefixes: dict[str, str] | None = None, title: str = "SHACL Validation Report"
+) -> str:
     """
     Converts a SHACL validation report graph into a human-readable Markdown report.
+
+    Args:
+        results_graph: The SHACL validation report graph from pyshacl.validate().
+        prefixes: Optional dictionary mapping namespace URIs to prefix strings.
+            If not provided, a default set of standard prefixes will be used.
+            Example: {"http://example.org/my-ns#": "ex:", "http://www.w3.org/2004/02/skos/core#": "skos:"}
+        title: The title of the Markdown report.
+
+    Returns:
+        A formatted Markdown string containing the validation report.
     """
     SH = Namespace("http://www.w3.org/ns/shacl#")
-    CDI = Namespace("http://ddialliance.org/Specification/DDI-CDI/1.0/RDF/")
-    SKOS = Namespace("http://www.w3.org/2004/02/skos/core#")
 
-    prefixes = {
-        str(CDI): "cdi:",
-        str(SKOS): "skos:",
+    # Default prefixes for standard namespaces
+    default_prefixes = {
         "http://www.w3.org/1999/02/22-rdf-syntax-ns#": "rdf:",
         "http://www.w3.org/2000/01/rdf-schema#": "rdfs:",
         "http://www.w3.org/ns/shacl#": "sh:",
         "http://www.w3.org/2001/XMLSchema#": "xsd:",
     }
+
+    # Merge provided prefixes with defaults (user-provided prefixes take precedence)
+    if prefixes is None:
+        prefixes = default_prefixes
+    else:
+        prefixes = {**default_prefixes, **prefixes}
 
     def shorten(uri: Any) -> str:
         if not uri:
@@ -84,7 +104,7 @@ def shacl_validation_to_markdown(results_graph: Graph) -> str:
     conforms = results_graph.value(report, SH.conforms)
 
     md = []
-    md.append("# DDI-CDI Validation Report\n")
+    md.append(f"# {title}\n")
 
     status = "✅ PASS" if conforms else "❌ FAIL"
     md.append(f"**Status:** {status}\n")
@@ -93,7 +113,7 @@ def shacl_validation_to_markdown(results_graph: Graph) -> str:
 
     if not results:
         if conforms:
-            md.append("No violations found. The graph is perfectly valid according to DDI-CDI 1.0.0 SHACL rules.")
+            md.append("No violations found. The graph is perfectly valid according to SHACL rules.")
         else:
             md.append("The graph does not conform, but no specific validation results were found in the report.")
         return "\n".join(md)
