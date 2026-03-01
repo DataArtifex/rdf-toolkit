@@ -2,6 +2,7 @@ import logging
 import os
 from typing import Any, cast
 
+import pyshacl
 from rdflib import RDF, Graph, Namespace
 
 
@@ -19,12 +20,6 @@ def shacl_validate(data: Graph | str | Any, shacl_path: str | os.PathLike[str]) 
         - results_graph (rdflib.Graph): The validation report graph.
         - results_text (str): The validation report as text.
     """
-    try:
-        import pyshacl
-    except ImportError as e:
-        raise ImportError(
-            "pyshacl is required for SHACL validation. Please install it with 'pip install pyshacl'."
-        ) from e
 
     if isinstance(data, str):
         g = Graph()
