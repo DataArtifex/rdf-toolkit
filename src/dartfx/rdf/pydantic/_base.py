@@ -148,11 +148,13 @@ from datetime import date, datetime, time
 from decimal import Decimal
 from enum import Enum
 from typing import (
+    TYPE_CHECKING,
     Annotated,
     Any,
     ClassVar,
     TypeVar,
     Union,
+    cast,
     get_args,
     get_origin,
 )
@@ -305,7 +307,7 @@ class LangStringList(list[LangString]):
         if (item.value, item.lang) not in self._keys():
             super().insert(index, item)
 
-    def __iadd__(self, other: Any) -> LangStringList:
+    def __iadd__(self, other: Any) -> LangStringList:  # type: ignore[override]
         """Support ``ls += LangString(...)`` and ``ls += [...]``."""
         normalised: list[LangString] = []
         if isinstance(other, LangString):
@@ -317,6 +319,12 @@ class LangStringList(list[LangString]):
         for ls in normalised:
             self._add_if_new(ls)
         return self
+
+    def __add__(self, other: Any) -> LangStringList:  # type: ignore[override]
+        """Return a new ``LangStringList`` with additional entries."""
+        result = LangStringList(self)
+        result += other
+        return result
 
     # -- subtraction (removal) ----------------------------------------------
 
@@ -468,14 +476,19 @@ def _coerce_to_lang_string_list(
         return LangStringList(_deduplicate_lang_strings(value))
 
     if isinstance(value, list) and all(isinstance(v, LangString) for v in value):
-        return LangStringList(_deduplicate_lang_strings(value))
+        return LangStringList(_deduplicate_lang_strings(cast(list[LangString], value)))
 
     result: list[LangString] = []
     _normalise_into(value, result)
     return LangStringList(_deduplicate_lang_strings(result))
 
 
-LocalizedStr = Annotated[LangStringList, BeforeValidator(_coerce_to_lang_string_list)]
+if TYPE_CHECKING:
+    # Mypy sees the wide input union so that ``Model(field="plain")`` type-checks.
+    LocalizedStr = LocalizedStrInput | LangStringList
+else:
+    # At runtime Pydantic uses the BeforeValidator to coerce inputs → LangStringList.
+    LocalizedStr = Annotated[LangStringList, BeforeValidator(_coerce_to_lang_string_list)]
 
 
 @dataclass(frozen=True)

@@ -56,6 +56,7 @@ def test_concept_with_alt_labels() -> None:
     reloaded = Concept.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
     assert reloaded.pref_label == [LangString(value="Primary Label", lang=None)]
+    assert reloaded.alt_label is not None
     assert set(reloaded.alt_label) == {
         LangString(value="Alternative 1", lang=None),
         LangString(value="Alternative 2", lang=None),
