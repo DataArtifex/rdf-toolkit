@@ -266,20 +266,50 @@ uniqueness. Duplicate additions are silently ignored.
 
 .. code-block:: python
 
+   from dartfx.rdf.pydantic import LangString
+   from dartfx.rdf.pydantic.skos import Concept
+
    c = Concept(id="c1", pref_label="Hello")
+   # → LangStringList(["Hello"])
 
-   # Adding entries
+   # --- Addition ---
+
+   # += with a single LangString
    c.pref_label += LangString(value="Hola", lang="es")
-   c.pref_label.append(LangString(value="Bonjour", lang="fr"))
-   c.pref_label.extend([LangString(value="Welt", lang="de")])
+   # → ["Hello", "Hola"@es]
 
-   # Duplicate silently ignored
-   c.pref_label.append(LangString(value="Hello", lang=None))  # no-op
-   len(c.pref_label)  # 4, not 5
+   # += with a list of LangStrings
+   c.pref_label += [LangString(value="Bonjour", lang="fr"),
+                     LangString(value="Welt", lang="de")]
+   # → ["Hello", "Hola"@es, "Bonjour"@fr, "Welt"@de]
 
-   # Removing entries
-   c.pref_label -= LangString(value="Hola", lang="es")        # in-place
-   result = c.pref_label - LangString(value="Bonjour", lang="fr")  # returns copy
+   # .append() works the same way
+   c.pref_label.append(LangString(value="Ciao", lang="it"))
+   # → ["Hello", "Hola"@es, "Bonjour"@fr, "Welt"@de, "Ciao"@it]
+
+   # Duplicates are silently ignored
+   c.pref_label += LangString(value="Hello", lang=None)
+   len(c.pref_label)  # still 5
+
+   # + returns a new copy (original untouched)
+   bigger = c.pref_label + [LangString(value="Olá", lang="pt")]
+   len(bigger)         # 6
+   len(c.pref_label)   # still 5
+
+   # --- Subtraction ---
+
+   # -= removes matching (value, lang) entries in-place
+   c.pref_label -= LangString(value="Hola", lang="es")
+   # → ["Hello", "Bonjour"@fr, "Welt"@de, "Ciao"@it]
+
+   # - returns a new copy with the entry removed
+   without_fr = c.pref_label - LangString(value="Bonjour", lang="fr")
+   len(without_fr)     # 3 – "Bonjour"@fr removed
+   len(c.pref_label)   # 4 – original unchanged
+
+   # Non-matching subtractions are safe (no error)
+   c.pref_label -= LangString(value="Nonexistent", lang="xx")
+   len(c.pref_label)   # still 4
 
 RDF round-trip
 """"""""""""""
