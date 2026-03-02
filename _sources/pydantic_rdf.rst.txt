@@ -88,22 +88,85 @@ heuristics by passing the ``subject`` keyword argument to
 Language tags and localized strings
 -----------------------------------
 
-The toolkit provides first-class support for RDF language-tagged literals. The
-recommended way to handle localized properties is via the
-:class:`~dartfx.rdf.pydantic.LocalizedStr` type alias.
+The toolkit provides first-class support for RDF language-tagged literals through
+three complementary types:
 
-``LocalizedStr`` is a flexible union that accepts:
+* :class:`~dartfx.rdf.pydantic.LangString` – a single value/language-tag pair.
+* :class:`~dartfx.rdf.pydantic.LangStringList` – an ordered, deduplicated
+  collection of ``LangString`` items with convenience query and mutation methods.
+* :data:`~dartfx.rdf.pydantic.LocalizedStr` – a Pydantic-aware type alias that
+  coerces flexible inputs into a ``LangStringList`` automatically.
 
-* **Plain strings**: Serialised as literals without a language tag.
-* **LangString objects**: Explicitly tagged values using the internal
-  :class:`~dartfx.rdf.pydantic.LangString` model.
-* **Dictionaries**: A mapping of language tags to strings (or lists of strings).
-* **Lists**: A collection of the above types.
+.. contents::
+   :local:
+   :depth: 2
+
+LangString
+^^^^^^^^^^
+
+``LangString`` is a lightweight, frozen Pydantic model representing a single
+string value with an optional language tag.
 
 .. code-block:: python
 
+   from dartfx.rdf.pydantic import LangString
+
+   tagged   = LangString(value="Hello", lang="en")
+   untagged = LangString(value="Plain text")          # lang defaults to None
+
+   str(tagged)     # "Hello"
+   repr(tagged)    # '"Hello"@en'
+   repr(untagged)  # '"Plain text"'
+
+``LangString`` instances are hashable and comparable:
+
+.. code-block:: python
+
+   tagged == LangString(value="Hello", lang="en")  # True
+   tagged == LangString(value="Hello", lang="fr")  # False
+
+   # Usable in sets and as dict keys
+   labels = {tagged, untagged}
+
+LocalizedStr – flexible input, canonical storage
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``LocalizedStr`` is the recommended type for any field that may carry
+language-tagged literals. You annotate your model field with it and provide
+input in whichever form is most convenient — the validator coerces everything
+into a canonical ``LangStringList``.
+
+**Accepted input types:**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 35 65
+
+   * - Input
+     - Stored as
+   * - ``"Plain text"``
+     - ``LangStringList([LangString(value="Plain text", lang=None)])``
+   * - ``LangString(value="Hello", lang="en")``
+     - ``LangStringList([LangString(value="Hello", lang="en")])``
+   * - ``{"en": "World", "es": "Mundo"}``
+     - ``LangStringList([LangString("World","en"), LangString("Mundo","es")])``
+   * - ``{"en": ["Earth", "World"]}``
+     - ``LangStringList([LangString("Earth","en"), LangString("World","en")])``
+   * - ``["Plain", LangString("Hi","en")]``
+     - ``LangStringList([LangString("Plain",None), LangString("Hi","en")])``
+
+Duplicate ``(value, lang)`` pairs are silently dropped, preserving insertion
+order.
+
+**Example – defining a model:**
+
+.. code-block:: python
+
+   from typing import Annotated
    from rdflib import SKOS
    from dartfx.rdf.pydantic import RdfBaseModel, RdfProperty, LocalizedStr, LangString
+
+   EX = Namespace("https://example.org/ns/")
 
    class Concept(RdfBaseModel):
        rdf_type = SKOS.Concept
@@ -112,7 +175,7 @@ recommended way to handle localized properties is via the
        id: str
        pref_label: Annotated[LocalizedStr | None, RdfProperty(SKOS.prefLabel)] = None
 
-   # 1. Using a dictionary (Recommended for multi-language)
+   # 1. Using a dictionary (recommended for multi-language)
    c1 = Concept(id="c1", pref_label={"en": "World", "es": "Mundo"})
 
    # 2. Using explicit LangString
@@ -121,34 +184,121 @@ recommended way to handle localized properties is via the
    # 3. Using plain strings
    c3 = Concept(id="c3", pref_label="Plain text")
 
-   # 4. Handling multiple values per language
+   # 4. Multiple values per language
    c4 = Concept(id="c4", pref_label={"en": ["Earth", "World"]})
 
-   # 5. Using a list of mixed types
+   # 5. Mixed-type list
    c5 = Concept(id="c5", pref_label=[
        "Plain string",
        LangString(value="Hello", lang="en"),
-       LangString(value="Bonjour", lang="fr")
+       LangString(value="Bonjour", lang="fr"),
    ])
 
-Aggregation and Deserialisation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Str-like behaviour
+""""""""""""""""""
 
-When reading data back from RDF, the toolkit intelligently aggregates
-language-tagged literals. If a field's annotation includes ``dict`` (as
-``LocalizedStr`` does), :meth:`~dartfx.rdf.pydantic.RdfBaseModel.from_rdf_graph`
-will group all literals for that predicate into a language map.
+When a ``LangStringList`` contains only **one entry**, or exactly **one
+untagged entry** among tagged ones, it behaves as a plain ``str`` for
+comparison and string conversion:
 
 .. code-block:: python
 
-   # Restores to: {"en": ["Earth", "World"], "es": "Mundo"}
-   restored = Concept.from_rdf_graph(graph, subject_uri)
+   c = Concept(id="c1", pref_label="Hello")
+   str(c.pref_label)        # "Hello"
+   c.pref_label == "Hello"  # True
 
-.. note::
-   If the graph contains only a single untagged literal for a ``LocalizedStr``
-   field, the toolkit will return it as a plain scalar (e.g., ``"Plain text"``)
-   instead of a dictionary. This ensures that properties that are only
-   occasionally localized remain easy to work with.
+   # One untagged entry among tagged
+   c = Concept(id="c2", pref_label=[
+       "Plain",
+       LangString(value="Hola", lang="es"),
+   ])
+   str(c.pref_label)        # "Plain"
+   c.pref_label == "Plain"  # True
+
+   # List comparison still works normally
+   c.pref_label == [LangString(value="Plain", lang=None),
+                     LangString(value="Hola", lang="es")]  # True
+
+LangStringList – query methods
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``LangStringList`` extends ``list[LangString]`` with dedicated helpers for
+inspecting localized values.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 40 60
+
+   * - Method
+     - Description
+   * - ``len(ls)``
+     - Total number of entries.
+   * - ``ls.count_by_lang("en")``
+     - Count entries for a language tag. Use ``None`` or ``""`` for untagged.
+   * - ``ls.has_language("en")``
+     - ``True`` if at least one entry has the given tag.
+   * - ``ls.has_language(None)``
+     - ``True`` if untagged entries exist.
+   * - ``ls.has_untagged()``
+     - Shorthand for ``has_language(None)``.
+   * - ``ls.has_synonyms("en")``
+     - ``True`` if the language has more than one entry.
+   * - ``ls.languages()``
+     - Set of distinct language tags (including ``None``).
+   * - ``ls.untagged()``
+     - ``LangStringList`` with only untagged entries.
+   * - ``ls.get_by_language("en")``
+     - ``LangStringList`` filtered to a specific language tag.
+
+.. code-block:: python
+
+   labels = c1.pref_label  # {"en": "World", "es": "Mundo"}
+   labels.languages()              # {"en", "es"}
+   labels.has_language("en")       # True
+   labels.count_by_lang("en")      # 1
+   labels.get_by_language("es")    # LangStringList([LangString("Mundo","es")])
+
+LangStringList – mutations
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+All mutations automatically coerce flexible inputs and enforce ``(value, lang)``
+uniqueness. Duplicate additions are silently ignored.
+
+.. code-block:: python
+
+   c = Concept(id="c1", pref_label="Hello")
+
+   # Adding entries
+   c.pref_label += LangString(value="Hola", lang="es")
+   c.pref_label.append(LangString(value="Bonjour", lang="fr"))
+   c.pref_label.extend([LangString(value="Welt", lang="de")])
+
+   # Duplicate silently ignored
+   c.pref_label.append(LangString(value="Hello", lang=None))  # no-op
+   len(c.pref_label)  # 4, not 5
+
+   # Removing entries
+   c.pref_label -= LangString(value="Hola", lang="es")        # in-place
+   result = c.pref_label - LangString(value="Bonjour", lang="fr")  # returns copy
+
+RDF round-trip
+""""""""""""""
+
+``LocalizedStr`` fields are serialised to standard RDF language-tagged literals
+and deserialised back into ``LangStringList`` automatically:
+
+.. code-block:: python
+
+   c = Concept(id="c1", pref_label={"en": "World", "es": "Mundo"})
+   graph = c.to_rdf_graph()
+
+   # Produces:
+   #   <.../c1> skos:prefLabel "World"@en, "Mundo"@es .
+
+   restored = Concept.from_rdf_graph(graph, subject)
+   assert restored.pref_label.has_language("en")
+   assert restored.pref_label == c.pref_label
+
 
 Custom Datatypes
 ----------------

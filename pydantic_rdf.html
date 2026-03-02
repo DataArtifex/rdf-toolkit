@@ -52,7 +52,16 @@
 <li class="toctree-l2"><a class="reference internal" href="#mapping-rules">Mapping rules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#reading-data-back">Reading data back</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#language-tags-and-localized-strings">Language tags and localized strings</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#aggregation-and-deserialisation">Aggregation and Deserialisation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#langstring">LangString</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#localizedstr-flexible-input-canonical-storage">LocalizedStr – flexible input, canonical storage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#str-like-behaviour">Str-like behaviour</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#langstringlist-query-methods">LangStringList – query methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#langstringlist-mutations">LangStringList – mutations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#rdf-round-trip">RDF round-trip</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#custom-datatypes">Custom Datatypes</a></li>
@@ -179,19 +188,97 @@ heuristics by passing the <code class="docutils literal notranslate"><span class
 </section>
 <section id="language-tags-and-localized-strings">
 <h2>Language tags and localized strings<a class="headerlink" href="#language-tags-and-localized-strings" title="Link to this heading"></a></h2>
-<p>The toolkit provides first-class support for RDF language-tagged literals. The
-recommended way to handle localized properties is via the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">LocalizedStr</span></code> type alias.</p>
-<p><code class="docutils literal notranslate"><span class="pre">LocalizedStr</span></code> is a flexible union that accepts:</p>
+<p>The toolkit provides first-class support for RDF language-tagged literals through
+three complementary types:</p>
 <ul class="simple">
-<li><p><strong>Plain strings</strong>: Serialised as literals without a language tag.</p></li>
-<li><p><strong>LangString objects</strong>: Explicitly tagged values using the internal
-<a class="reference internal" href="modules.html#dartfx.rdf.pydantic.LangString" title="dartfx.rdf.pydantic.LangString"><code class="xref py py-class docutils literal notranslate"><span class="pre">LangString</span></code></a> model.</p></li>
-<li><p><strong>Dictionaries</strong>: A mapping of language tags to strings (or lists of strings).</p></li>
-<li><p><strong>Lists</strong>: A collection of the above types.</p></li>
+<li><p><a class="reference internal" href="modules.html#dartfx.rdf.pydantic.LangString" title="dartfx.rdf.pydantic.LangString"><code class="xref py py-class docutils literal notranslate"><span class="pre">LangString</span></code></a> – a single value/language-tag pair.</p></li>
+<li><p><a class="reference internal" href="modules.html#dartfx.rdf.pydantic.LangStringList" title="dartfx.rdf.pydantic.LangStringList"><code class="xref py py-class docutils literal notranslate"><span class="pre">LangStringList</span></code></a> – an ordered, deduplicated
+collection of <code class="docutils literal notranslate"><span class="pre">LangString</span></code> items with convenience query and mutation methods.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">LocalizedStr</span></code> – a Pydantic-aware type alias that
+coerces flexible inputs into a <code class="docutils literal notranslate"><span class="pre">LangStringList</span></code> automatically.</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">SKOS</span>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#langstring" id="id1">LangString</a></p></li>
+<li><p><a class="reference internal" href="#localizedstr-flexible-input-canonical-storage" id="id2">LocalizedStr – flexible input, canonical storage</a></p>
+<ul>
+<li><p><a class="reference internal" href="#str-like-behaviour" id="id3">Str-like behaviour</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#langstringlist-query-methods" id="id4">LangStringList – query methods</a></p></li>
+<li><p><a class="reference internal" href="#langstringlist-mutations" id="id5">LangStringList – mutations</a></p>
+<ul>
+<li><p><a class="reference internal" href="#rdf-round-trip" id="id6">RDF round-trip</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="langstring">
+<h3><a class="toc-backref" href="#id1" role="doc-backlink">LangString</a><a class="headerlink" href="#langstring" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">LangString</span></code> is a lightweight, frozen Pydantic model representing a single
+string value with an optional language tag.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dartfx.rdf.pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">LangString</span>
+
+<span class="n">tagged</span>   <span class="o">=</span> <span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">)</span>
+<span class="n">untagged</span> <span class="o">=</span> <span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Plain text&quot;</span><span class="p">)</span>          <span class="c1"># lang defaults to None</span>
+
+<span class="nb">str</span><span class="p">(</span><span class="n">tagged</span><span class="p">)</span>     <span class="c1"># &quot;Hello&quot;</span>
+<span class="nb">repr</span><span class="p">(</span><span class="n">tagged</span><span class="p">)</span>    <span class="c1"># &#39;&quot;Hello&quot;@en&#39;</span>
+<span class="nb">repr</span><span class="p">(</span><span class="n">untagged</span><span class="p">)</span>  <span class="c1"># &#39;&quot;Plain text&quot;&#39;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">LangString</span></code> instances are hashable and comparable:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tagged</span> <span class="o">==</span> <span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">)</span>  <span class="c1"># True</span>
+<span class="n">tagged</span> <span class="o">==</span> <span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;fr&quot;</span><span class="p">)</span>  <span class="c1"># False</span>
+
+<span class="c1"># Usable in sets and as dict keys</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="n">tagged</span><span class="p">,</span> <span class="n">untagged</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="localizedstr-flexible-input-canonical-storage">
+<h3><a class="toc-backref" href="#id2" role="doc-backlink">LocalizedStr – flexible input, canonical storage</a><a class="headerlink" href="#localizedstr-flexible-input-canonical-storage" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">LocalizedStr</span></code> is the recommended type for any field that may carry
+language-tagged literals. You annotate your model field with it and provide
+input in whichever form is most convenient — the validator coerces everything
+into a canonical <code class="docutils literal notranslate"><span class="pre">LangStringList</span></code>.</p>
+<p><strong>Accepted input types:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Input</p></th>
+<th class="head"><p>Stored as</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;Plain</span> <span class="pre">text&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">LangStringList([LangString(value=&quot;Plain</span> <span class="pre">text&quot;,</span> <span class="pre">lang=None)])</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LangString(value=&quot;Hello&quot;,</span> <span class="pre">lang=&quot;en&quot;)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">LangStringList([LangString(value=&quot;Hello&quot;,</span> <span class="pre">lang=&quot;en&quot;)])</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">{&quot;en&quot;:</span> <span class="pre">&quot;World&quot;,</span> <span class="pre">&quot;es&quot;:</span> <span class="pre">&quot;Mundo&quot;}</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">LangStringList([LangString(&quot;World&quot;,&quot;en&quot;),</span> <span class="pre">LangString(&quot;Mundo&quot;,&quot;es&quot;)])</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">{&quot;en&quot;:</span> <span class="pre">[&quot;Earth&quot;,</span> <span class="pre">&quot;World&quot;]}</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">LangStringList([LangString(&quot;Earth&quot;,&quot;en&quot;),</span> <span class="pre">LangString(&quot;World&quot;,&quot;en&quot;)])</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[&quot;Plain&quot;,</span> <span class="pre">LangString(&quot;Hi&quot;,&quot;en&quot;)]</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">LangStringList([LangString(&quot;Plain&quot;,None),</span> <span class="pre">LangString(&quot;Hi&quot;,&quot;en&quot;)])</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Duplicate <code class="docutils literal notranslate"><span class="pre">(value,</span> <span class="pre">lang)</span></code> pairs are silently dropped, preserving insertion
+order.</p>
+<p><strong>Example – defining a model:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">SKOS</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dartfx.rdf.pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">RdfBaseModel</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">,</span> <span class="n">LocalizedStr</span><span class="p">,</span> <span class="n">LangString</span>
+
+<span class="n">EX</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">(</span><span class="s2">&quot;https://example.org/ns/&quot;</span><span class="p">)</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">Concept</span><span class="p">(</span><span class="n">RdfBaseModel</span><span class="p">):</span>
     <span class="n">rdf_type</span> <span class="o">=</span> <span class="n">SKOS</span><span class="o">.</span><span class="n">Concept</span>
@@ -200,7 +287,7 @@ recommended way to handle localized properties is via the
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">pref_label</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">LocalizedStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RdfProperty</span><span class="p">(</span><span class="n">SKOS</span><span class="o">.</span><span class="n">prefLabel</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
 
-<span class="c1"># 1. Using a dictionary (Recommended for multi-language)</span>
+<span class="c1"># 1. Using a dictionary (recommended for multi-language)</span>
 <span class="n">c1</span> <span class="o">=</span> <span class="n">Concept</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;c1&quot;</span><span class="p">,</span> <span class="n">pref_label</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;en&quot;</span><span class="p">:</span> <span class="s2">&quot;World&quot;</span><span class="p">,</span> <span class="s2">&quot;es&quot;</span><span class="p">:</span> <span class="s2">&quot;Mundo&quot;</span><span class="p">})</span>
 
 <span class="c1"># 2. Using explicit LangString</span>
@@ -209,34 +296,129 @@ recommended way to handle localized properties is via the
 <span class="c1"># 3. Using plain strings</span>
 <span class="n">c3</span> <span class="o">=</span> <span class="n">Concept</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;c3&quot;</span><span class="p">,</span> <span class="n">pref_label</span><span class="o">=</span><span class="s2">&quot;Plain text&quot;</span><span class="p">)</span>
 
-<span class="c1"># 4. Handling multiple values per language</span>
+<span class="c1"># 4. Multiple values per language</span>
 <span class="n">c4</span> <span class="o">=</span> <span class="n">Concept</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;c4&quot;</span><span class="p">,</span> <span class="n">pref_label</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;en&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Earth&quot;</span><span class="p">,</span> <span class="s2">&quot;World&quot;</span><span class="p">]})</span>
 
-<span class="c1"># 5. Using a list of mixed types</span>
+<span class="c1"># 5. Mixed-type list</span>
 <span class="n">c5</span> <span class="o">=</span> <span class="n">Concept</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;c5&quot;</span><span class="p">,</span> <span class="n">pref_label</span><span class="o">=</span><span class="p">[</span>
     <span class="s2">&quot;Plain string&quot;</span><span class="p">,</span>
     <span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">),</span>
-    <span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Bonjour&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;fr&quot;</span><span class="p">)</span>
+    <span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Bonjour&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;fr&quot;</span><span class="p">),</span>
 <span class="p">])</span>
 </pre></div>
 </div>
-<section id="aggregation-and-deserialisation">
-<h3>Aggregation and Deserialisation<a class="headerlink" href="#aggregation-and-deserialisation" title="Link to this heading"></a></h3>
-<p>When reading data back from RDF, the toolkit intelligently aggregates
-language-tagged literals. If a field’s annotation includes <code class="docutils literal notranslate"><span class="pre">dict</span></code> (as
-<code class="docutils literal notranslate"><span class="pre">LocalizedStr</span></code> does), <a class="reference internal" href="modules.html#id3" title="dartfx.rdf.pydantic.RdfBaseModel.from_rdf_graph"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_rdf_graph()</span></code></a>
-will group all literals for that predicate into a language map.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Restores to: {&quot;en&quot;: [&quot;Earth&quot;, &quot;World&quot;], &quot;es&quot;: &quot;Mundo&quot;}</span>
-<span class="n">restored</span> <span class="o">=</span> <span class="n">Concept</span><span class="o">.</span><span class="n">from_rdf_graph</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">subject_uri</span><span class="p">)</span>
+<section id="str-like-behaviour">
+<h4><a class="toc-backref" href="#id3" role="doc-backlink">Str-like behaviour</a><a class="headerlink" href="#str-like-behaviour" title="Link to this heading"></a></h4>
+<p>When a <code class="docutils literal notranslate"><span class="pre">LangStringList</span></code> contains only <strong>one entry</strong>, or exactly <strong>one
+untagged entry</strong> among tagged ones, it behaves as a plain <code class="docutils literal notranslate"><span class="pre">str</span></code> for
+comparison and string conversion:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">Concept</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;c1&quot;</span><span class="p">,</span> <span class="n">pref_label</span><span class="o">=</span><span class="s2">&quot;Hello&quot;</span><span class="p">)</span>
+<span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">pref_label</span><span class="p">)</span>        <span class="c1"># &quot;Hello&quot;</span>
+<span class="n">c</span><span class="o">.</span><span class="n">pref_label</span> <span class="o">==</span> <span class="s2">&quot;Hello&quot;</span>  <span class="c1"># True</span>
+
+<span class="c1"># One untagged entry among tagged</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">Concept</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;c2&quot;</span><span class="p">,</span> <span class="n">pref_label</span><span class="o">=</span><span class="p">[</span>
+    <span class="s2">&quot;Plain&quot;</span><span class="p">,</span>
+    <span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Hola&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;es&quot;</span><span class="p">),</span>
+<span class="p">])</span>
+<span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">pref_label</span><span class="p">)</span>        <span class="c1"># &quot;Plain&quot;</span>
+<span class="n">c</span><span class="o">.</span><span class="n">pref_label</span> <span class="o">==</span> <span class="s2">&quot;Plain&quot;</span>  <span class="c1"># True</span>
+
+<span class="c1"># List comparison still works normally</span>
+<span class="n">c</span><span class="o">.</span><span class="n">pref_label</span> <span class="o">==</span> <span class="p">[</span><span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Plain&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+                  <span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Hola&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;es&quot;</span><span class="p">)]</span>  <span class="c1"># True</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If the graph contains only a single untagged literal for a <code class="docutils literal notranslate"><span class="pre">LocalizedStr</span></code>
-field, the toolkit will return it as a plain scalar (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;Plain</span> <span class="pre">text&quot;</span></code>)
-instead of a dictionary. This ensures that properties that are only
-occasionally localized remain easy to work with.</p>
+</section>
+</section>
+<section id="langstringlist-query-methods">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">LangStringList – query methods</a><a class="headerlink" href="#langstringlist-query-methods" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">LangStringList</span></code> extends <code class="docutils literal notranslate"><span class="pre">list[LangString]</span></code> with dedicated helpers for
+inspecting localized values.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">len(ls)</span></code></p></td>
+<td><p>Total number of entries.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ls.count_by_lang(&quot;en&quot;)</span></code></p></td>
+<td><p>Count entries for a language tag. Use <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> for untagged.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ls.has_language(&quot;en&quot;)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if at least one entry has the given tag.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ls.has_language(None)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if untagged entries exist.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ls.has_untagged()</span></code></p></td>
+<td><p>Shorthand for <code class="docutils literal notranslate"><span class="pre">has_language(None)</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ls.has_synonyms(&quot;en&quot;)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if the language has more than one entry.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ls.languages()</span></code></p></td>
+<td><p>Set of distinct language tags (including <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ls.untagged()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">LangStringList</span></code> with only untagged entries.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ls.get_by_language(&quot;en&quot;)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">LangStringList</span></code> filtered to a specific language tag.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">labels</span> <span class="o">=</span> <span class="n">c1</span><span class="o">.</span><span class="n">pref_label</span>  <span class="c1"># {&quot;en&quot;: &quot;World&quot;, &quot;es&quot;: &quot;Mundo&quot;}</span>
+<span class="n">labels</span><span class="o">.</span><span class="n">languages</span><span class="p">()</span>              <span class="c1"># {&quot;en&quot;, &quot;es&quot;}</span>
+<span class="n">labels</span><span class="o">.</span><span class="n">has_language</span><span class="p">(</span><span class="s2">&quot;en&quot;</span><span class="p">)</span>       <span class="c1"># True</span>
+<span class="n">labels</span><span class="o">.</span><span class="n">count_by_lang</span><span class="p">(</span><span class="s2">&quot;en&quot;</span><span class="p">)</span>      <span class="c1"># 1</span>
+<span class="n">labels</span><span class="o">.</span><span class="n">get_by_language</span><span class="p">(</span><span class="s2">&quot;es&quot;</span><span class="p">)</span>    <span class="c1"># LangStringList([LangString(&quot;Mundo&quot;,&quot;es&quot;)])</span>
+</pre></div>
 </div>
+</section>
+<section id="langstringlist-mutations">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">LangStringList – mutations</a><a class="headerlink" href="#langstringlist-mutations" title="Link to this heading"></a></h3>
+<p>All mutations automatically coerce flexible inputs and enforce <code class="docutils literal notranslate"><span class="pre">(value,</span> <span class="pre">lang)</span></code>
+uniqueness. Duplicate additions are silently ignored.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">Concept</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;c1&quot;</span><span class="p">,</span> <span class="n">pref_label</span><span class="o">=</span><span class="s2">&quot;Hello&quot;</span><span class="p">)</span>
+
+<span class="c1"># Adding entries</span>
+<span class="n">c</span><span class="o">.</span><span class="n">pref_label</span> <span class="o">+=</span> <span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Hola&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;es&quot;</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">pref_label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Bonjour&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;fr&quot;</span><span class="p">))</span>
+<span class="n">c</span><span class="o">.</span><span class="n">pref_label</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Welt&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;de&quot;</span><span class="p">)])</span>
+
+<span class="c1"># Duplicate silently ignored</span>
+<span class="n">c</span><span class="o">.</span><span class="n">pref_label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>  <span class="c1"># no-op</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">pref_label</span><span class="p">)</span>  <span class="c1"># 4, not 5</span>
+
+<span class="c1"># Removing entries</span>
+<span class="n">c</span><span class="o">.</span><span class="n">pref_label</span> <span class="o">-=</span> <span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Hola&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;es&quot;</span><span class="p">)</span>        <span class="c1"># in-place</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">pref_label</span> <span class="o">-</span> <span class="n">LangString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Bonjour&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;fr&quot;</span><span class="p">)</span>  <span class="c1"># returns copy</span>
+</pre></div>
+</div>
+<section id="rdf-round-trip">
+<h4><a class="toc-backref" href="#id6" role="doc-backlink">RDF round-trip</a><a class="headerlink" href="#rdf-round-trip" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">LocalizedStr</span></code> fields are serialised to standard RDF language-tagged literals
+and deserialised back into <code class="docutils literal notranslate"><span class="pre">LangStringList</span></code> automatically:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">Concept</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;c1&quot;</span><span class="p">,</span> <span class="n">pref_label</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;en&quot;</span><span class="p">:</span> <span class="s2">&quot;World&quot;</span><span class="p">,</span> <span class="s2">&quot;es&quot;</span><span class="p">:</span> <span class="s2">&quot;Mundo&quot;</span><span class="p">})</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">to_rdf_graph</span><span class="p">()</span>
+
+<span class="c1"># Produces:</span>
+<span class="c1">#   &lt;.../c1&gt; skos:prefLabel &quot;World&quot;@en, &quot;Mundo&quot;@es .</span>
+
+<span class="n">restored</span> <span class="o">=</span> <span class="n">Concept</span><span class="o">.</span><span class="n">from_rdf_graph</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">subject</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">restored</span><span class="o">.</span><span class="n">pref_label</span><span class="o">.</span><span class="n">has_language</span><span class="p">(</span><span class="s2">&quot;en&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">restored</span><span class="o">.</span><span class="n">pref_label</span> <span class="o">==</span> <span class="n">c</span><span class="o">.</span><span class="n">pref_label</span>
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 <section id="custom-datatypes">
