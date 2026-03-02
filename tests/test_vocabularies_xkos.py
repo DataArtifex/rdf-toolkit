@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from rdflib import RDF, SKOS, Graph
 
+from dartfx.rdf.pydantic import LangString
 from dartfx.rdf.pydantic.xkos import (
     XKOS,
     ClassificationLevel,
@@ -29,7 +30,7 @@ def test_classification_level_basic() -> None:
     reloaded = ClassificationLevel.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
     assert reloaded.depth == 1
-    assert reloaded.pref_label == "Level 1"
+    assert reloaded.pref_label == [LangString(value="Level 1", lang=None)]
 
 
 def test_statistical_concept_basic() -> None:
@@ -44,7 +45,7 @@ def test_statistical_concept_basic() -> None:
     assert len(subjects) > 0
     reloaded = StatisticalConcept.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.pref_label == "Age"
+    assert reloaded.pref_label == [LangString(value="Age", lang=None)]
 
 
 def test_statistical_classification_with_top_concept() -> None:

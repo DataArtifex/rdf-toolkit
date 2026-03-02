@@ -157,7 +157,7 @@ from typing import (
     get_origin,
 )
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 from rdflib import RDF, XSD, BNode, Graph, Literal, Namespace, URIRef
 
 T = TypeVar("T", bound="RdfBaseModel")
@@ -198,7 +198,284 @@ class LangString(BaseModel):
         return hash((self.value, self.lang))
 
 
-LocalizedStr = str | LangString | list[str | LangString] | dict[str, str | list[str]]
+# ---------------------------------------------------------------------------
+# Input types accepted by LocalizedStr coercion
+# ---------------------------------------------------------------------------
+LocalizedStrInput = (
+    str | LangString | list["str | LangString | dict[str, str | list[str]]"] | dict[str, str | list[str]]
+)
+
+
+def _normalise_into(
+    value: Any,
+    acc: list[LangString],
+) -> None:
+    """Recursively normalise *value* and append ``LangString`` items to *acc*."""
+    if isinstance(value, LangString):
+        acc.append(value)
+    elif isinstance(value, str):
+        acc.append(LangString(value=value, lang=None))
+    elif isinstance(value, dict):
+        for lang_key, val in value.items():
+            lang = lang_key or None  # "" → None
+            if isinstance(val, list):
+                for v in val:
+                    acc.append(LangString(value=str(v), lang=lang))
+            else:
+                acc.append(LangString(value=str(val), lang=lang))
+    elif isinstance(value, list):
+        for item in value:
+            _normalise_into(item, acc)
+    else:
+        # Last-resort: stringify
+        acc.append(LangString(value=str(value), lang=None))
+
+
+def _deduplicate_lang_strings(items: list[LangString]) -> list[LangString]:
+    """Remove duplicate ``(value, lang)`` pairs, preserving order."""
+    seen: set[tuple[str, str | None]] = set()
+    result: list[LangString] = []
+    for ls in items:
+        key = (ls.value, ls.lang)
+        if key not in seen:
+            seen.add(key)
+            result.append(ls)
+    return result
+
+
+class LangStringList(list[LangString]):
+    """A ``list[LangString]`` subclass with convenience query methods.
+
+    Every mutation (``append``, ``extend``, ``+=``, ``insert``) automatically
+    skips duplicate ``(value, lang)`` pairs and coerces flexible input types
+    (``str``, ``dict``, ``LangString``) into ``LangString`` objects.
+
+    Examples
+    --------
+    ::
+
+        from dartfx.rdf.pydantic import LangString, LangStringList
+
+        ls = LangStringList([
+            LangString(value="World", lang="en"),
+            LangString(value="Mundo", lang="es"),
+        ])
+
+        ls += LangString(value="Welt", lang="de")
+
+        ls.has_language("en")   # True
+        ls.count_by_lang("en")  # 1
+        ls.languages()          # {"en", "es", "de"}
+        ls.has_synonyms("en")   # False
+    """
+
+    # -- internal helpers ---------------------------------------------------
+
+    @staticmethod
+    def _norm_lang(lang: str | None) -> str | None:
+        """Normalise ``""`` to ``None`` for language tags."""
+        return None if lang == "" else lang
+
+    def _keys(self) -> set[tuple[str, str | None]]:
+        return {(ls.value, ls.lang) for ls in self}
+
+    def _add_if_new(self, item: LangString) -> None:
+        if (item.value, item.lang) not in self._keys():
+            super().append(item)
+
+    def untagged(self) -> LangStringList:
+        """Return entries whose language tag is ``None``."""
+        return LangStringList(ls for ls in self if ls.lang is None)
+
+    # -- list overrides (uniqueness-preserving) -----------------------------
+
+    def append(self, item: LangString) -> None:  # type: ignore[override]
+        """Append *item*, silently skipping if ``(value, lang)`` already exists."""
+        self._add_if_new(item)
+
+    def extend(self, items: Any) -> None:  # type: ignore[override]
+        """Extend with *items*, coercing flexible inputs and deduplicating."""
+        normalised: list[LangString] = []
+        _normalise_into(items, normalised)
+        for ls in normalised:
+            self._add_if_new(ls)
+
+    def insert(self, index: int, item: LangString) -> None:  # type: ignore[override]
+        """Insert *item* at *index* if ``(value, lang)`` is not already present."""
+        if (item.value, item.lang) not in self._keys():
+            super().insert(index, item)
+
+    def __iadd__(self, other: Any) -> LangStringList:
+        """Support ``ls += LangString(...)`` and ``ls += [...]``."""
+        normalised: list[LangString] = []
+        if isinstance(other, LangString):
+            normalised = [other]
+        elif isinstance(other, list):
+            _normalise_into(other, normalised)
+        else:
+            _normalise_into(other, normalised)
+        for ls in normalised:
+            self._add_if_new(ls)
+        return self
+
+    # -- subtraction (removal) ----------------------------------------------
+
+    def __isub__(self, other: Any) -> LangStringList:
+        """Support ``ls -= LangString(...)`` and ``ls -= [...]``.
+
+        Removes matching ``(value, lang)`` entries.
+        """
+        to_remove: list[LangString] = []
+        if isinstance(other, LangString):
+            to_remove = [other]
+        else:
+            _normalise_into(other, to_remove)
+        keys_to_remove = {(ls.value, ls.lang) for ls in to_remove}
+        # Filter in place
+        kept = [ls for ls in self if (ls.value, ls.lang) not in keys_to_remove]
+        self.clear()
+        super().extend(kept)
+        return self
+
+    def __sub__(self, other: Any) -> LangStringList:
+        """Return a new ``LangStringList`` with matching entries removed."""
+        result = LangStringList(self)
+        result -= other
+        return result
+
+    # -- str-like behaviour -------------------------------------------------
+
+    def __str__(self) -> str:
+        """Return the plain string value when unambiguous.
+
+        * If there is exactly **one** entry → its value.
+        * If there are multiple entries but exactly **one** untagged
+          (``lang=None``) entry → that entry's value.
+        * Otherwise → the default list representation.
+        """
+        if len(self) == 1:
+            return self[0].value
+        untagged = self.untagged()
+        if len(untagged) == 1:
+            return untagged[0].value
+        return super().__repr__()
+
+    def __eq__(self, other: object) -> bool:
+        """Allow comparison with ``str`` when str-like behaviour applies.
+
+        * ``pref_label == "Hello"`` is ``True`` when there is exactly one
+          entry with ``value="Hello"``, or when the single untagged entry
+          has ``value="Hello"``.
+        * List-to-list comparison works normally.
+        """
+        if isinstance(other, str):
+            if len(self) == 1:
+                return self[0].value == other
+            untagged = self.untagged()
+            if len(untagged) == 1:
+                return untagged[0].value == other
+            return False
+        return super().__eq__(other)
+
+    def __hash__(self) -> int:  # type: ignore[override]
+        # Lists are unhashable by default; keep that behaviour.
+        raise TypeError("unhashable type: 'LangStringList'")
+
+    # -- query helpers ------------------------------------------------------
+
+    def count_by_lang(self, lang: str | None = None) -> int:
+        """Return the number of entries for a given language tag.
+
+        Parameters
+        ----------
+        lang : str | None
+            The language tag to count (e.g. ``"en"``).  Use ``None`` or
+            ``""`` for untagged (plain) strings.
+
+        Returns
+        -------
+        int
+            Number of entries matching the language.
+        """
+        lang = self._norm_lang(lang)
+        return sum(1 for ls in self if ls.lang == lang)
+
+    def has_language(self, lang: str | None) -> bool:
+        """Return ``True`` if at least one entry has the given language tag.
+
+        Parameters
+        ----------
+        lang : str | None
+            Language tag to check.  Use ``None`` or ``""`` for untagged entries.
+        """
+        lang = self._norm_lang(lang)
+        return any(ls.lang == lang for ls in self)
+
+    def has_untagged(self) -> bool:
+        """Return ``True`` if at least one entry has no language tag (``lang=None``)."""
+        return self.has_language(None)
+
+    def get_by_language(self, lang: str | None = None) -> LangStringList:
+        """Return entries matching the given language tag.
+
+        Parameters
+        ----------
+        lang : str | None
+            Language tag to filter by.  Use ``None`` or ``""`` for untagged entries.
+
+        Returns
+        -------
+        LangStringList
+            A new ``LangStringList`` containing only matching entries.
+        """
+        lang = self._norm_lang(lang)
+        return LangStringList(ls for ls in self if ls.lang == lang)
+
+    def has_synonyms(self, lang: str | None = None) -> bool:
+        """Return ``True`` if the specified language has more than one entry.
+
+        Parameters
+        ----------
+        lang : str | None
+            Language tag to check.  If ``None`` or ``""``, checks untagged entries.
+        """
+        return self.count_by_lang(lang) > 1
+
+    def languages(self) -> set[str | None]:
+        """Return the set of distinct language tags (including ``None`` for untagged)."""
+        return {ls.lang for ls in self}
+
+
+def _coerce_to_lang_string_list(
+    value: LocalizedStrInput | list[LangString] | LangStringList,
+) -> LangStringList:
+    """Coerce flexible input types into a ``LangStringList``.
+
+    Accepted inputs:
+
+    * ``str`` – becomes ``LangStringList([LangString(value=..., lang=None)])``
+    * ``LangString`` – wrapped in a LangStringList
+    * ``dict[str, str | list[str]]`` – each key is a language tag
+      (empty string ``""`` → ``lang=None``), each value becomes one or
+      more ``LangString`` entries
+    * ``list`` of any of the above (including nested dicts) – flattened
+    * An existing ``LangStringList`` – passed through (deduplicated)
+
+    Duplicate ``(value, lang)`` pairs are silently dropped, preserving
+    insertion order.
+    """
+    if isinstance(value, LangStringList):
+        return LangStringList(_deduplicate_lang_strings(value))
+
+    if isinstance(value, list) and all(isinstance(v, LangString) for v in value):
+        return LangStringList(_deduplicate_lang_strings(value))
+
+    result: list[LangString] = []
+    _normalise_into(value, result)
+    return LangStringList(_deduplicate_lang_strings(result))
+
+
+LocalizedStr = Annotated[LangStringList, BeforeValidator(_coerce_to_lang_string_list)]
 
 
 @dataclass(frozen=True)
@@ -730,20 +1007,25 @@ class RdfBaseModel(BaseModel):
             predicate = prop.predicate_uri()
             is_list, accepts_scalar, inner_type = _field_type_info(field)
 
-            # Check if the field supports dict aggregation (language maps)
-            supports_dict = False
-            annotation = _unwrap_annotation(field.annotation)
-            origin = get_origin(annotation)
-            if origin is Union or origin is types.UnionType:
-                for arg in get_args(annotation):
-                    arg_unwrapped = _unwrap_annotation(arg)
-                    if get_origin(arg_unwrapped) is dict:
-                        supports_dict = True
-                        break
+            # Detect whether this field is a LocalizedStr (canonical list[LangString])
+            is_localized = _is_localized_str_field(field)
 
             objects = list(graph.objects(subject_uri, predicate))
             if not objects:
                 continue
+
+            if is_localized:
+                # Produce list[LangString] directly – Pydantic's BeforeValidator
+                # inside LocalizedStr will deduplicate.
+                lang_items: list[LangString] = []
+                for obj in objects:
+                    if isinstance(obj, Literal):
+                        lang_items.append(LangString(value=str(obj), lang=obj.language))
+                    else:
+                        lang_items.append(LangString(value=str(obj), lang=None))
+                values[name] = lang_items
+                continue
+
             model_type = _get_rdf_model_type(inner_type)
             if model_type:
                 items: list[Any] = []
@@ -752,40 +1034,6 @@ class RdfBaseModel(BaseModel):
                         items.append(model_type.from_rdf_graph(graph, obj, base_uri=base_uri))
                     else:
                         items.append(_node_to_python(obj, inner_type, prop))
-            elif get_origin(inner_type) is dict or (supports_dict and all(isinstance(obj, Literal) for obj in objects)):
-                # Aggregate language-tagged literals into a dict
-                res_dict: dict[str, Any] = {}
-
-                for obj in objects:
-                    if isinstance(obj, Literal):
-                        lang = obj.language or ""
-                        val: Any = obj.toPython()
-                    else:
-                        lang = ""
-                        val = str(obj)
-
-                    if lang in res_dict:
-                        if not isinstance(res_dict[lang], list):
-                            res_dict[lang] = [res_dict[lang]]
-                        res_dict[lang].append(val)
-                    else:
-                        res_dict[lang] = val
-
-                # If we aggregated into a dict but only have one key which is "" (untagged)
-                # and the field supports a scalar (str or LangString), and we are in
-                # a Union where we were "guessing" this should be a dict...
-                if supports_dict and len(res_dict) == 1 and "" in res_dict:
-                    # If the field also supports a list/scalar of strings, maybe we should unwrap
-                    # But let's be careful: if the user explicitly typed it as a dict, they want a dict.
-                    # LocalizedStr supports both.
-                    # Heuristic: if it's a single untagged value, return the value directly
-                    # so Pydantic uses the 'str' variant of the Union instead of 'dict'.
-                    items = [res_dict[""]]
-                    is_list = isinstance(res_dict[""], list)
-                else:
-                    items = [res_dict]
-                    # For dicts, we treat it as a single item even if it has entries for multiple langs
-                    is_list = False
             else:
                 items = [_node_to_python(obj, inner_type, prop) for obj in objects]
 
@@ -959,6 +1207,19 @@ class RdfBaseModel(BaseModel):
             if value is None:
                 continue
             predicate = prop.predicate_uri()
+
+            # Fast path for LocalizedStr fields (LangStringList)
+            if isinstance(value, LangStringList):
+                for ls_item in value:
+                    graph.add(
+                        (
+                            subject,
+                            predicate,
+                            Literal(ls_item.value, lang=ls_item.lang),
+                        )
+                    )
+                continue
+
             is_list, _accepts_scalar, inner_type = _field_type_info(field)
             # Support both single values and lists for fields that allow both
             if is_list:
@@ -967,16 +1228,6 @@ class RdfBaseModel(BaseModel):
                 values = [value]
             for item in values:
                 if item is None:
-                    continue
-                if isinstance(item, dict):
-                    # Special handling for language maps in dicts
-                    # We expect dict[str, str | list[str]]
-                    for lang, val in item.items():
-                        if isinstance(val, list):
-                            for v in val:
-                                graph.add((subject, predicate, Literal(v, lang=lang or None)))
-                        else:
-                            graph.add((subject, predicate, Literal(val, lang=lang or None)))
                     continue
 
                 node = self._value_to_node(
@@ -1304,6 +1555,11 @@ def _field_type_info(field: Any) -> tuple[bool, bool, Any]:
         item_type = _unwrap_annotation(get_args(annotation)[0])
         return True, False, item_type
 
+    # LangStringList is a concrete subclass of list[LangString],
+    # so get_origin returns list but get_args may be empty.
+    if isinstance(annotation, type) and issubclass(annotation, LangStringList):
+        return True, False, LangString
+
     return False, False, annotation
 
 
@@ -1586,6 +1842,48 @@ def _default_prefixes() -> dict[str, str]:
     return {"rdf": str(RDF), "xsd": str(XSD)}
 
 
+def _is_localized_str_field(field: Any) -> bool:
+    """Check whether a field's annotation resolves to ``LocalizedStr``.
+
+    ``LocalizedStr`` is ``Annotated[list[LangString], BeforeValidator(...)]``.
+    After Pydantic unwrapping we look for ``list[LangString]`` anywhere in
+    the annotation tree (including ``Union[..., None]`` wrappers).
+    """
+    annotation = getattr(field, "annotation", None)
+    if annotation is None:
+        return False
+    return _annotation_contains_lang_list(annotation)
+
+
+def _annotation_contains_lang_list(annotation: Any) -> bool:
+    """Return *True* if *annotation* is or contains ``LangStringList`` or ``list[LangString]``."""
+    # Unwrap Annotated
+    unwrapped = _unwrap_annotation(annotation)
+
+    # Direct match: LangStringList (concrete class, not generic)
+    if unwrapped is LangStringList:
+        return True
+
+    origin = get_origin(unwrapped)
+
+    # Direct match: list[LangString]
+    if origin is list:
+        args = get_args(unwrapped)
+        if args and (args[0] is LangString or _unwrap_annotation(args[0]) is LangString):
+            return True
+        return False
+
+    # Union: recurse into each branch
+    if origin is Union or origin is types.UnionType:
+        for arg in get_args(unwrapped):
+            if arg is type(None):
+                continue
+            if _annotation_contains_lang_list(arg):
+                return True
+
+    return False
+
+
 def _is_rdf_model(value: Any) -> bool:
     """Check if a value is an RdfBaseModel subclass.
 
@@ -1626,7 +1924,7 @@ def _get_rdf_model_type(type_hint: Any) -> type[RdfBaseModel] | None:
     return None
 
 
-__all__ = ["RdfBaseModel", "RdfProperty", "LangString", "LocalizedStr"]
+__all__ = ["RdfBaseModel", "RdfProperty", "LangString", "LangStringList", "LocalizedStr"]
 
 # Ensure defaults are preserved when using lightweight pydantic substitutes.
 RdfBaseModel.rdf_id_field = "id"

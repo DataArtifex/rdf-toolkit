@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from rdflib import ODRL2, RDF, Graph
 
+from dartfx.rdf.pydantic import LangString
 from dartfx.rdf.pydantic.dcterms import DCTERMS, DublinCoreRecord
 from dartfx.rdf.pydantic.foaf import FOAF, Person
 from dartfx.rdf.pydantic.odrl import Action, Duty, Permission, Policy
@@ -37,7 +38,7 @@ def test_benchmark_dcterms_round_trip(benchmark) -> None:
         return DublinCoreRecord.from_rdf(turtle, format="turtle", subject=subjects[0])  # type: ignore[arg-type]
 
     reloaded = benchmark(run)
-    assert reloaded.title == "Benchmark Record"
+    assert reloaded.title == [LangString(value="Benchmark Record", lang=None)]
 
 
 def test_benchmark_odrl_policy_round_trip(benchmark) -> None:
@@ -69,4 +70,4 @@ def test_benchmark_foaf_from_rdf_graph(benchmark) -> None:
         return Person.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
     reloaded = benchmark(run)
-    assert reloaded.name == "Benchmark Deserialize"
+    assert reloaded.name == [LangString(value="Benchmark Deserialize", lang=None)]

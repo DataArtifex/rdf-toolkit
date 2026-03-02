@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from rdflib import RDF, Graph
 
+from dartfx.rdf.pydantic import LangString
 from dartfx.rdf.pydantic.vcard import VCARD, Individual, Organization
 
 
@@ -22,7 +23,7 @@ def test_individual_basic() -> None:
     subject = subjects[0]
 
     reloaded = Individual.from_rdf_graph(graph, subject)  # type: ignore[arg-type]
-    assert reloaded.fn == "John Doe"
+    assert reloaded.fn == [LangString(value="John Doe", lang=None)]
 
 
 def test_organization_serialization() -> None:
@@ -36,7 +37,7 @@ def test_organization_serialization() -> None:
     assert len(subjects) > 0
     reloaded = Organization.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.fn == "ACME Corporation"
+    assert reloaded.fn == [LangString(value="ACME Corporation", lang=None)]
 
 
 def test_individual_with_nickname() -> None:
@@ -51,7 +52,7 @@ def test_individual_with_nickname() -> None:
     assert len(subjects) > 0
     reloaded = Individual.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.nickname == "JD"
+    assert reloaded.nickname == [LangString(value="JD", lang=None)]
 
 
 def test_individual_with_url() -> None:
@@ -97,4 +98,4 @@ def test_individual_with_note() -> None:
     assert len(subjects) > 0
     reloaded = Individual.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.note == "Important contact"
+    assert reloaded.note == [LangString(value="Important contact", lang=None)]

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from rdflib import RDF, Graph
 
+from dartfx.rdf.pydantic import LangString
 from dartfx.rdf.pydantic.skos import SKOS, Collection, Concept, ConceptScheme
 
 
@@ -21,7 +22,7 @@ def test_concept_scheme_basic() -> None:
     subjects = list(graph.subjects(RDF.type, SKOS.ConceptScheme))
     assert len(subjects) > 0
     reloaded = ConceptScheme.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
-    assert reloaded.pref_label == "Test Scheme"
+    assert reloaded.pref_label == [LangString(value="Test Scheme", lang=None)]
 
 
 def test_concept_basic() -> None:
@@ -37,8 +38,8 @@ def test_concept_basic() -> None:
     assert len(subjects) > 0
     reloaded = Concept.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.pref_label == "Concept Label"
-    assert reloaded.definition == "A test concept"
+    assert reloaded.pref_label == [LangString(value="Concept Label", lang=None)]
+    assert reloaded.definition == [LangString(value="A test concept", lang=None)]
 
 
 def test_concept_with_alt_labels() -> None:
@@ -54,8 +55,11 @@ def test_concept_with_alt_labels() -> None:
     assert len(subjects) > 0
     reloaded = Concept.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.pref_label == "Primary Label"
-    assert reloaded.alt_label == ["Alternative 1", "Alternative 2"]
+    assert reloaded.pref_label == [LangString(value="Primary Label", lang=None)]
+    assert set(reloaded.alt_label) == {
+        LangString(value="Alternative 1", lang=None),
+        LangString(value="Alternative 2", lang=None),
+    }
 
 
 def test_collection_serialization() -> None:
@@ -101,5 +105,5 @@ def test_concept_with_scope_note() -> None:
     assert len(subjects) > 0
     reloaded = Concept.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.pref_label == "Complex Concept"
-    assert reloaded.scope_note == "This concept refers to..."
+    assert reloaded.pref_label == [LangString(value="Complex Concept", lang=None)]
+    assert reloaded.scope_note == [LangString(value="This concept refers to...", lang=None)]

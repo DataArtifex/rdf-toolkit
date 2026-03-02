@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from rdflib import RDF, Graph
 
+from dartfx.rdf.pydantic import LangString
 from dartfx.rdf.pydantic.spdx import SPDX, Package, SpdxDocument
 
 
@@ -21,7 +22,7 @@ def test_package_basic() -> None:
     subjects = list(graph.subjects(RDF.type, SPDX.Package))
     assert len(subjects) > 0
     reloaded = Package.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
-    assert reloaded.name == "Test Package"
+    assert reloaded.name == [LangString(value="Test Package", lang=None)]
 
 
 def test_spdx_document_basic() -> None:
@@ -50,7 +51,7 @@ def test_package_with_properties() -> None:
     assert len(subjects) > 0
     reloaded = Package.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.name == "Complex Package"
+    assert reloaded.name == [LangString(value="Complex Package", lang=None)]
 
 
 def test_spdx_round_trip() -> None:

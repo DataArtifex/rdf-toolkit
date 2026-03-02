@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from rdflib import RDF, Graph
 
+from dartfx.rdf.pydantic import LangString
 from dartfx.rdf.pydantic.prov import PROV, Activity, Agent, Entity
 
 
@@ -20,7 +21,7 @@ def test_entity_basic_serialization() -> None:
     subjects = list(graph.subjects(RDF.type, PROV.Entity))
     assert len(subjects) > 0
     reloaded = Entity.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
-    assert reloaded.value == "Test Entity"
+    assert reloaded.value == [LangString(value="Test Entity", lang=None)]
 
 
 def test_activity_basic_serialization() -> None:
@@ -70,7 +71,7 @@ def test_entity_derivation() -> None:
     assert subject is not None
     reloaded = Entity.from_rdf_graph(graph, subject)  # type: ignore[arg-type]
 
-    assert reloaded.value == "Derived"
+    assert reloaded.value == [LangString(value="Derived", lang=None)]
     assert reloaded.was_derived_from is not None
     assert isinstance(reloaded.was_derived_from, Entity)
 

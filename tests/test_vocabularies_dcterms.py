@@ -6,6 +6,7 @@ from datetime import datetime
 
 from rdflib import RDF, Graph
 
+from dartfx.rdf.pydantic import LangString
 from dartfx.rdf.pydantic.dcterms import DCTERMS, Agent, DcmiFrequency, DublinCoreRecord
 
 
@@ -24,8 +25,8 @@ def test_dublin_core_record_basic() -> None:
     assert len(subjects) > 0
     reloaded = DublinCoreRecord.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.title == "Test Record"
-    assert reloaded.description == "A simple description"
+    assert reloaded.title == [LangString(value="Test Record", lang=None)]
+    assert reloaded.description == [LangString(value="A simple description", lang=None)]
 
 
 def test_dublin_core_record_with_dates() -> None:
@@ -76,7 +77,7 @@ def test_agent_basic() -> None:
     assert len(subjects) > 0
     reloaded = Agent.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
 
-    assert reloaded.name == "Alice"
+    assert reloaded.name == [LangString(value="Alice", lang=None)]
 
 
 def test_dcterms_round_trip() -> None:

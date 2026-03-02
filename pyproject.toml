@@ -18,11 +18,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: Implementation :: CPython",
 ]
-dependencies = [
-  "pydantic>=2.5",
-  "pyshacl>=0.9.0",
-  "rdflib>=6.2",
-]
+dependencies = ["pydantic>=2.5", "pyshacl>=0.9.0", "rdflib>=7.0.0"]
 
 [project.urls]
 Documentation = "https://github.com/DataArtifex/rdf-toolkit#readme"
@@ -135,7 +131,4 @@ explicit_package_bases = true
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
-exclude = [
-    "^build/",
-    "^dist/",
-]
+exclude = ["^build/", "^dist/"]

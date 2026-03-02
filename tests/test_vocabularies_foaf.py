@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from rdflib import RDF
 
+from dartfx.rdf.pydantic import LangString
 from dartfx.rdf.pydantic.foaf import FOAF, Agent, Document, Organization, Person
 
 
@@ -36,7 +37,7 @@ def test_person_basic() -> None:
     subjects = list(graph.subjects(RDF.type, FOAF.Person))
     assert len(subjects) > 0
     reloaded = Person.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
-    assert reloaded.name == "John Doe"
+    assert reloaded.name == [LangString(value="John Doe", lang=None)]
 
 
 def test_organization_basic() -> None:
@@ -52,7 +53,7 @@ def test_organization_basic() -> None:
     subjects = list(graph.subjects(RDF.type, FOAF.Organization))
     assert len(subjects) > 0
     reloaded = Organization.from_rdf_graph(graph, subjects[0])  # type: ignore[arg-type]
-    assert reloaded.name == "ACME Corp"
+    assert reloaded.name == [LangString(value="ACME Corp", lang=None)]
 
 
 def test_agent_basic() -> None:

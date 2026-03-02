@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from rdflib import RDF, URIRef
 
+from dartfx.rdf.pydantic import LangString
 from dartfx.rdf.pydantic.dcterms import DublinCoreRecord
 from dartfx.rdf.pydantic.foaf import Person
 from dartfx.rdf.pydantic.odrl import Offer, Permission
@@ -28,8 +29,8 @@ def test_skos_flexible_input() -> None:
     # Test Round-trip
     # Note: reloaded items will currently be in list form because RDF is inherently multi-valued
     reloaded = Concept.from_rdf_graph(graph, URIRef("http://example.org/c1"))
-    assert reloaded.pref_label == "Main Label"
-    assert reloaded.definition == "A single string definition"
+    assert reloaded.pref_label == [LangString(value="Main Label", lang=None)]
+    assert reloaded.definition == [LangString(value="A single string definition", lang=None)]
     assert reloaded.notation == "N1"
 
 
@@ -50,7 +51,7 @@ def test_foaf_flexible_input() -> None:
 
     assert isinstance(subject, URIRef)
     reloaded = Person.from_rdf_graph(graph, subject)
-    assert reloaded.name == "John Doe"
+    assert reloaded.name == [LangString(value="John Doe", lang=None)]
     assert reloaded.mbox == "mailto:john@example.com"
 
 
@@ -67,7 +68,7 @@ def test_dcterms_flexible_input() -> None:
     assert (subject, DCTERMS.title, None) in graph
 
     reloaded = DublinCoreRecord.from_rdf_graph(graph, subject)
-    assert reloaded.title == "My Document"
+    assert reloaded.title == [LangString(value="My Document", lang=None)]
     assert reloaded.creator == "Author Name"
 
 
@@ -117,6 +118,6 @@ def test_mixed_input() -> None:
     assert len(list(graph.objects(URIRef("http://example.org/mixed"), SKOS.altLabel))) == 2
 
     reloaded = Concept.from_rdf_graph(graph, URIRef("http://example.org/mixed"))
-    assert reloaded.pref_label == "Single"
+    assert reloaded.pref_label == [LangString(value="Single", lang=None)]
     assert isinstance(reloaded.alt_label, list)
     assert len(reloaded.alt_label) == 2
