@@ -231,11 +231,13 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
     <span class="n">Annotated</span><span class="p">,</span>
     <span class="n">Any</span><span class="p">,</span>
     <span class="n">ClassVar</span><span class="p">,</span>
     <span class="n">TypeVar</span><span class="p">,</span>
     <span class="n">Union</span><span class="p">,</span>
+    <span class="n">cast</span><span class="p">,</span>
     <span class="n">get_args</span><span class="p">,</span>
     <span class="n">get_origin</span><span class="p">,</span>
 <span class="p">)</span>
@@ -405,7 +407,7 @@
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LangStringList</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LangStringList</span><span class="p">:</span>  <span class="c1"># type: ignore[override]</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Support ``ls += LangString(...)`` and ``ls += [...]``.&quot;&quot;&quot;</span>
         <span class="n">normalised</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LangString</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">LangString</span><span class="p">):</span>
@@ -417,6 +419,12 @@
         <span class="k">for</span> <span class="n">ls</span> <span class="ow">in</span> <span class="n">normalised</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_if_new</span><span class="p">(</span><span class="n">ls</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LangStringList</span><span class="p">:</span>  <span class="c1"># type: ignore[override]</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new ``LangStringList`` with additional entries.&quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">LangStringList</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">other</span>
+        <span class="k">return</span> <span class="n">result</span>
 
     <span class="c1"># -- subtraction (removal) ----------------------------------------------</span>
 
@@ -587,14 +595,19 @@
         <span class="k">return</span> <span class="n">LangStringList</span><span class="p">(</span><span class="n">_deduplicate_lang_strings</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">LangString</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">LangStringList</span><span class="p">(</span><span class="n">_deduplicate_lang_strings</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">LangStringList</span><span class="p">(</span><span class="n">_deduplicate_lang_strings</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">LangString</span><span class="p">],</span> <span class="n">value</span><span class="p">)))</span>
 
     <span class="n">result</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LangString</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">_normalise_into</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">LangStringList</span><span class="p">(</span><span class="n">_deduplicate_lang_strings</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
 
 
-<span class="n">LocalizedStr</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">LangStringList</span><span class="p">,</span> <span class="n">BeforeValidator</span><span class="p">(</span><span class="n">_coerce_to_lang_string_list</span><span class="p">)]</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="c1"># Mypy sees the wide input union so that ``Model(field=&quot;plain&quot;)`` type-checks.</span>
+    <span class="n">LocalizedStr</span> <span class="o">=</span> <span class="n">LocalizedStrInput</span> <span class="o">|</span> <span class="n">LangStringList</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="c1"># At runtime Pydantic uses the BeforeValidator to coerce inputs → LangStringList.</span>
+    <span class="n">LocalizedStr</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">LangStringList</span><span class="p">,</span> <span class="n">BeforeValidator</span><span class="p">(</span><span class="n">_coerce_to_lang_string_list</span><span class="p">)]</span>
 
 
 <div class="viewcode-block" id="RdfProperty">
