@@ -104,14 +104,18 @@ The toolkit provides several ways to handle URIs and specific XSD datatypes:
 
 - **Resource Identifiers**: Use `rdflib.URIRef` as a type hint for fields that should be serialized as RDF resources.
 - **XSD Datatypes**: Specify the `datatype` in `RdfProperty` to force a literal value to a specific XSD type (e.g., `XSD.anyURI`, `XSD.integer`).
-- **Localized Strings**: Use `LocalizedStr` for automatic handling of language tags and dictionary-based language maps.
+- **Localized Strings**: Use `LocalizedStr` for automatic handling of language tags.
+  Input can be a plain string, a `LangString`, a dictionary language map, or a
+  mixed list — the value is always stored as a `LangStringList` with
+  convenience query methods (`has_language`, `get_by_language`, `count_by_lang`,
+  `languages`, etc.) and built-in `(value, lang)` deduplication.
 - **Validation**: Combine with Pydantic's built-in types like `AnyUrl` for strict input validation.
 
 ```python
 from typing import Annotated, Optional
 from pydantic import AnyUrl
-from rdflib import XSD, SCHEMA, URIRef
-from dartfx.rdf.pydantic import RdfBaseModel, RdfProperty
+from rdflib import XSD, SCHEMA, SKOS, URIRef
+from dartfx.rdf.pydantic import RdfBaseModel, RdfProperty, LocalizedStr, LangString
 
 class WebResource(RdfBaseModel):
     # Serialized as an RDF resource (URIRef)
@@ -119,11 +123,24 @@ class WebResource(RdfBaseModel):
 
     # Validated by Pydantic, serialized as "..."^^xsd:anyURI literal
     url: Annotated[AnyUrl, RdfProperty(SCHEMA.url, datatype=XSD.anyURI)]
+
+class Concept(RdfBaseModel):
+    rdf_type = SKOS.Concept
+    rdf_namespace = EX
+
+    id: str
+    pref_label: Annotated[LocalizedStr | None, RdfProperty(SKOS.prefLabel)] = None
+
+c = Concept(id="c1", pref_label={"en": "World", "es": "Mundo"})
+c.pref_label.has_language("en")       # True
+c.pref_label.get_by_language("es")    # LangStringList([LangString("Mundo","es")])
+c.pref_label += LangString("Welt", "de")  # add with dedup
+str(c.pref_label)                     # str-like when one untagged entry exists
 ```
 
 See the [Pydantic RDF integration guide](docs/source/pydantic_rdf.rst) for a
-deeper walk-through including language-tagged strings, custom datatypes and
-subject selection.
+deeper walk-through including the full `LangStringList` API, language-tagged
+strings, custom datatypes and subject selection.
 
 ## Supported Vocabularies
 

@@ -5,15 +5,22 @@ All notable changes to this project will be documented in this file.
 ## [0.1.2]
 
 ### Added
-- Comprehensive language support for strings across all vocabulary models.
-- New `LangString` Pydantic model for representing language-tagged RDF literals.
-- New `LocalizedStr` type alias supporting `str`, `LangString`, `list`, and `dict` language maps.
-- Automatic aggregation of language-tagged literals into dictionaries during deserialization in `from_rdf_graph`.
-- Support for multi-valued language tags via `dict[str, list[str]]`.
+- New `LangString` frozen Pydantic model for representing language-tagged RDF literals.
+- New `LangStringList` class (extends `list[LangString]`) with convenience methods:
+  - Query: `count_by_lang`, `has_language`, `has_untagged`, `has_synonyms`, `languages`, `untagged`, `get_by_language`.
+  - Mutation: `append`, `extend`, `+=`, `-=`, `-` with automatic `(value, lang)` deduplication.
+  - Str-like: `__str__` and `__eq__` return the plain string value when a single entry or single untagged entry exists.
+- New `LocalizedStr` type alias (backed by `LangStringList`) that coerces any flexible input (str, dict, LangString, list) into canonical `LangStringList` storage.
+- Comprehensive Sphinx documentation with input tables, query/mutation examples, and RDF round-trip guide.
 
 ### Changed
-- Refactored SKOS, DCTERMS, FOAF, ODRL, PROV, SPDX, VCARD, and XKOS to use `LocalizedStr` for all textual properties.
-- Enhanced `_value_to_node` to handle `LangString` and dictionary-based language maps.
+- Refactored all vocabulary models (SKOS, DCTERMS, FOAF, ODRL, PROV, SPDX, VCARD, XKOS) to use `LocalizedStr` for textual properties.
+- `LocalizedStr` fields now always store a `LangStringList` internally instead of a union of str/dict/list types.
+- Updated serialization (`_serialise_into_graph`) with a fast path for `LangStringList` fields.
+- Updated deserialization (`from_rdf_graph`) to produce `LangStringList` directly.
+
+### Breaking Changes
+- `LocalizedStr` fields now return `LangStringList` (a `list[LangString]` subclass) instead of plain `str` or `dict`. Code using `== "string"` comparisons will still work for single-entry or single-untagged-entry fields due to str-like behaviour. Code using `isinstance(field, str)` or `isinstance(field, dict)` checks must be updated.
 
 ## [0.1.1]
 
