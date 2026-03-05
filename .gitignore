@@ -4,6 +4,8 @@
 temp
 tmp
 
+.codegraph/
+
 #
 # Python
 # https://github.com/github/gitignore/blob/main/Python.gitignore
