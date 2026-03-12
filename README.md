@@ -30,8 +30,8 @@ In the meantime, you can install the package locally by following these steps:
    First, clone the repository to your local machine:
 
    ```bash
-   git clone <repository-url>
-   cd <repository-directory>
+   git clone https://github.com/DataArtifex/rdf-toolkit.git
+   cd rdf-toolkit
    ```
 
 2. **Install the Package:**
@@ -41,6 +41,38 @@ In the meantime, you can install the package locally by following these steps:
     ```bash
     uv pip install -e .
     ```
+
+### Using as a Dependency
+
+If you want to use this package as a dependency in another project (via `requirements.txt` or `pyproject.toml`) without waiting for the PyPI release, you can use the following methods:
+
+#### Using `uv` (Recommended)
+`uv` handles git dependencies and lock files securely and is the preferred tool for this project:
+
+```bash
+uv add git+https://github.com/DataArtifex/rdf-toolkit.git
+```
+
+#### Using `pip` with Hash Verification (e.g. for Docker)
+If you are using `pip install --require-hashes` (common in Docker environments), `pip` cannot verify hashes for Git repositories. You must use the GitHub archive URL instead:
+
+```text
+dartfx-rdf @ https://github.com/DataArtifex/rdf-toolkit/archive/MAIN_OR_COMMIT.tar.gz#sha256=HASH
+```
+
+Example for a specific commit:
+```text
+dartfx-rdf @ https://github.com/DataArtifex/rdf-toolkit/archive/8e6d67ae093eb9321a5d8865d04d833de62ec95c.tar.gz#sha256=445e186c5b158ceb42d1406a762c8c9b728648c76fa047209ac391d24dd34b38
+```
+
+#### How to find the commit URL and Hash
+1. **Find the Commit Hash**: On the GitHub repository page, click on "Commits" or look at the short hash near the code. Copy the full 40-character SHA.
+2. **Form the Archive URL**: Use the format `https://github.com/DataArtifex/rdf-toolkit/archive/COMMIT_SHA.tar.gz`.
+3. **Calculate the SHA256**: If you need the hash for verification, run:
+   ```bash
+   curl -L https://github.com/DataArtifex/rdf-toolkit/archive/COMMIT_SHA.tar.gz -o temp.tar.gz
+   sha256sum temp.tar.gz
+   ```
 
 ## Usage
 
