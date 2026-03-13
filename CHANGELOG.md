@@ -2,7 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0]
+
+### Added
+- `RdfUriGenerator` protocol — a `@runtime_checkable` `Protocol` for objects that generate RDF subject URIs from a model instance. Any callable with the matching signature satisfies it automatically.
+- `DefaultUriGenerator` class — encapsulates the complete URI resolution logic (id field → namespace/base_uri → UUID fallback). Accepts `auto_uuid: bool = True` constructor parameter.
+- `TemplateUriGenerator(template)` — builds URIs from a Python format-string template (e.g. `"https://example.org/{year}/{id}"`). Returns BNode if a placeholder field is None.
+- `HashUriGenerator(namespace, fields, *, algorithm="sha256")` — deterministic, content-addressable URI from a hash of specified model fields.
+- `CompositeUriGenerator(*generators)` — tries generators in order and uses the first URIRef result; falls back to BNode.
+- `PrefixedUriGenerator(prefix, field)` — convenience generator that concatenates a fixed prefix with a single field value.
+- All new generators are exported from `dartfx.rdf.pydantic` and live in the internal `_uri_generators.py` module.
+- `DefaultUriGenerator` docstring now documents the `auto_uuid=True` default rationale (developer experience vs. RDF-correct BNode approach).
+
+### Changed
+- `rdf_uri_generator` field on `RdfBaseModel` now defaults to `DefaultUriGenerator()` and is typed `RdfUriGenerator` (was `Callable | None`). It is **always** set — no `None` check needed.
+- Custom generators passed at the instance level now take **full priority** over the `id` field, which is a key behavioural improvement. Previously the `id` field was hardcoded before the generator was consulted.
+- Custom generator signature updated: `(model, *, base_uri=None) -> URIRef | BNode`.
+
+### Breaking Changes
+- `rdf_auto_uuid` field removed from `RdfBaseModel`. Replace `MyModel(rdf_auto_uuid=False)` with `MyModel(rdf_uri_generator=DefaultUriGenerator(auto_uuid=False))`.
+- Custom URI generator callables must accept a `base_uri` keyword argument (or use `**kwargs`).
+
 ## [0.1.2]
+
 
 ### Added
 - New `LangString` frozen Pydantic model for representing language-tagged RDF literals.

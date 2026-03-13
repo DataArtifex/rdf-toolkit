@@ -34,7 +34,7 @@ class Person(RdfBaseModel):
     email: Annotated[str | None, RdfProperty(SCHEMA.email)] = None
     homepage: Annotated[str | None, RdfProperty(SCHEMA.url)] = None
     address: Annotated[Address | None, RdfProperty(SCHEMA.address)] = None
-    knows: Annotated[list[Person] | None, RdfProperty(SCHEMA.knows)] = Field(default_factory=list)
+    knows: Annotated[list[Person], RdfProperty(SCHEMA.knows)] = Field(default_factory=list)
 
 
 Person.model_rebuild()
@@ -75,7 +75,7 @@ def test_pydantic_model_serialisation() -> None:
     graph = person.to_rdf_graph()
 
     person_subject = URIRef(str(EX_PERSON) + person.id)
-    friend_subject = URIRef(str(EX_PERSON) + person.knows[0].id)  # type: ignore[index,union-attr]
+    friend_subject = URIRef(str(EX_PERSON) + person.knows[0].id)
     address_subject = URIRef(str(EX_ADDRESS) + person.address.id)  # type: ignore[union-attr]
 
     assert (person_subject, RDF.type, SCHEMA.Person) in graph
@@ -117,12 +117,16 @@ def test_turtle_01() -> None:
 
 
 def test_custom_uri_generator_01() -> None:
-    def custom_uri_generator(obj: Any) -> URIRef | BNode:
+    def custom_uri_generator(obj: Any, *, base_uri: str | None = None) -> URIRef | BNode:  # noqa: ARG001
         obj_type = type(obj)
         return EX[f"{obj_type.__name__}/{obj.id}"]
 
     person = build_person()
-    graph = person.to_rdf_graph(rdf_uri_generator=custom_uri_generator)
+    from typing import cast
+
+    from dartfx.rdf.pydantic import RdfUriGenerator
+
+    graph = person.to_rdf_graph(rdf_uri_generator=cast(RdfUriGenerator, custom_uri_generator))
     ttl = graph.serialize(format="turtle")
     assert "Alice" in ttl
     assert "Bob" in ttl

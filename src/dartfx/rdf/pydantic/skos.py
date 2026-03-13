@@ -32,8 +32,8 @@ class Label(SkosResource):
     """A SKOS-XL Label."""
 
     rdf_type = SKOSXL.Label
-    rdf_namespace = cast(Namespace, SKOSXL)
-    rdf_prefixes = {"skosxl": cast(Namespace, SKOSXL)}
+    rdf_namespace = SKOSXL
+    rdf_prefixes = {"skosxl": SKOSXL}
 
     literal_form: Annotated[str, RdfProperty(SKOSXL.literalForm)]
 

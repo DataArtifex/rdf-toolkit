@@ -2,7 +2,7 @@ from typing import Annotated, ClassVar
 
 from rdflib import BNode, Namespace, URIRef
 
-from dartfx.rdf.pydantic import RdfBaseModel, RdfProperty
+from dartfx.rdf.pydantic import DefaultUriGenerator, RdfBaseModel, RdfProperty
 
 EX = Namespace("http://example.org/")
 
@@ -27,16 +27,16 @@ class Person(RdfBaseModel):
 
 class NestedAddress(Address):
     # Disable auto UUID generation for this subclass
-    rdf_auto_uuid: bool = False
+    rdf_uri_generator: DefaultUriGenerator = DefaultUriGenerator(auto_uuid=False)
 
 
 class NestedPerson(Person):
-    rdf_auto_uuid: bool = False
+    rdf_uri_generator: DefaultUriGenerator = DefaultUriGenerator(auto_uuid=False)
     # Use NestedAddress for the address field
-    address: Annotated[NestedAddress | None, RdfProperty(EX.address)] = None  # type: ignore[assignment]
+    address: Annotated[NestedAddress | None, RdfProperty(EX.address)] = None
 
 
-def test_default_behavior():
+def test_default_behavior() -> None:
     """Test that default behavior (auto UUID) is preserved."""
     addr = Address(city="London", street="10 Downing St")
     person = Person(id="alice", name="Alice", address=addr)
@@ -51,7 +51,7 @@ def test_default_behavior():
     assert str(addresses[0]).startswith(str(EX)) or str(addresses[0]).startswith("urn:uuid:")
 
 
-def test_nested_behavior():
+def test_nested_behavior() -> None:
     """Test that disabling auto UUID produces BNodes (nested serialization)."""
     addr = NestedAddress(city="London", street="10 Downing St")
     person = NestedPerson(id="bob", name="Bob", address=addr)
@@ -70,7 +70,7 @@ def test_nested_behavior():
     assert "]" in turtle
 
 
-def test_manual_id_override():
+def test_manual_id_override() -> None:
     """Test that providing an ID still produces a URI even if auto_uuid is False."""
     addr = NestedAddress(id="my-addr", city="London", street="10 Downing St")
     person = NestedPerson(id="charlie", name="Charlie", address=addr)
@@ -86,7 +86,7 @@ def test_manual_id_override():
     assert str(addresses[0]) == str(EX) + "my-addr"
 
 
-def test_top_level_bnode():
+def test_top_level_bnode() -> None:
     """Test serialization of a top-level object without ID and auto_uuid=False."""
     addr = NestedAddress(city="Paris")
     graph = addr.to_rdf_graph()
@@ -96,7 +96,7 @@ def test_top_level_bnode():
     assert isinstance(subjects[0], BNode)
 
 
-def test_union_type_nested_model_round_trip():
+def test_union_type_nested_model_round_trip() -> None:
     """Ensure T | None union types work for nested models round-trip deserialization."""
     addr = Address(id="addr-1", city="Berlin", street="Champs")
     person = Person(id="david", name="David", address=addr)
