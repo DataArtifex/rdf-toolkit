@@ -46,6 +46,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pydantic_rdf.html">Pydantic ↔ RDF Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Pydantic Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.pydantic._uri_generators">URI Generators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.pydantic.dcterms">DCTERMS: Dublin Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.pydantic.foaf">FOAF: Friend of a Friend</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html#module-dartfx.rdf.pydantic.odrl">ODRL:  Open Digital Rights Language</a></li>
@@ -383,10 +384,16 @@
       </ul></li>
       <li><a href="modules.html#dartfx.rdf.pydantic.xkos.Correspondence.compares">compares (dartfx.rdf.pydantic.xkos.Correspondence attribute)</a>
 </li>
-      <li><a href="modules.html#dartfx.rdf.pydantic.skos.Concept">Concept (class in dartfx.rdf.pydantic.skos)</a>
+      <li><a href="modules.html#dartfx.rdf.pydantic.CompositeUriGenerator">CompositeUriGenerator (class in dartfx.rdf.pydantic)</a>
+
+      <ul>
+        <li><a href="modules.html#dartfx.rdf.pydantic._uri_generators.CompositeUriGenerator">(class in dartfx.rdf.pydantic._uri_generators)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.pydantic.skos.Concept">Concept (class in dartfx.rdf.pydantic.skos)</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.pydantic.xkos.ConceptAssociation">ConceptAssociation (class in dartfx.rdf.pydantic.xkos)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.skos.ConceptScheme">ConceptScheme (class in dartfx.rdf.pydantic.skos)</a>
@@ -475,6 +482,13 @@
 </li>
       </ul></li>
       <li>
+    dartfx.rdf.pydantic._uri_generators
+
+      <ul>
+        <li><a href="modules.html#module-dartfx.rdf.pydantic._uri_generators">module</a>
+</li>
+      </ul></li>
+      <li>
     dartfx.rdf.pydantic.dcterms
 
       <ul>
@@ -551,6 +565,8 @@
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DcmiFrequency">DcmiFrequency (class in dartfx.rdf.pydantic.dcterms)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DctermsResource">DctermsResource (class in dartfx.rdf.pydantic.dcterms)</a>
+</li>
+      <li><a href="modules.html#dartfx.rdf.pydantic.DefaultUriGenerator">DefaultUriGenerator (class in dartfx.rdf.pydantic)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.skos.Concept.definition">definition (dartfx.rdf.pydantic.skos.Concept attribute)</a>
 
@@ -864,14 +880,14 @@
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.vcard.VCard.has_note">has_note (dartfx.rdf.pydantic.vcard.VCard attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DublinCoreRecord.has_part">has_part (dartfx.rdf.pydantic.dcterms.DublinCoreRecord attribute)</a>
 
       <ul>
         <li><a href="modules.html#dartfx.rdf.pydantic.xkos.StatisticalConcept.has_part">(dartfx.rdf.pydantic.xkos.StatisticalConcept attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#dartfx.rdf.pydantic.vcard.VCard.has_photo">has_photo (dartfx.rdf.pydantic.vcard.VCard attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.odrl.Asset.has_policy">has_policy (dartfx.rdf.pydantic.odrl.Asset attribute)</a>
@@ -906,6 +922,12 @@
       </ul></li>
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DublinCoreRecord.has_version">has_version (dartfx.rdf.pydantic.dcterms.DublinCoreRecord attribute)</a>
 </li>
+      <li><a href="modules.html#dartfx.rdf.pydantic.HashUriGenerator">HashUriGenerator (class in dartfx.rdf.pydantic)</a>
+
+      <ul>
+        <li><a href="modules.html#dartfx.rdf.pydantic._uri_generators.HashUriGenerator">(class in dartfx.rdf.pydantic._uri_generators)</a>
+</li>
+      </ul></li>
       <li><a href="modules.html#dartfx.rdf.pydantic.skos.Collection.hidden_label">hidden_label (dartfx.rdf.pydantic.skos.Collection attribute)</a>
 
       <ul>
@@ -1514,6 +1536,8 @@
       <ul>
         <li><a href="modules.html#module-dartfx.rdf.pydantic">dartfx.rdf.pydantic</a>
 </li>
+        <li><a href="modules.html#module-dartfx.rdf.pydantic._uri_generators">dartfx.rdf.pydantic._uri_generators</a>
+</li>
         <li><a href="modules.html#module-dartfx.rdf.pydantic.dcterms">dartfx.rdf.pydantic.dcterms</a>
 </li>
         <li><a href="modules.html#module-dartfx.rdf.pydantic.foaf">dartfx.rdf.pydantic.foaf</a>
@@ -1777,6 +1801,12 @@
         <li><a href="modules.html#dartfx.rdf.pydantic.skos.ConceptScheme.pref_label_xl">(dartfx.rdf.pydantic.skos.ConceptScheme attribute)</a>
 </li>
       </ul></li>
+      <li><a href="modules.html#dartfx.rdf.pydantic.PrefixedUriGenerator">PrefixedUriGenerator (class in dartfx.rdf.pydantic)</a>
+
+      <ul>
+        <li><a href="modules.html#dartfx.rdf.pydantic._uri_generators.PrefixedUriGenerator">(class in dartfx.rdf.pydantic._uri_generators)</a>
+</li>
+      </ul></li>
       <li><a href="modules.html#dartfx.rdf.pydantic.spdx.Package.primary_package_purpose">primary_package_purpose (dartfx.rdf.pydantic.spdx.Package attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.foaf.Document.primary_topic">primary_topic (dartfx.rdf.pydantic.foaf.Document attribute)</a>
@@ -1819,8 +1849,6 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules.html#dartfx.rdf.pydantic.RdfBaseModel.rdf_auto_uuid">rdf_auto_uuid (dartfx.rdf.pydantic.RdfBaseModel attribute)</a>
-</li>
       <li><a href="modules.html#dartfx.rdf.pydantic.RdfBaseModel.rdf_id_field">rdf_id_field (dartfx.rdf.pydantic.RdfBaseModel attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DctermsResource.rdf_namespace">rdf_namespace (dartfx.rdf.pydantic.dcterms.DctermsResource attribute)</a>
@@ -2147,6 +2175,8 @@
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.RdfProperty">RdfProperty (class in dartfx.rdf.pydantic)</a>
 </li>
+      <li><a href="modules.html#dartfx.rdf.pydantic.RdfUriGenerator">RdfUriGenerator (class in dartfx.rdf.pydantic)</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.pydantic.spdx.ExternalRef.reference_category">reference_category (dartfx.rdf.pydantic.spdx.ExternalRef attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.spdx.ExternalRef.reference_locator">reference_locator (dartfx.rdf.pydantic.spdx.ExternalRef attribute)</a>
@@ -2357,6 +2387,12 @@
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.vcard.TelephoneType">TelephoneType (class in dartfx.rdf.pydantic.vcard)</a>
 </li>
+      <li><a href="modules.html#dartfx.rdf.pydantic.TemplateUriGenerator">TemplateUriGenerator (class in dartfx.rdf.pydantic)</a>
+
+      <ul>
+        <li><a href="modules.html#dartfx.rdf.pydantic._uri_generators.TemplateUriGenerator">(class in dartfx.rdf.pydantic._uri_generators)</a>
+</li>
+      </ul></li>
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DublinCoreRecord.temporal">temporal (dartfx.rdf.pydantic.dcterms.DublinCoreRecord attribute)</a>
 
       <ul>
@@ -2369,10 +2405,10 @@
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.foaf.Image.thumbnail">thumbnail (dartfx.rdf.pydantic.foaf.Image attribute)</a>
 </li>
-      <li><a href="modules.html#dartfx.rdf.pydantic.odrl.Ticket">Ticket (class in dartfx.rdf.pydantic.odrl)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules.html#dartfx.rdf.pydantic.odrl.Ticket">Ticket (class in dartfx.rdf.pydantic.odrl)</a>
+</li>
       <li><a href="modules.html#dartfx.rdf.pydantic.foaf.Agent.tipjar">tipjar (dartfx.rdf.pydantic.foaf.Agent attribute)</a>
 </li>
       <li><a href="modules.html#dartfx.rdf.pydantic.dcterms.DublinCoreRecord.title">title (dartfx.rdf.pydantic.dcterms.DublinCoreRecord attribute)</a>

@@ -5,6 +5,13 @@ Pydantic Core
    :undoc-members:
    :show-inheritance:
 
+URI Generators
+--------------
+.. automodule:: dartfx.rdf.pydantic._uri_generators
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 DCTERMS: Dublin Core
 --------------------

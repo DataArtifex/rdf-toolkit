@@ -415,3 +415,217 @@ Advanced scenarios
 
 The tests in :mod:`tests.test_pydantic_rdf` provide additional examples that
 cover nested resources, optional values, and custom datatypes.
+
+
+Subject URI generation
+----------------------
+
+By default, :class:`~dartfx.rdf.pydantic.RdfBaseModel` delegates subject URI
+creation to a :class:`~dartfx.rdf.pydantic.RdfUriGenerator` — a simple
+:py:class:`typing.Protocol` satisfied by any callable with the signature::
+
+    (model: RdfBaseModel, *, base_uri: str | None = None) -> URIRef | BNode
+
+The default strategy is :class:`~dartfx.rdf.pydantic.DefaultUriGenerator`,
+which resolves a subject in the following order:
+
+1. If ``rdf_id_field`` is set and non-``None``: build a URI from the value
+   (prepend namespace / base_uri, or use as-is if already an absolute URI).
+2. If no identifier: mint a UUID URI (``auto_uuid=True``).
+3. If ``auto_uuid=False``: return a :class:`~rdflib.BNode`.
+
+.. note::
+
+   **Why** ``auto_uuid=True`` **is the default**
+
+   Strictly speaking, an anonymous resource should be a Blank Node.  However,
+   UUID URIs are the practical default because they:
+
+   * travel across graph boundaries (BNodes cannot),
+   * survive round-trips through parse/serialise cycles, and
+   * never collide when two graphs are merged.
+
+   Use ``DefaultUriGenerator(auto_uuid=False)`` when you explicitly want
+   anonymous, locally-scoped resources (e.g. reified statements).
+
+
+Replacing the default generator
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Assign any :class:`~dartfx.rdf.pydantic.RdfUriGenerator` to the
+``rdf_uri_generator`` field — either at the **class level** (as a default for
+all instances) or at the **instance level** (to override per object):
+
+.. code-block:: python
+
+   from dartfx.rdf.pydantic import RdfBaseModel, DefaultUriGenerator
+
+   # Class-level: all instances use BNodes unless they have an id
+   class Statement(RdfBaseModel):
+       rdf_uri_generator = DefaultUriGenerator(auto_uuid=False)
+       ...
+
+   # Instance-level: one specific object gets a custom generator
+   person = Person(
+       id="alice",
+       rdf_uri_generator=lambda model, *, base_uri=None: EX[type(model).__name__],
+   )
+
+You can also pass a generator at call-site, which takes priority over the
+instance:
+
+.. code-block:: python
+
+   graph = person.to_rdf_graph(rdf_uri_generator=my_call_site_generator)
+
+
+Built-in generators
+^^^^^^^^^^^^^^^^^^^
+
+The :mod:`~dartfx.rdf.pydantic._uri_generators` module provides four
+ready-to-use implementations beyond :class:`~dartfx.rdf.pydantic.DefaultUriGenerator`.
+All are exported from ``dartfx.rdf.pydantic``.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 35 65
+
+   * - Generator
+     - Use when…
+   * - :class:`~dartfx.rdf.pydantic.TemplateUriGenerator`
+     - The URI shape is known and model fields supply the parts.
+   * - :class:`~dartfx.rdf.pydantic.HashUriGenerator`
+     - No stable id; need deterministic, content-addressable URIs.
+   * - :class:`~dartfx.rdf.pydantic.CompositeUriGenerator`
+     - Multiple strategies needed with a clear priority order.
+   * - :class:`~dartfx.rdf.pydantic.PrefixedUriGenerator`
+     - Lightest option: just ``prefix + field_value``.
+
+
+TemplateUriGenerator
+""""""""""""""""""""
+
+Builds URIs from a Python format-string where ``{field_name}`` placeholders
+are replaced by model field values.  Returns a :class:`~rdflib.BNode` if a
+required field is ``None``.
+
+.. code-block:: python
+
+   from dartfx.rdf.pydantic import TemplateUriGenerator
+
+   class Dataset(RdfBaseModel):
+       rdf_type = EX.Dataset
+       rdf_uri_generator = TemplateUriGenerator(
+           "https://example.org/datasets/{year}/{slug}"
+       )
+       year: int | None = None
+       slug: str | None = None
+
+   ds = Dataset(year=2024, slug="climate")
+   # Subject: <https://example.org/datasets/2024/climate>
+
+
+HashUriGenerator
+""""""""""""""""
+
+Produces a deterministic URI by hashing the concatenated values of specified
+model fields.  Useful for deduplication across separate serialisations.
+
+.. code-block:: python
+
+   from dartfx.rdf.pydantic import HashUriGenerator
+
+   class Publication(RdfBaseModel):
+       rdf_uri_generator = HashUriGenerator(
+           namespace="https://example.org/pub/",
+           fields=["doi", "title"],
+           algorithm="sha256",  # default
+       )
+       doi: str | None = None
+       title: str | None = None
+
+   pub = Publication(doi="10.1234/ex", title="My Paper")
+   # Subject: <https://example.org/pub/<sha256-digest>>
+
+The hash is computed over ``"|".join(str(v) for v in fields if v is not None)``.
+Returns a :class:`~rdflib.BNode` if all specified fields are ``None``.
+
+
+CompositeUriGenerator
+"""""""""""""""""""""
+
+Tries a sequence of generators in order and returns the result of the first
+one that produces a :class:`~rdflib.URIRef`.  Falls back to
+:class:`~rdflib.BNode` if all generators fail.
+
+.. code-block:: python
+
+   from dartfx.rdf.pydantic import (
+       CompositeUriGenerator,
+       DefaultUriGenerator,
+       HashUriGenerator,
+   )
+
+   gen = CompositeUriGenerator(
+       DefaultUriGenerator(auto_uuid=False),      # use id if set, else try next
+       HashUriGenerator("https://example.org/h/", ["title"]),
+   )
+
+   class Article(RdfBaseModel):
+       rdf_uri_generator = gen
+       id: str | None = None
+       title: str | None = None
+
+
+PrefixedUriGenerator
+""""""""""""""""""""
+
+The simplest option: concatenates a fixed prefix with the value of a single
+model field.
+
+.. code-block:: python
+
+   from dartfx.rdf.pydantic import PrefixedUriGenerator
+
+   class Concept(RdfBaseModel):
+       rdf_uri_generator = PrefixedUriGenerator(
+           prefix="https://vocab.example.org/concepts/",
+           field="code",
+       )
+       code: str | None = None
+       label: str | None = None
+
+   c = Concept(code="001", label="Agriculture")
+   # Subject: <https://vocab.example.org/concepts/001>
+
+Returns a :class:`~rdflib.BNode` when the field value is ``None``.
+
+
+Custom generators
+^^^^^^^^^^^^^^^^^
+
+Any callable with the right signature qualifies:
+
+.. code-block:: python
+
+   from rdflib import URIRef, BNode
+   from dartfx.rdf.pydantic import RdfBaseModel, RdfUriGenerator
+
+   def my_generator(
+       model: RdfBaseModel,
+       *,
+       base_uri: str | None = None,
+   ) -> URIRef | BNode:
+       return EX[f"{type(model).__name__}/{model.id}"]
+
+   assert isinstance(my_generator, RdfUriGenerator)  # True — protocol is runtime-checkable
+
+   # Or as a class with __call__:
+   class MyGenerator:
+       def __call__(
+           self,
+           model: RdfBaseModel,
+           *,
+           base_uri: str | None = None,
+       ) -> URIRef | BNode:
+           ...

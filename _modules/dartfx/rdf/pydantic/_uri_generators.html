@@ -1,0 +1,425 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dartfx.rdf.pydantic._uri_generators &mdash; Data Artifex RDF Toolkit 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Data Artifex RDF Toolkit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydantic_rdf.html">Pydantic ↔ RDF Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">Pydantic Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic._uri_generators">URI Generators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.dcterms">DCTERMS: Dublin Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.foaf">FOAF: Friend of a Friend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.odrl">ODRL:  Open Digital Rights Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.prov">PROV:  Prov Ontology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.skos">SKOS:  Simple Knowledge Organization System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.spdx">SPDX:  Software Package Data Exchange</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.vcard">VCARD: vCard / Virtual Contact File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html#module-dartfx.rdf.pydantic.xkos">XKOS: SKOS extension for representing statistical classifications</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Data Artifex RDF Toolkit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">dartfx.rdf.pydantic._uri_generators</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for dartfx.rdf.pydantic._uri_generators</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Additional RDF subject URI generators for :mod:`dartfx.rdf.pydantic`.</span>
+
+<span class="sd">This module provides a collection of ready-to-use :class:`RdfUriGenerator`</span>
+<span class="sd">implementations beyond the :class:`~dartfx.rdf.pydantic.DefaultUriGenerator`</span>
+<span class="sd">that is built into :class:`~dartfx.rdf.pydantic.RdfBaseModel`.</span>
+
+<span class="sd">Available generators:</span>
+
+<span class="sd">* :class:`TemplateUriGenerator`</span>
+<span class="sd">* :class:`HashUriGenerator`</span>
+<span class="sd">* :class:`CompositeUriGenerator`</span>
+<span class="sd">* :class:`PrefixedUriGenerator`</span>
+
+<span class="sd">Choosing the right generator</span>
+<span class="sd">-----------------------------</span>
+
+<span class="sd">* **No explicit identifier** available, and the resource has **global identity**</span>
+<span class="sd">  → use :class:`DefaultUriGenerator` (UUID on) or :class:`HashUriGenerator`.</span>
+
+<span class="sd">* **No explicit identifier** available, and the resource is **local / anonymous**</span>
+<span class="sd">  (e.g. a reified statement, an intermediate blank node in a graph pattern)</span>
+<span class="sd">  → use :class:`DefaultUriGenerator` with ``auto_uuid=False``, which returns a</span>
+<span class="sd">  :class:`~rdflib.BNode`.  This is more semantically correct per the RDF</span>
+<span class="sd">  specification, but BNodes cannot be referenced across graph boundaries.</span>
+
+<span class="sd">* **Identifier is embedded in existing fields** and you want to build a</span>
+<span class="sd">  structured URI without changing the model</span>
+<span class="sd">  → use :class:`TemplateUriGenerator` or :class:`PrefixedUriGenerator`.</span>
+
+<span class="sd">* **No stable identifier exists** but you need a **deterministic, reproducible**</span>
+<span class="sd">  URI from the model&#39;s content (useful for deduplication)</span>
+<span class="sd">  → use :class:`HashUriGenerator`.</span>
+
+<span class="sd">* **Multiple strategies** needed with a clear priority order</span>
+<span class="sd">  → wrap them in :class:`CompositeUriGenerator`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">BNode</span><span class="p">,</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">URIRef</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">dartfx.rdf.pydantic._base</span><span class="w"> </span><span class="kn">import</span> <span class="n">RdfBaseModel</span><span class="p">,</span> <span class="n">RdfUriGenerator</span>
+
+
+<div class="viewcode-block" id="TemplateUriGenerator">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.TemplateUriGenerator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TemplateUriGenerator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;URI generator driven by a Python format-string template.</span>
+
+<span class="sd">    Placeholders are replaced with model field values using</span>
+<span class="sd">    :meth:`str.format_map`.  If a placeholder refers to a field that is</span>
+<span class="sd">    ``None`` or absent, the generator returns a :class:`~rdflib.BNode` rather</span>
+<span class="sd">    than producing a malformed URI.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    template : str</span>
+<span class="sd">        A URI string with ``{field_name}`` placeholders.  Any field accessible</span>
+<span class="sd">        via :meth:`~pydantic.BaseModel.model_dump` can be referenced.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        from dartfx.rdf.pydantic import RdfBaseModel, RdfProperty</span>
+<span class="sd">        from dartfx.rdf.pydantic._uri_generators import TemplateUriGenerator</span>
+<span class="sd">        from rdflib import Namespace</span>
+
+<span class="sd">        EX = Namespace(&quot;https://example.org/&quot;)</span>
+
+<span class="sd">        class Dataset(RdfBaseModel):</span>
+<span class="sd">            rdf_namespace = EX</span>
+<span class="sd">            rdf_uri_generator = TemplateUriGenerator(</span>
+<span class="sd">                &quot;https://example.org/datasets/{year}/{slug}&quot;</span>
+<span class="sd">            )</span>
+
+<span class="sd">            year: int | None = None</span>
+<span class="sd">            slug: str | None = None</span>
+
+<span class="sd">        ds = Dataset(year=2024, slug=&quot;climate-data&quot;)</span>
+<span class="sd">        ttl = ds.to_rdf(&quot;turtle&quot;)</span>
+<span class="sd">        # Subject: &lt;https://example.org/datasets/2024/climate-data&gt;</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The *base_uri* argument from the serialiser is ignored; the template is</span>
+<span class="sd">    always used as-is.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="n">template</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">RdfBaseModel</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">base_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># noqa: ARG002</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">BNode</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a URI from the template, substituting model field values.&quot;&quot;&quot;</span>
+        <span class="c1"># Build a dict of only non-None field values (as strings)</span>
+        <span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="c1"># A required placeholder has no value — fall back to BNode</span>
+            <span class="k">return</span> <span class="n">BNode</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="HashUriGenerator">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.HashUriGenerator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HashUriGenerator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;URI generator that creates deterministic, content-addressable URIs.</span>
+
+<span class="sd">    Computes a stable hash of the specified model fields and appends it to a</span>
+<span class="sd">    base namespace, producing a reproducible URI regardless of insert order or</span>
+<span class="sd">    serialisation time.</span>
+
+<span class="sd">    This is particularly useful when:</span>
+
+<span class="sd">    * No natural identifier exists in the data.</span>
+<span class="sd">    * You want to deduplicate resources across separate serialisations.</span>
+<span class="sd">    * You need stable URIs without assigning them explicitly.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    namespace : str | Namespace</span>
+<span class="sd">        The base URI namespace to prepend to the hash digest, e.g.</span>
+<span class="sd">        ``&quot;https://example.org/hash/&quot;`` or ``Namespace(&quot;https://example.org/hash/&quot;)``.</span>
+<span class="sd">        A trailing ``/`` is added automatically if absent.</span>
+<span class="sd">    fields : list[str]</span>
+<span class="sd">        Names of the model fields to include in the hash, in order.  Fields</span>
+<span class="sd">        with ``None`` values are skipped.  If *no* field has a value, a</span>
+<span class="sd">        :class:`~rdflib.BNode` is returned.</span>
+<span class="sd">    algorithm : str</span>
+<span class="sd">        Hash algorithm name accepted by :func:`hashlib.new`.  Default is</span>
+<span class="sd">        ``&quot;sha256&quot;``.  Use ``&quot;sha1&quot;`` for shorter (but collision-prone) digests.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        from dartfx.rdf.pydantic import RdfBaseModel</span>
+<span class="sd">        from dartfx.rdf.pydantic._uri_generators import HashUriGenerator</span>
+
+<span class="sd">        class Publication(RdfBaseModel):</span>
+<span class="sd">            rdf_uri_generator = HashUriGenerator(</span>
+<span class="sd">                namespace=&quot;https://example.org/pub/&quot;,</span>
+<span class="sd">                fields=[&quot;doi&quot;, &quot;title&quot;],</span>
+<span class="sd">            )</span>
+
+<span class="sd">            doi: str | None = None</span>
+<span class="sd">            title: str | None = None</span>
+
+<span class="sd">        pub = Publication(doi=&quot;10.1234/example&quot;, title=&quot;My Paper&quot;)</span>
+<span class="sd">        # Subject: &lt;https://example.org/pub/&lt;sha256-of-doi+title&gt;&gt;</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Field values are concatenated with ``&quot;|&quot;`` as a separator before hashing.</span>
+<span class="sd">    The *base_uri* argument from the serialiser is ignored; ``namespace``</span>
+<span class="sd">    always takes precedence.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_SEPARATOR</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">namespace</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Namespace</span><span class="p">,</span>
+        <span class="n">fields</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">algorithm</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;sha256&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">namespace</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">namespace</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">fields</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span> <span class="o">=</span> <span class="n">algorithm</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">RdfBaseModel</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">base_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># noqa: ARG002</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">BNode</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a hash-based URI from the specified model fields.&quot;&quot;&quot;</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">field</span><span class="p">))</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">parts</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">BNode</span><span class="p">()</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SEPARATOR</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+        <span class="n">digest</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">content</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">namespace</span> <span class="o">+</span> <span class="n">digest</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="CompositeUriGenerator">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.CompositeUriGenerator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CompositeUriGenerator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;URI generator that tries multiple generators in priority order.</span>
+
+<span class="sd">    Returns the result of the **first** generator that produces a</span>
+<span class="sd">    :class:`~rdflib.URIRef`.  Falls back to a :class:`~rdflib.BNode` only</span>
+<span class="sd">    if every generator in the chain returns a BNode.</span>
+
+<span class="sd">    This is useful for expressing fallback strategies:</span>
+
+<span class="sd">    * &quot;Use the ``doi`` field if set, otherwise hash the title, otherwise BNode.&quot;</span>
+<span class="sd">    * &quot;Use a custom generator for known types, fall back to default otherwise.&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    *generators : RdfUriGenerator</span>
+<span class="sd">        Generators to try in order.  Must accept the standard</span>
+<span class="sd">        ``(model, *, base_uri=None) -&gt; URIRef | BNode`` signature.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        from dartfx.rdf.pydantic import DefaultUriGenerator</span>
+<span class="sd">        from dartfx.rdf.pydantic._uri_generators import (</span>
+<span class="sd">            CompositeUriGenerator,</span>
+<span class="sd">            HashUriGenerator,</span>
+<span class="sd">        )</span>
+
+<span class="sd">        gen = CompositeUriGenerator(</span>
+<span class="sd">            DefaultUriGenerator(auto_uuid=False),          # use id if set, else BNode</span>
+<span class="sd">            HashUriGenerator(&quot;https://example.org/h/&quot;, [&quot;title&quot;]),  # hash fallback</span>
+<span class="sd">        )</span>
+
+<span class="sd">        class Article(RdfBaseModel):</span>
+<span class="sd">            rdf_uri_generator = gen</span>
+<span class="sd">            title: str | None = None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">RdfUriGenerator</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generators</span> <span class="o">=</span> <span class="n">generators</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">RdfBaseModel</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">base_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">BNode</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Try each generator in order; return the first URIRef result.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">generator</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">generators</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">generator</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">base_uri</span><span class="o">=</span><span class="n">base_uri</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">BNode</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="PrefixedUriGenerator">
+<a class="viewcode-back" href="../../../../modules.html#dartfx.rdf.pydantic.PrefixedUriGenerator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PrefixedUriGenerator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;URI generator that concatenates a fixed prefix with a single field value.</span>
+
+<span class="sd">    A lightweight convenience alternative to :class:`TemplateUriGenerator` when</span>
+<span class="sd">    the URI is simply ``&lt;prefix&gt;&lt;field_value&gt;``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    prefix : str | Namespace</span>
+<span class="sd">        The URI prefix.  A trailing ``/`` is added automatically if absent.</span>
+<span class="sd">    field : str</span>
+<span class="sd">        The model field whose value is appended to the prefix.  If the field</span>
+<span class="sd">        is ``None`` or absent, a :class:`~rdflib.BNode` is returned.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        from dartfx.rdf.pydantic._uri_generators import PrefixedUriGenerator</span>
+
+<span class="sd">        class Concept(RdfBaseModel):</span>
+<span class="sd">            rdf_uri_generator = PrefixedUriGenerator(</span>
+<span class="sd">                prefix=&quot;https://vocab.example.org/concepts/&quot;,</span>
+<span class="sd">                field=&quot;code&quot;,</span>
+<span class="sd">            )</span>
+<span class="sd">            code: str | None = None</span>
+<span class="sd">            label: str | None = None</span>
+
+<span class="sd">        c = Concept(code=&quot;001&quot;, label=&quot;Agriculture&quot;)</span>
+<span class="sd">        # Subject: &lt;https://vocab.example.org/concepts/001&gt;</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The *base_uri* argument from the serialiser is ignored; ``prefix`` always</span>
+<span class="sd">    takes precedence.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">RdfBaseModel</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">base_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># noqa: ARG002</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">URIRef</span> <span class="o">|</span> <span class="n">BNode</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a URI as prefix + field value.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">BNode</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">URIRef</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Pascal Heus.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
