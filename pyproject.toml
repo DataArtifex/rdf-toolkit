@@ -38,7 +38,7 @@ path = "src/dartfx/rdf/__about__.py"
 [dependency-groups]
 dev = [
   "coverage[toml]>=6.5",
-  "pytest>=7.0.0",
+  "pytest>=9",
   "pytest-benchmark>=4.0.0",
   "mypy>=1.0.0",
   "python-dotenv>=1.0.0",
@@ -48,7 +48,7 @@ dev = [
 docs = [
   "sphinx>=7.0.0",
   "sphinx-rtd-theme>=1.2.0",
-  "myst-parser>=1.0.0",
+  "myst-parser>=5.0.0",
   "sphinx-copybutton>=0.5.0",
 ]
 
