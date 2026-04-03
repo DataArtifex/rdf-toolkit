@@ -3,7 +3,7 @@ from typing import Annotated
 import pytest
 from rdflib import SKOS, Graph, Literal, Namespace
 
-from dartfx.rdf.pydantic import LangString, LocalizedStr, RdfBaseModel, RdfProperty
+from dartfx.rdf.pydantic import LangString, LangStringList, LocalizedStr, RdfBaseModel, RdfProperty
 
 EX = Namespace("http://example.org/")
 
@@ -17,6 +17,11 @@ class LocalizedModel(RdfBaseModel):
     note: Annotated[LocalizedStr | None, RdfProperty(SKOS.note)] = None
 
 
+def _label_list(model: LocalizedModel) -> LangStringList:
+    assert isinstance(model.label, LangStringList)
+    return model.label
+
+
 # ---------------------------------------------------------------------------
 # Coercion tests – verify flexible input → canonical list[LangString]
 # ---------------------------------------------------------------------------
@@ -25,19 +30,19 @@ class LocalizedModel(RdfBaseModel):
 def test_coerce_plain_string():
     """A plain string is coerced to [LangString(value=..., lang=None)]."""
     m = LocalizedModel(id="1", label="Plain")
-    assert m.label == [LangString(value="Plain", lang=None)]
+    assert _label_list(m) == [LangString(value="Plain", lang=None)]
 
 
 def test_coerce_lang_string_object():
     """A single LangString is wrapped in a list."""
     m = LocalizedModel(id="2", label=LangString(value="Hello", lang="en"))
-    assert m.label == [LangString(value="Hello", lang="en")]
+    assert _label_list(m) == [LangString(value="Hello", lang="en")]
 
 
 def test_coerce_dict_mapping():
     """A language-map dict is expanded into a list of LangString."""
     m = LocalizedModel(id="3", label={"en": "World", "es": "Mundo"})
-    assert set(m.label) == {
+    assert set(_label_list(m)) == {
         LangString(value="World", lang="en"),
         LangString(value="Mundo", lang="es"),
     }
@@ -46,7 +51,7 @@ def test_coerce_dict_mapping():
 def test_coerce_dict_with_lists():
     """Dict values that are lists expand into multiple LangString entries."""
     m = LocalizedModel(id="4", label={"en": ["Earth", "World"], "fr": "Monde"})
-    assert set(m.label) == {
+    assert set(_label_list(m)) == {
         LangString(value="Earth", lang="en"),
         LangString(value="World", lang="en"),
         LangString(value="Monde", lang="fr"),
@@ -59,7 +64,7 @@ def test_coerce_list_of_mixed():
         id="5",
         label=["Plain", LangString(value="Hello", lang="en"), "Another Plain", LangString(value="Bonjour", lang="fr")],
     )
-    assert m.label == [
+    assert _label_list(m) == [
         LangString(value="Plain", lang=None),
         LangString(value="Hello", lang="en"),
         LangString(value="Another Plain", lang=None),
@@ -82,7 +87,7 @@ def test_uniqueness_dedup():
             LangString(value="Hello", lang="fr"),
         ],
     )
-    assert m.label == [
+    assert _label_list(m) == [
         LangString(value="Hello", lang="en"),
         LangString(value="Hello", lang="fr"),
     ]
@@ -91,7 +96,7 @@ def test_uniqueness_dedup():
 def test_uniqueness_dict_dedup():
     """Duplicate values within a dict are deduplicated."""
     m = LocalizedModel(id="u2", label={"en": ["World", "World"]})
-    assert m.label == [LangString(value="World", lang="en")]
+    assert _label_list(m) == [LangString(value="World", lang="en")]
 
 
 # ---------------------------------------------------------------------------
@@ -105,14 +110,14 @@ def test_localized_str_plain_string_roundtrip():
     g = m.to_rdf_graph()
 
     # Verify RDF
-    labels = list(g.objects(EX["1"], SKOS.prefLabel))
+    labels = [lit for lit in g.objects(EX["1"], SKOS.prefLabel) if isinstance(lit, Literal)]
     assert len(labels) == 1
     assert str(labels[0]) == "Plain"
     assert labels[0].language is None
 
     # Round-trip
     restored = LocalizedModel.from_rdf_graph(g, subject=EX["1"])
-    assert restored.label == [LangString(value="Plain", lang=None)]
+    assert _label_list(restored) == [LangString(value="Plain", lang=None)]
 
 
 def test_localized_str_lang_string_object_roundtrip():
@@ -121,14 +126,14 @@ def test_localized_str_lang_string_object_roundtrip():
     g = m.to_rdf_graph()
 
     # Verify RDF
-    labels = list(g.objects(EX["2"], SKOS.prefLabel))
+    labels = [lit for lit in g.objects(EX["2"], SKOS.prefLabel) if isinstance(lit, Literal)]
     assert len(labels) == 1
     assert str(labels[0]) == "Hello"
     assert labels[0].language == "en"
 
     # Round-trip
     restored = LocalizedModel.from_rdf_graph(g, subject=EX["2"])
-    assert restored.label == [LangString(value="Hello", lang="en")]
+    assert _label_list(restored) == [LangString(value="Hello", lang="en")]
 
 
 def test_localized_str_dict_mapping_roundtrip():
@@ -137,7 +142,7 @@ def test_localized_str_dict_mapping_roundtrip():
     g = m.to_rdf_graph()
 
     # Verify RDF
-    labels = list(g.objects(EX["3"], SKOS.prefLabel))
+    labels = [lit for lit in g.objects(EX["3"], SKOS.prefLabel) if isinstance(lit, Literal)]
     assert len(labels) == 2
 
     found_en = any(str(lit) == "World" and lit.language == "en" for lit in labels)
@@ -147,7 +152,7 @@ def test_localized_str_dict_mapping_roundtrip():
 
     # Round-trip
     restored = LocalizedModel.from_rdf_graph(g, subject=EX["3"])
-    assert set(restored.label) == {
+    assert set(_label_list(restored)) == {
         LangString(value="World", lang="en"),
         LangString(value="Mundo", lang="es"),
     }
@@ -164,7 +169,7 @@ def test_localized_str_dict_with_lists_roundtrip():
 
     # Round-trip
     restored = LocalizedModel.from_rdf_graph(g, subject=EX["4"])
-    assert set(restored.label) == {
+    assert set(_label_list(restored)) == {
         LangString(value="Earth", lang="en"),
         LangString(value="World", lang="en"),
         LangString(value="Monde", lang="fr"),
@@ -185,7 +190,7 @@ def test_localized_str_list_of_mixed_roundtrip():
 
     # Round-trip
     restored = LocalizedModel.from_rdf_graph(g, subject=EX["5"])
-    assert set(restored.label) == {
+    assert set(_label_list(restored)) == {
         LangString(value="Plain", lang=None),
         LangString(value="Hello", lang="en"),
         LangString(value="Another Plain", lang=None),
@@ -228,7 +233,7 @@ def test_localized_str_multiple_tags_deserialization():
 
     m = LocalizedModel.from_rdf_graph(g, subject=subj)
     assert isinstance(m.label, list)
-    assert set(m.label) == {
+    assert set(_label_list(m)) == {
         LangString(value="Hello", lang="en"),
         LangString(value="Hi", lang="en"),
         LangString(value="Mundo", lang="es"),
@@ -270,31 +275,35 @@ def test_lang_string_behavior():
 def test_list_append():
     """LangString items can be appended to a LocalizedStr field."""
     m = LocalizedModel(id="mut1", label="Initial")
-    m.label.append(LangString(value="Extra", lang="de"))
-    assert LangString(value="Extra", lang="de") in m.label
-    assert len(m.label) == 2
+    label = _label_list(m)
+    label.append(LangString(value="Extra", lang="de"))
+    assert LangString(value="Extra", lang="de") in label
+    assert len(label) == 2
 
 
 def test_list_iadd():
     """list += works for adding LangString items."""
     m = LocalizedModel(id="mut2", label="Initial")
-    m.label += [LangString(value="Extra", lang="de")]
-    assert LangString(value="Extra", lang="de") in m.label
+    label = _label_list(m)
+    label += [LangString(value="Extra", lang="de")]
+    assert LangString(value="Extra", lang="de") in label
 
 
 def test_iadd_single_langstring():
     """list += works with a single LangString (not wrapped in a list)."""
     m = LocalizedModel(id="mut3", label="Initial")
-    m.label += LangString(value="Neu", lang="de")
-    assert LangString(value="Neu", lang="de") in m.label
-    assert len(m.label) == 2
+    label = _label_list(m)
+    label += LangString(value="Neu", lang="de")
+    assert LangString(value="Neu", lang="de") in label
+    assert len(label) == 2
 
 
 def test_append_dedup():
     """Appending a duplicate (value, lang) pair is silently ignored."""
     m = LocalizedModel(id="mut4", label="Initial")
-    m.label.append(LangString(value="Initial", lang=None))  # already exists
-    assert len(m.label) == 1
+    label = _label_list(m)
+    label.append(LangString(value="Initial", lang=None))  # already exists
+    assert len(label) == 1
 
 
 # ---------------------------------------------------------------------------
@@ -312,10 +321,11 @@ def test_count_by_lang():
             LangString(value="Bonjour", lang="fr"),
         ],
     )
-    assert m.label.count_by_lang("en") == 2
-    assert m.label.count_by_lang("fr") == 1
-    assert m.label.count_by_lang("de") == 0
-    assert m.label.count_by_lang(None) == 0
+    label = _label_list(m)
+    assert label.count_by_lang("en") == 2
+    assert label.count_by_lang("fr") == 1
+    assert label.count_by_lang("de") == 0
+    assert label.count_by_lang(None) == 0
 
 
 def test_has_language():
@@ -324,9 +334,10 @@ def test_has_language():
         id="q2",
         label={"en": "Hello", "fr": "Bonjour"},
     )
-    assert m.label.has_language("en") is True
-    assert m.label.has_language("fr") is True
-    assert m.label.has_language("de") is False
+    label = _label_list(m)
+    assert label.has_language("en") is True
+    assert label.has_language("fr") is True
+    assert label.has_language("de") is False
 
 
 def test_has_synonyms():
@@ -339,8 +350,9 @@ def test_has_synonyms():
             LangString(value="Bonjour", lang="fr"),
         ],
     )
-    assert m.label.has_synonyms("en") is True
-    assert m.label.has_synonyms("fr") is False
+    label = _label_list(m)
+    assert label.has_synonyms("en") is True
+    assert label.has_synonyms("fr") is False
 
 
 def test_languages():
@@ -353,30 +365,32 @@ def test_languages():
             LangString(value="Bonjour", lang="fr"),
         ],
     )
-    assert m.label.languages() == {None, "en", "fr"}
+    assert _label_list(m).languages() == {None, "en", "fr"}
 
 
 def test_has_untagged():
     """has_untagged returns True when untagged entries exist."""
     m1 = LocalizedModel(id="hnl1", label="Plain")
-    assert m1.label.has_untagged() is True
+    assert _label_list(m1).has_untagged() is True
 
     m2 = LocalizedModel(id="hnl2", label=LangString(value="Hello", lang="en"))
-    assert m2.label.has_untagged() is False
+    assert _label_list(m2).has_untagged() is False
 
 
 def test_has_language_none():
     """has_language(None) works the same as has_no_language."""
     m = LocalizedModel(id="hln1", label="Plain")
-    assert m.label.has_language(None) is True
-    assert m.label.has_language("en") is False
+    label = _label_list(m)
+    assert label.has_language(None) is True
+    assert label.has_language("en") is False
 
 
 def test_count_by_lang_empty_string():
     """count_by_lang('') normalizes to count_by_lang(None)."""
     m = LocalizedModel(id="cbl1", label=["Plain", "Another plain"])
-    assert m.label.count_by_lang("") == 2
-    assert m.label.count_by_lang(None) == 2
+    label = _label_list(m)
+    assert label.count_by_lang("") == 2
+    assert label.count_by_lang(None) == 2
 
 
 def test_untagged():
@@ -385,7 +399,7 @@ def test_untagged():
         id="ut1",
         label=["Plain", LangString(value="Hello", lang="en"), "Also plain"],
     )
-    result = m.label.untagged()
+    result = _label_list(m).untagged()
     assert len(result) == 2
     assert all(ls.lang is None for ls in result)
 
@@ -401,18 +415,19 @@ def test_get_by_language():
             "Plain",
         ],
     )
-    en = m.label.get_by_language("en")
+    label = _label_list(m)
+    en = label.get_by_language("en")
     assert len(en) == 2
     assert all(ls.lang == "en" for ls in en)
 
-    fr = m.label.get_by_language("fr")
+    fr = label.get_by_language("fr")
     assert len(fr) == 1
 
-    untagged = m.label.get_by_language(None)
+    untagged = label.get_by_language(None)
     assert len(untagged) == 1
 
     # "" normalizes to None
-    assert m.label.get_by_language("") == untagged
+    assert label.get_by_language("") == untagged
 
 
 # ---------------------------------------------------------------------------
@@ -429,9 +444,10 @@ def test_isub_single():
             LangString(value="Bonjour", lang="fr"),
         ],
     )
-    m.label -= LangString(value="Hello", lang="en")
-    assert len(m.label) == 1
-    assert m.label == [LangString(value="Bonjour", lang="fr")]
+    label = _label_list(m)
+    label -= LangString(value="Hello", lang="en")
+    assert len(label) == 1
+    assert label == [LangString(value="Bonjour", lang="fr")]
 
 
 def test_sub_returns_new():
@@ -443,16 +459,18 @@ def test_sub_returns_new():
             LangString(value="Bonjour", lang="fr"),
         ],
     )
-    result = m.label - LangString(value="Hello", lang="en")
+    label = _label_list(m)
+    result = label - LangString(value="Hello", lang="en")
     assert len(result) == 1
-    assert len(m.label) == 2  # original unchanged
+    assert len(label) == 2  # original unchanged
 
 
 def test_isub_no_match():
     """-= with non-matching entry leaves list unchanged."""
     m = LocalizedModel(id="sub3", label="Hello")
-    m.label -= LangString(value="World", lang="en")
-    assert len(m.label) == 1
+    label = _label_list(m)
+    label -= LangString(value="World", lang="en")
+    assert len(label) == 1
 
 
 # ---------------------------------------------------------------------------

@@ -1075,7 +1075,7 @@ class RdfBaseModel(BaseModel):
         """
 
         graph = self.to_rdf_graph(base_uri=base_uri, rdf_uri_generator=rdf_uri_generator)
-        return graph.serialize(format=format, **kwargs)  # type: ignore[no-any-return]
+        return graph.serialize(format=format, **kwargs)
 
     @classmethod
     def from_rdf_graph(
@@ -2046,13 +2046,13 @@ def _get_rdf_model_type(type_hint: Any) -> type[RdfBaseModel] | None:
         The RdfBaseModel subclass if found, otherwise None.
     """
     if _is_rdf_model(type_hint):
-        return type_hint  # type: ignore[no-any-return]
+        return type_hint
 
     origin = get_origin(type_hint)
     if origin is Union or (hasattr(types, "UnionType") and origin is types.UnionType):
         for arg in get_args(type_hint):
             if _is_rdf_model(arg):
-                return arg  # type: ignore[no-any-return]
+                return arg
     return None
 
 
