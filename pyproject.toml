@@ -18,7 +18,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: Implementation :: CPython",
 ]
-dependencies = ["pydantic>=2.5", "pyshacl>=0.9.0", "rdflib>=7.0.0"]
+dependencies = ["pydantic>=2.10.0", "pyshacl>=0.9.0", "rdflib>=7.1.0"]
 
 [project.urls]
 Documentation = "https://github.com/DataArtifex/rdf-toolkit#readme"
@@ -37,19 +37,19 @@ path = "src/dartfx/rdf/__about__.py"
 
 [dependency-groups]
 dev = [
-  "coverage[toml]>=6.5",
+  "coverage[toml]>=7.0.0",
   "pytest>=9",
-  "pytest-benchmark>=4.0.0",
+  "pytest-benchmark>=5.0.0",
   "mypy>=1.0.0",
   "python-dotenv>=1.0.0",
   "ruff>=0.3.0",
-  "pre-commit>=3.0.0",
+  "pre-commit>=4.0.0",
 ]
 docs = [
-  "sphinx>=7.0.0",
-  "sphinx-rtd-theme>=1.2.0",
+  "sphinx>=8.0.0",
+  "sphinx-rtd-theme>=3.0.0",
   "myst-parser>=5.0.0",
-  "sphinx-copybutton>=0.5.0",
+  "sphinx-copybutton>=0.5.2",
 ]
 
 [tool.hatch.envs.default]
@@ -126,9 +126,11 @@ line-ending = "auto"
 
 [tool.mypy]
 python_version = "3.12"
+check_untyped_defs = true
+ignore_missing_imports = true
+warn_unused_ignores = true
+show_error_codes = true
 mypy_path = "src"
 explicit_package_bases = true
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = false
+plugins = ["pydantic.mypy"]
 exclude = ["^build/", "^dist/"]
