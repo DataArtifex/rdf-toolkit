@@ -1,7 +1,7 @@
 # RDF Toolkit
 
 [![Development Status](https://img.shields.io/badge/status-early%20release-orange.svg)](https://github.com/DataArtifex/rdf-toolkit)
-[![Documentation](https://img.shields.io/badge/docs-blue)](https://www.dataartifex.org/docs/dartfx-rdf/)
+[![Documentation](https://img.shields.io/badge/docs-blue)](https://www.dataartifex.org/rdf-toolkit/)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/DataArtifex/rdf-toolkit)
 [![Package Status](https://img.shields.io/badge/PyPI-not%20published-lightgrey)](https://github.com/DataArtifex/rdf-toolkit)
 [![CI](https://github.com/DataArtifex/rdf-toolkit/actions/workflows/test.yml/badge.svg)](https://github.com/DataArtifex/rdf-toolkit/actions/workflows/test.yml)
