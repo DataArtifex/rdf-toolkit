@@ -40,7 +40,7 @@ This toolkit provides **type-safe RDF serialization for Python** by bridging Pyd
 **Type Checking Considerations:**
 - All `rdf_type`, `rdf_namespace`, and `rdf_prefixes` class attributes MUST use `ClassVar` annotations
 - Use `# type: ignore[...]` comments sparingly and document why (e.g., rdflib namespace metaclass limitations)
-- Mypy configuration requires `mypy_path = "src"` and `explicit_package_bases = true` in pyproject.toml
+- Pyrefly configuration is defined under `[tool.pyrefly]` in pyproject.toml
 - The package requires a `py.typed` marker file for PEP 561 compliance
 
 ## Project Stack

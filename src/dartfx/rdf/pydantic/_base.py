@@ -486,7 +486,7 @@ def _coerce_to_lang_string_list(
 
 
 if TYPE_CHECKING:
-    # Mypy sees the wide input union so that ``Model(field="plain")`` type-checks.
+    # The static type checker sees the wide input union so that ``Model(field="plain")`` type-checks.
     LocalizedStr = LocalizedStrInput | LangStringList
 else:
     # At runtime Pydantic uses the BeforeValidator to coerce inputs → LangStringList.
@@ -1075,7 +1075,12 @@ class RdfBaseModel(BaseModel):
         """
 
         graph = self.to_rdf_graph(base_uri=base_uri, rdf_uri_generator=rdf_uri_generator)
-        return graph.serialize(format=format, **kwargs)
+        result = graph.serialize(format=format, **kwargs)
+        if isinstance(result, bytes):
+            return result.decode("utf-8")
+        if isinstance(result, str):
+            return result
+        raise TypeError(f"Expected RDF serialization to return str or bytes, got {type(result)}")
 
     @classmethod
     def from_rdf_graph(
