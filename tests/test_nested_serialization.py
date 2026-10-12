@@ -32,8 +32,11 @@ class NestedAddress(Address):
 
 class NestedPerson(Person):
     rdf_uri_generator: RdfUriGenerator = DefaultUriGenerator(auto_uuid=False)
-    # Use NestedAddress for the address field
-    address: Annotated[NestedAddress | None, RdfProperty(EX.address)] = None  # pyrefly: ignore[bad-override-mutable-attribute]
+    # pyrefly: ignore[bad-override-mutable-attribute]
+    address: Annotated[
+        NestedAddress | None,
+        RdfProperty(EX.address),
+    ] = None
 
 
 def test_default_behavior() -> None:
