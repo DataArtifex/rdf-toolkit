@@ -2,7 +2,7 @@ from typing import Annotated, ClassVar
 
 from rdflib import BNode, Namespace, URIRef
 
-from dartfx.rdf.pydantic import DefaultUriGenerator, RdfBaseModel, RdfProperty
+from dartfx.rdf.pydantic import DefaultUriGenerator, RdfBaseModel, RdfProperty, RdfUriGenerator
 
 EX = Namespace("http://example.org/")
 
@@ -27,13 +27,13 @@ class Person(RdfBaseModel):
 
 class NestedAddress(Address):
     # Disable auto UUID generation for this subclass
-    rdf_uri_generator: DefaultUriGenerator = DefaultUriGenerator(auto_uuid=False)
+    rdf_uri_generator: RdfUriGenerator = DefaultUriGenerator(auto_uuid=False)
 
 
 class NestedPerson(Person):
-    rdf_uri_generator: DefaultUriGenerator = DefaultUriGenerator(auto_uuid=False)
+    rdf_uri_generator: RdfUriGenerator = DefaultUriGenerator(auto_uuid=False)
     # Use NestedAddress for the address field
-    address: Annotated[NestedAddress | None, RdfProperty(EX.address)] = None
+    address: Annotated[NestedAddress | None, RdfProperty(EX.address)] = None  # pyrefly: ignore[bad-override-mutable-attribute]
 
 
 def test_default_behavior() -> None:

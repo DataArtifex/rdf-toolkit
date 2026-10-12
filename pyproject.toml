@@ -83,7 +83,7 @@ omit = ["src/dartfx/rdf/__about__.py"]
 
 [tool.coverage.paths]
 source = ["src/dartfx/rdf", "*/rdf-toolkit/src/dartfx/rdf"]
-tests = ["tests", "*/dartfx/rdf/tests"]
+tests = ["tests"]
 
 [tool.coverage.report]
 exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
@@ -133,5 +133,5 @@ project-excludes = [
 ]
 search-path = ["src"]
 python-version = "3.12.0"
-preset = "legacy"
+preset = "default"
 ignore-missing-imports = ["*"]
