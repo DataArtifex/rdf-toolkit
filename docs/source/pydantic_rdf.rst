@@ -629,3 +629,68 @@ Any callable with the right signature qualifies:
            base_uri: str | None = None,
        ) -> URIRef | BNode:
            ...
+
+
+Multiple RDF Types and Polymorphism
+-----------------------------------
+
+Real-world RDF and JSON-LD models often assign multiple classes to a single
+resource. For instance, in the **Cross-Domain Interoperability Framework (CDIF)**
+and **DDI-CDI**, an instance variable is typed as both a Schema.org ``PropertyValue``
+and a DDI-CDI ``InstanceVariable``.
+
+Static multi-typing
+^^^^^^^^^^^^^^^^^^^
+
+Specify multiple classes as a list, tuple, or set in ``rdf_type``:
+
+.. code-block:: python
+
+   class InstanceVariable(RdfBaseModel):
+       rdf_type: ClassVar = [SCHEMA.PropertyValue, CDI.InstanceVariable]
+
+       name: Annotated[str | None, RdfProperty(SCHEMA.name)] = None
+
+All declared types will be emitted as separate ``(subject, rdf:type, ...)`` triples
+upon serialization. When deserializing with :meth:`~dartfx.rdf.pydantic.RdfBaseModel.from_rdf`
+without specifying a subject, candidate resources in the graph are filtered using the
+intersection of all declared types.
+
+Dynamic unmodeled type preservation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+By default (``rdf_preserve_unmodeled_types = True``), when a model instance is loaded
+from an existing graph via :meth:`~dartfx.rdf.pydantic.RdfBaseModel.from_rdf_graph`,
+any additional ``rdf:type`` triples found on the resource are retained internally and
+re-emitted upon serialization. This ensures lossless round-tripping:
+
+.. code-block:: python
+
+   class SimpleVariable(RdfBaseModel):
+       rdf_type: ClassVar = CDI.InstanceVariable
+       # Even without declaring SCHEMA.PropertyValue, existing graph types are preserved!
+
+To disable this behavior and enforce strict canonical export matching only the
+Pydantic model's declared schema, set ``rdf_preserve_unmodeled_types = False``:
+
+.. code-block:: python
+
+   class StrictVariable(RdfBaseModel):
+       rdf_type: ClassVar = CDI.InstanceVariable
+       rdf_preserve_unmodeled_types: ClassVar = False  # Strip extra types on export
+
+Polymorphic union dispatch
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When a field accepts a union of models, such as ``list[PropertyValue | InstanceVariable]``,
+deserialization dynamically inspects the ``rdf:type`` triples of each node in the graph
+and selects the best-matching model class:
+
+.. code-block:: python
+
+   class Dataset(RdfBaseModel):
+       rdf_type: ClassVar = SCHEMA.Dataset
+       variables: Annotated[
+           list[InstanceVariable | PropertyValue],
+           RdfProperty(SCHEMA.variableMeasured),
+       ] = []

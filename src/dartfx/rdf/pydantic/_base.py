@@ -142,7 +142,7 @@ from __future__ import annotations
 import re
 import types
 import uuid
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from datetime import date, datetime, time
 from decimal import Decimal
@@ -161,7 +161,7 @@ from typing import (
     runtime_checkable,
 )
 
-from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, PrivateAttr
 from rdflib import RDF, XSD, BNode, Graph, Literal, Namespace, URIRef
 
 T = TypeVar("T", bound="RdfBaseModel")
@@ -801,12 +801,18 @@ class RdfBaseModel(BaseModel):
 
     Class Attributes
     ----------------
-    rdf_type : str | URIRef | None
+    rdf_type : str | URIRef | Sequence[str | URIRef] | None
         The RDF type (rdf:type) for instances of this class. Typically set to a
-        vocabulary class URI like `FOAF.Person` or `SKOS.Concept`. If None, no
-        rdf:type triple is added to the graph. Note: `None` is valid only for
-        base or abstract models; concrete vocabulary classes should explicitly
-        define an `rdf_type`.
+        vocabulary class URI like `FOAF.Person`, or a sequence of URIs for multi-typed
+        resources (e.g. `[SCHEMA.PropertyValue, CDI.InstanceVariable]`). If None, no
+        rdf:type triple is added to the graph unless preserved from an existing graph.
+        Note: `None` is valid only for base or abstract models; concrete vocabulary
+        classes should explicitly define an `rdf_type`.
+
+    rdf_preserve_unmodeled_types : bool
+        Whether to carry along and re-emit unmodeled `rdf:type` triples discovered during
+        graph deserialization. Default is True for lossless round-tripping. Set to False
+        for strict canonical exports conforming exclusively to the Pydantic schema.
 
     rdf_namespace : str | Namespace | None
         The default namespace for generating subject URIs. Used when an instance
@@ -915,12 +921,14 @@ class RdfBaseModel(BaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    rdf_type: ClassVar[str | URIRef | None] = None
+    rdf_type: ClassVar[str | URIRef | Sequence[str | URIRef] | set[str | URIRef] | None] = None
+    rdf_preserve_unmodeled_types: ClassVar[bool] = True
     rdf_namespace: ClassVar[str | Namespace | None] = None
     rdf_id_field: ClassVar[str | None] = "id"
     rdf_prefixes: ClassVar[dict[str, str | Namespace]] = {}
 
     rdf_uri_generator: RdfUriGenerator = Field(default_factory=DefaultUriGenerator, exclude=True)
+    _extra_rdf_types: set[URIRef] = PrivateAttr(default_factory=set)
 
     def to_rdf_graph(
         self,
@@ -1192,12 +1200,13 @@ class RdfBaseModel(BaseModel):
                 values[name] = lang_items
                 continue
 
-            model_type = _get_rdf_model_type(inner_type)
-            if model_type:
+            candidate_models = _get_rdf_candidate_models(inner_type)
+            if candidate_models:
                 items: list[Any] = []
                 for obj in objects:
                     if isinstance(obj, (URIRef, BNode)):
-                        items.append(model_type.from_rdf_graph(graph, obj, base_uri=base_uri))
+                        resolved_model = _resolve_model_for_node(graph, obj, candidate_models)
+                        items.append(resolved_model.from_rdf_graph(graph, obj, base_uri=base_uri))
                     else:
                         items.append(_node_to_python(obj, inner_type, prop))
             else:
@@ -1219,7 +1228,17 @@ class RdfBaseModel(BaseModel):
             if identifier is not None:
                 values[id_field] = identifier
 
-        return cls(**values)
+        instance = cls(**values)
+        if cls.rdf_preserve_unmodeled_types and isinstance(subject_uri, (URIRef, BNode)):
+            declared = set(_extract_rdf_types(cls))
+            graph_types = {
+                cast(URIRef, o) for o in graph.objects(subject_uri, RDF.type) if isinstance(o, (URIRef, BNode))
+            }
+            unmodeled = graph_types - declared
+            if unmodeled:
+                instance._extra_rdf_types = unmodeled
+
+        return instance
 
     @classmethod
     def from_rdf(
@@ -1361,9 +1380,12 @@ class RdfBaseModel(BaseModel):
         subject = self._subject_uri(base_uri=base_uri, rdf_uri_generator=rdf_uri_generator)
         self._bind_prefixes(graph)
 
-        rdf_type_uri = _ensure_uri(self.rdf_type)
-        if rdf_type_uri is not None:
-            graph.add((subject, RDF.type, rdf_type_uri))
+        for type_uri in _extract_rdf_types(self):
+            graph.add((subject, RDF.type, type_uri))
+
+        if self.rdf_preserve_unmodeled_types and hasattr(self, "_extra_rdf_types"):
+            for extra_type in self._extra_rdf_types:
+                graph.add((subject, RDF.type, extra_type))
 
         for name, field in self.__class__.model_fields.items():
             prop = _get_rdf_property(field)
@@ -1594,9 +1616,15 @@ class RdfBaseModel(BaseModel):
         ValueError
             If multiple subjects are found and cannot be disambiguated.
         """
-        rdf_type_uri = _ensure_uri(cls.rdf_type)
-        if rdf_type_uri is not None:
-            subjects = _unique(graph.subjects(RDF.type, rdf_type_uri))
+        types = _extract_rdf_types(cls)
+        if types:
+            if len(types) == 1:
+                subjects = _unique(graph.subjects(RDF.type, types[0]))
+            else:
+                subject_sets = [set(graph.subjects(RDF.type, t)) for t in types]
+                common = set.intersection(*subject_sets) if subject_sets else set()
+                subjects = list(common)
+
             if not subjects:
                 return None
             if len(subjects) > 1:
@@ -1908,6 +1936,35 @@ def _ensure_uri(value: str | URIRef | Namespace | None) -> URIRef | None:
     return URIRef(str(value))
 
 
+def _extract_rdf_types(target: Any) -> list[URIRef]:
+    """Extract and normalize all rdf:type URIRefs from a model class, instance, or raw type value.
+
+    Parameters
+    ----------
+    target : Any
+        A model class, instance, or raw type declaration (str, URIRef, or sequence thereof).
+
+    Returns
+    -------
+    list[URIRef]
+        A deduplicated list of URIRef objects.
+    """
+    raw_type = getattr(target, "rdf_type", target) if not isinstance(target, (str, URIRef, Namespace)) else target
+    if raw_type is None:
+        return []
+
+    if isinstance(raw_type, (list, tuple, set)):
+        result: list[URIRef] = []
+        for item in raw_type:
+            uri = _ensure_uri(item)
+            if uri is not None and uri not in result:
+                result.append(uri)
+        return result
+
+    uri = _ensure_uri(raw_type)
+    return [uri] if uri is not None else []
+
+
 URI_PATTERN = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*:")
 
 
@@ -2037,8 +2094,8 @@ def _is_rdf_model(value: Any) -> bool:
     return isinstance(value, type) and issubclass(value, RdfBaseModel)
 
 
-def _get_rdf_model_type(type_hint: Any) -> type[RdfBaseModel] | None:
-    """Get the RdfBaseModel type from a type hint (possibly a Union).
+def _get_rdf_candidate_models(type_hint: Any) -> list[type[RdfBaseModel]]:
+    """Get all RdfBaseModel types from a type hint (unwrapping Union / UnionType).
 
     Parameters
     ----------
@@ -2047,18 +2104,82 @@ def _get_rdf_model_type(type_hint: Any) -> type[RdfBaseModel] | None:
 
     Returns
     -------
-    Type[RdfBaseModel] | None
-        The RdfBaseModel subclass if found, otherwise None.
+    list[type[RdfBaseModel]]
+        A list of distinct RdfBaseModel subclasses found in the type hint.
     """
     if _is_rdf_model(type_hint):
-        return type_hint
+        return [type_hint]
 
     origin = get_origin(type_hint)
     if origin is Union or (hasattr(types, "UnionType") and origin is types.UnionType):
+        models: list[type[RdfBaseModel]] = []
         for arg in get_args(type_hint):
-            if _is_rdf_model(arg):
-                return arg
-    return None
+            if _is_rdf_model(arg) and arg not in models:
+                models.append(arg)
+        return models
+    return []
+
+
+def _resolve_model_for_node(
+    graph: Graph,
+    node: URIRef | BNode,
+    candidate_models: list[type[RdfBaseModel]],
+) -> type[RdfBaseModel]:
+    """Resolve the best-matching RdfBaseModel for a graph node based on rdf:type triples.
+
+    Parameters
+    ----------
+    graph : Graph
+        The RDF graph containing node data.
+    node : URIRef | BNode
+        The node subject being deserialized.
+    candidate_models : list[type[RdfBaseModel]]
+        Candidate RdfBaseModel subclasses to choose from.
+
+    Returns
+    -------
+    type[RdfBaseModel]
+        The resolved model class.
+    """
+    if len(candidate_models) == 1:
+        return candidate_models[0]
+
+    node_types = set(graph.objects(node, RDF.type))
+    if not node_types:
+        return candidate_models[0]
+
+    best_model = candidate_models[0]
+    best_score = (-1, -1)  # (is_subset, match_count)
+
+    for model in candidate_models:
+        model_types = set(_extract_rdf_types(model))
+        if not model_types:
+            continue
+        matches = len(model_types & node_types)
+        is_subset = 1 if model_types.issubset(node_types) else 0
+        score = (is_subset, matches)
+        if score > best_score:
+            best_score = score
+            best_model = model
+
+    return best_model
+
+
+def _get_rdf_model_type(type_hint: Any) -> type[RdfBaseModel] | None:
+    """Get the primary RdfBaseModel type from a type hint (possibly a Union).
+
+    Parameters
+    ----------
+    type_hint : Any
+        The type hint to check.
+
+    Returns
+    -------
+    type[RdfBaseModel] | None
+        The first RdfBaseModel subclass if found, otherwise None.
+    """
+    candidates = _get_rdf_candidate_models(type_hint)
+    return candidates[0] if candidates else None
 
 
 __all__ = ["RdfBaseModel", "RdfProperty", "LangString", "LangStringList", "LocalizedStr"]

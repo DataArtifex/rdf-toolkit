@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0]
+
+### Added
+- **Multi-Type (`rdf_type`) Support**: Models can now specify multiple RDF classes via a sequence or set (e.g., `rdf_type: ClassVar = [SCHEMA.PropertyValue, CDI.InstanceVariable]`).
+- **Multi-Type Subject Inference**: When `from_rdf` is called without an explicit subject on a multi-typed model, `_infer_subject` computes the set intersection of subjects matching all declared types.
+- **Dynamic Unmodeled Type Preservation**: Ingested resources carry along any unmodeled `rdf:type` triples from source RDF graphs via a private `_extra_rdf_types` attribute, re-emitting them on export for lossless round-tripping.
+- **Strict Canonical Export Control**: Added `rdf_preserve_unmodeled_types: ClassVar[bool] = True` on `RdfBaseModel`, which can be set to `False` to sanitize/normalize exported graphs strictly according to the model's schema.
+- **Graph-Aware Polymorphic Dispatch**: Deserialization of nested `Union[ModelA, ModelB]` fields dynamically inspects `(node, RDF.type, ?)` triples in the graph and scores candidates to instantiate the most specific matching model class.
+- Integration tests validating real-world Cross-Domain Interoperability Framework (CDIF) and DDI-CDI / Schema.org dual-typed JSON-LD data.
+
 ## [0.2.0]
 
 ### Added

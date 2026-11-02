@@ -143,6 +143,7 @@ The toolkit provides several ways to handle URIs and specific XSD datatypes:
   convenience query methods (`has_language`, `get_by_language`, `count_by_lang`,
   `languages`, etc.) and built-in `(value, lang)` deduplication.
 - **Validation**: Combine with Pydantic's built-in types like `AnyUrl` for strict input validation.
+- **Multiple RDF Types**: Specify multiple RDF types as a list or set in `rdf_type` (e.g., `rdf_type = [SCHEMA.PropertyValue, CDI.InstanceVariable]`). Unmodeled incoming types from graphs are automatically preserved on round-trip.
 
 ```python
 from typing import Annotated, Optional
