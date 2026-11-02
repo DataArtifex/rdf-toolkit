@@ -57,8 +57,9 @@ Mapping rules
 * The ``predicate`` argument on :class:`~dartfx.rdf.pydantic.RdfProperty`
   can be either a full ``rdflib.term.URIRef`` or a string. Strings will be
   coerced into ``URIRef`` instances at runtime.
-* A model-level ``rdf_type`` constant adds ``rdf:type`` triples for every
-  instance.
+* A model-level ``rdf_type`` attribute (scalar, sequence, or set) adds one or more
+  ``rdf:type`` triples for every instance. Unmodeled types from incoming graphs are
+  preserved automatically by default for lossless round-tripping.
 * If ``rdf_namespace`` is defined and the model exposes an ``id`` value (or the
   field configured via ``rdf_id_field``), the identifier is appended to the
   namespace. Absolute identifiers, such as UUID URNs or HTTP URLs, are used as
@@ -78,11 +79,11 @@ serialisation.
    clone = Organisation.from_rdf(turtle, format="turtle")
    assert clone == org
 
-When a model sets ``rdf_type`` the parser uses it to locate the correct subject
-in the graph. Otherwise it expects the graph to contain exactly one subject and
-raises an error if there are multiple candidates. You can always bypass the
-heuristics by passing the ``subject`` keyword argument to
-:meth:`~dartfx.rdf.pydantic.RdfBaseModel.from_rdf_graph` or
+When a model sets ``rdf_type`` (single or multiple types), the parser uses it (or
+their intersection) to locate the correct subject in the graph. Otherwise it expects
+the graph to contain exactly one subject and raises an error if there are multiple
+candidates. You can always bypass the heuristics by passing the ``subject`` keyword
+argument to :meth:`~dartfx.rdf.pydantic.RdfBaseModel.from_rdf_graph` or
 :meth:`~dartfx.rdf.pydantic.RdfBaseModel.from_rdf`.
 
 Language tags and localized strings
