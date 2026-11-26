@@ -1,6 +1,6 @@
 from typing import Annotated, ClassVar
 
-from rdflib import BNode, Namespace, URIRef
+from rdflib import BNode, Graph, Literal, Namespace, URIRef
 
 from dartfx.rdf.pydantic import DefaultUriGenerator, RdfBaseModel, RdfProperty, RdfUriGenerator
 
@@ -116,3 +116,68 @@ def test_union_type_nested_model_round_trip() -> None:
     assert reloaded.address.id == "addr-1"
     assert reloaded.address.city == "Berlin"
     assert reloaded.address.street == "Champs"
+
+
+type _AddrOrRef = Annotated[Address, "meta"] | URIRef | str
+
+
+class _PersonWithAlias(RdfBaseModel):
+    rdf_type: ClassVar = EX.Person
+    rdf_namespace: ClassVar = EX
+
+    id: str | None = None
+    name: Annotated[str | None, RdfProperty(EX.name)] = None
+    homepage: Annotated[URIRef | str | None, RdfProperty(EX.homepage)] = None
+    address: Annotated[_AddrOrRef | None, RdfProperty(EX.address)] = None
+
+
+def test_bnode_round_trip_preserves_fields_and_clears_id() -> None:
+    """from_rdf_graph / from_rdf must preserve BNode subjects instead of converting them to URIRef."""
+    addr = NestedAddress(city="London", street="10 Downing St")
+    person = NestedPerson(id="bob", name="Bob", address=addr)
+
+    turtle = person.to_rdf("turtle")
+    reloaded = NestedPerson.from_rdf(turtle, format="turtle")
+
+    assert reloaded.name == "Bob"
+    assert isinstance(reloaded.address, NestedAddress)
+    assert reloaded.address.city == "London"
+    assert reloaded.address.street == "10 Downing St"
+    assert reloaded.address.id is None
+
+
+def test_explicit_bnode_id_in_default_uri_generator() -> None:
+    """An explicit _:b0 identifier produces a BNode instead of URIRef('_:b0')."""
+    gen = DefaultUriGenerator()
+    assert gen(Person(id="_:b0")) == BNode("b0")
+
+
+def test_colon_text_not_coerced_to_invalid_uriref() -> None:
+    """Strings with colons and spaces stay Literals while valid URIs still coerce to URIRef."""
+    p = _PersonWithAlias(
+        id="eve",
+        name="Eve",
+        homepage="access: license",
+    )
+    turtle = p.to_rdf("turtle")
+    g = Graph()
+    g.parse(data=turtle, format="turtle")
+    assert (URIRef(str(EX) + "eve"), EX.homepage, Literal("access: license")) in g
+
+    p_uri = _PersonWithAlias(id="frank", homepage="https://example.org/frank")
+    g_uri = p_uri.to_rdf_graph()
+    assert (URIRef(str(EX) + "frank"), EX.homepage, URIRef("https://example.org/frank")) in g_uri
+
+
+def test_type_alias_and_annotated_union_deserialization() -> None:
+    """TypeAliasType and Annotated[Model, ...] inside a Union resolve during from_rdf_graph."""
+    p = _PersonWithAlias(
+        id="grace",
+        name="Grace",
+        address=Address(id="addr-2", city="Zurich", street="Bahnhofstrasse"),
+    )
+    g = p.to_rdf_graph()
+    reloaded = _PersonWithAlias.from_rdf_graph(g, URIRef(str(EX) + "grace"))
+    assert isinstance(reloaded.address, Address)
+    assert reloaded.address.city == "Zurich"
+    assert reloaded.address.street == "Bahnhofstrasse"

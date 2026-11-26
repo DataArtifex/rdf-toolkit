@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Fixed
+- **Blank-Node Deserialization (`from_rdf_graph`)**: Preserve `rdflib.BNode` subjects instead of converting them to `URIRef`s, so blank-node nested resources retain all their fields on round-trip and leave `id=None`.
+- **Blank-Node IDs in `DefaultUriGenerator`**: Treat `_:...` identifiers as `rdflib.BNode` instances instead of `URIRef("_:...")`.
+- **URI Heuristic (`_looks_like_uri`)**: Reject strings containing whitespace or failing `rdflib.term._is_valid_uri`, preventing plain text with colons (e.g., `"access: license"`) from being coerced into invalid `URIRef`s that break Turtle serialization.
+- **Union Model Discovery (`_get_rdf_candidate_models`)**: Recursively unwrap Python 3.12 `TypeAliasType` and `Annotated[Model, ...]` members when resolving nested model unions from RDF graphs.
+
 ## [0.3.0]
 
 ### Added

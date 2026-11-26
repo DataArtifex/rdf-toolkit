@@ -153,6 +153,7 @@ from typing import (
     Any,
     ClassVar,
     Protocol,
+    TypeAliasType,
     TypeVar,
     Union,
     cast,
@@ -163,6 +164,7 @@ from typing import (
 
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, PrivateAttr
 from rdflib import RDF, XSD, BNode, Graph, Literal, Namespace, URIRef
+from rdflib.term import _is_valid_uri
 
 T = TypeVar("T", bound="RdfBaseModel")
 
@@ -774,6 +776,8 @@ class DefaultUriGenerator:
                 identifier = str(value)
 
         if identifier:
+            if identifier.startswith("_:"):
+                return BNode(identifier[2:]) if len(identifier) > 2 else BNode()
             if _looks_like_uri(identifier):
                 return URIRef(identifier)
             namespace = model._namespace_string()
@@ -1169,8 +1173,8 @@ class RdfBaseModel(BaseModel):
         to_rdf_graph : Serialize to a Graph
         """
 
-        subject_uri = _ensure_uri(subject)
-        if subject_uri is None:
+        subject_node: URIRef | BNode | None = subject if isinstance(subject, BNode) else _ensure_uri(subject)
+        if subject_node is None:
             msg = "Subject URI cannot be None"
             raise ValueError(msg)
         values: dict[str, Any] = {}
@@ -1184,7 +1188,7 @@ class RdfBaseModel(BaseModel):
             # Detect whether this field is a LocalizedStr (canonical list[LangString])
             is_localized = _is_localized_str_field(field)
 
-            objects = list(graph.objects(subject_uri, predicate))
+            objects = list(graph.objects(subject_node, predicate))
             if not objects:
                 continue
 
@@ -1223,16 +1227,16 @@ class RdfBaseModel(BaseModel):
                 values[name] = items[0]
 
         id_field = cls.rdf_id_field
-        if id_field and id_field not in values:
-            identifier = cls._identifier_from_subject(subject_uri, base_uri=base_uri)
+        if id_field and id_field not in values and isinstance(subject_node, URIRef):
+            identifier = cls._identifier_from_subject(subject_node, base_uri=base_uri)
             if identifier is not None:
                 values[id_field] = identifier
 
         instance = cls(**values)
-        if cls.rdf_preserve_unmodeled_types and isinstance(subject_uri, (URIRef, BNode)):
+        if cls.rdf_preserve_unmodeled_types and isinstance(subject_node, (URIRef, BNode)):
             declared = set(_extract_rdf_types(cls))
             graph_types = {
-                cast(URIRef, o) for o in graph.objects(subject_uri, RDF.type) if isinstance(o, (URIRef, BNode))
+                cast(URIRef, o) for o in graph.objects(subject_node, RDF.type) if isinstance(o, (URIRef, BNode))
             }
             unmodeled = graph_types - declared
             if unmodeled:
@@ -1969,7 +1973,7 @@ URI_PATTERN = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*:")
 
 
 def _looks_like_uri(value: str) -> bool:
-    """Check if a string looks like a URI using a URI scheme pattern.
+    """Check if a string is a valid URI using a URI scheme pattern and rdflib validation.
 
     Parameters
     ----------
@@ -1979,9 +1983,12 @@ def _looks_like_uri(value: str) -> bool:
     Returns
     -------
     bool
-        True if the string starts with a URI scheme (e.g., 'http:', 'urn:').
+        True if the string starts with a URI scheme (e.g., 'http:', 'urn:'),
+        contains no whitespace, and passes ``rdflib.term._is_valid_uri``.
     """
-    return bool(URI_PATTERN.match(value))
+    if not value or any(ch.isspace() for ch in value):
+        return False
+    return bool(URI_PATTERN.match(value)) and _is_valid_uri(value)
 
 
 def _normalise_base(base_uri: str) -> str:
@@ -2095,7 +2102,7 @@ def _is_rdf_model(value: Any) -> bool:
 
 
 def _get_rdf_candidate_models(type_hint: Any) -> list[type[RdfBaseModel]]:
-    """Get all RdfBaseModel types from a type hint (unwrapping Union / UnionType).
+    """Get all RdfBaseModel types from a type hint (unwrapping TypeAliasType, Annotated, and Union).
 
     Parameters
     ----------
@@ -2107,17 +2114,24 @@ def _get_rdf_candidate_models(type_hint: Any) -> list[type[RdfBaseModel]]:
     list[type[RdfBaseModel]]
         A list of distinct RdfBaseModel subclasses found in the type hint.
     """
-    if _is_rdf_model(type_hint):
-        return [type_hint]
+    models: list[type[RdfBaseModel]] = []
 
-    origin = get_origin(type_hint)
-    if origin is Union or (hasattr(types, "UnionType") and origin is types.UnionType):
-        models: list[type[RdfBaseModel]] = []
-        for arg in get_args(type_hint):
-            if _is_rdf_model(arg) and arg not in models:
-                models.append(arg)
-        return models
-    return []
+    def _walk(hint: Any) -> None:
+        if isinstance(hint, TypeAliasType):
+            _walk(hint.__value__)
+            return
+        hint = _unwrap_annotation(hint)
+        if _is_rdf_model(hint):
+            if hint not in models:
+                models.append(hint)
+            return
+        origin = get_origin(hint)
+        if origin is Union or (hasattr(types, "UnionType") and origin is types.UnionType):
+            for arg in get_args(hint):
+                _walk(arg)
+
+    _walk(type_hint)
+    return models
 
 
 def _resolve_model_for_node(
